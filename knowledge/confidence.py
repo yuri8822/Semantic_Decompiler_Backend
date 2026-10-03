@@ -41,7 +41,7 @@ def analysis_needs_another_pass(analysis) -> bool:
     """
     if analysis is None:
         return True
-    if not accepted(analysis.name_confidence):
+    if not accepted(analysis.name_confidence) or analysis.contradictions:
         return True
     normal_params = [p for p in analysis.params if p.role == "normal"]
     if normal_params and sum(not accepted(p.confidence) for p in normal_params) * 2 > len(normal_params):

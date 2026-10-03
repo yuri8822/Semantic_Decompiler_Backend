@@ -18,7 +18,7 @@ build/
 # Per-binary workspaces: Ghidra IR exports, knowledge base, LLM logs and
 # the reconstructed C++ project (all reproducible from the binary)
 workspace/
-workspace_run.log
+workspace_run*.log
 .pytest_cache/
 
 # Input binaries (don't commit third-party executables)

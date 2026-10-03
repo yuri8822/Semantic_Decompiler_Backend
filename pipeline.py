@@ -27,6 +27,7 @@ from rich.progress import BarColumn, MofNCompleteColumn, Progress, SpinnerColumn
 from agents.analyzer import Analyzer
 from agents.code_reconstructor import CodeReconstructor
 from agents.context import Context
+from agents.crosscheck import check_return_values
 from agents.type_reconstructor import TypeReconstructor
 from agents.validator import Validator, errors
 from config import (
@@ -71,11 +72,13 @@ class Pipeline:
         self.failures = []
         self._failures_lock = threading.Lock()
         self.scope = []
+        self.ir0 = None
 
     # =========================================================================
 
     def run(self) -> Path:
         ir0, ir = self.stage_ghidra()
+        self.ir0 = ir0
         self.seed(ir0)
         ir = self.stage_analysis(ir)
         sigs, compiler = self.stage_code(ir)
@@ -141,6 +144,7 @@ class Pipeline:
         for r in range(1, self.rounds + 1):
             if r <= done:
                 continue
+            self._cross_check()   # earlier rounds' results may contradict the binary
             targets = [a for a in self.scope if self._needs_analysis(a, r)]
             if r > 1 and not targets:
                 self.console.print(f"\n[bold][round {r}][/bold] nothing left at low confidence — done")
@@ -150,6 +154,7 @@ class Pipeline:
             target_set = set(targets)
             self._run_levels([[a for a in lv if a in target_set] for lv in levels],
                              lambda a, ctx: self._analyze_one(a, ctx, r), ir, "analyzing")
+            self._cross_check()   # before anything from this round reaches Ghidra
 
             self._stage(f"3.{r}", "Type Reconstructor")
             self._reconstruct_types(ir, r)
@@ -168,6 +173,13 @@ class Pipeline:
             self.kb.save_meta()
             self.console.print(f"  {len(low)} function(s) still low-confidence after round {r}")
         return ir
+
+    def _cross_check(self):
+        flagged = check_return_values(self.kb, self.ir0, self.scope)
+        contradicted = [a for a in flagged if self.kb.functions[a].analysis.contradictions]
+        for a in contradicted:
+            rec = self.kb.functions[a]
+            self.console.print(f"  [yellow]![/yellow] {rec.analysis.name}: {rec.analysis.contradictions[0][:160]}")
 
     def _needs_analysis(self, address: str, round_num: int) -> bool:
         a = self.kb.functions[address].analysis
@@ -193,7 +205,7 @@ class Pipeline:
 
     def _reconstruct_types(self, ir: ProgramIR, round_num: int):
         sigs = assign_signatures(self.kb, ir)
-        ctx = Context(self.kb, ir, sigs)
+        ctx = Context(self.kb, ir, sigs, ir0=self.ir0)
         cands = self.typer.candidates(ctx)
         valid = set(cands) | set(self.kb.types)
         work = []
@@ -250,7 +262,7 @@ class Pipeline:
             self.console.print(f"    [yellow]![/yellow] {f.get('kind')} {f.get('target')}: {f.get('error')}")
         new_ir = load_ir(out_path)
         sigs = assign_signatures(self.kb, new_ir)
-        self.kb.save_derived(new_ir, Context(self.kb, new_ir, sigs).name_of)
+        self.kb.save_derived(new_ir, Context(self.kb, new_ir, sigs, ir0=self.ir0).name_of)
         return new_ir
 
     # -- 5. Code reconstruction + validation ------------------------------------
@@ -258,7 +270,7 @@ class Pipeline:
     def stage_code(self, ir: ProgramIR):
         self._stage("5", "Code Reconstructor + Validator")
         sigs = assign_signatures(self.kb, ir)
-        ctx = Context(self.kb, ir, sigs)
+        ctx = Context(self.kb, ir, sigs, ir0=self.ir0)
         writer = ProjectWriter(self.kb.reconstructed_dir, self.kb, ir, sigs, self.stem)
         writer.write_headers()
         writer.write_cmake()
@@ -290,6 +302,10 @@ class Pipeline:
         h.update(sig.definition_head().encode())
         if sig.class_name:
             h.update(ctx.class_layout(sig.class_name).encode())
+        for callee in fn.callees:   # callee signatures are part of the prompt
+            csig = ctx.signatures.get(callee)
+            if csig:
+                h.update(csig.definition_head().encode())
         return h.hexdigest()[:16]
 
     def _code_one(self, address: str, ctx: Context, compiler):
@@ -368,7 +384,7 @@ class Pipeline:
             self.console.print(f"  CMake build: {'[green]ok[/green]' if ok else '[red]failed[/red] (see build.log)'}")
         build["files"] = sorted(line_map)
         self.kb.meta["build"] = {"status": build["status"]}
-        self.kb.save_derived(ir, Context(self.kb, ir, sigs).name_of)
+        self.kb.save_derived(ir, Context(self.kb, ir, sigs, ir0=self.ir0).name_of)
         self.kb.save_meta()
         return build
 
@@ -391,7 +407,7 @@ class Pipeline:
             for level in levels:
                 if not level:
                     continue
-                ctx = Context(self.kb, ir, assign_signatures(self.kb, ir))
+                ctx = Context(self.kb, ir, assign_signatures(self.kb, ir), ir0=self.ir0)
                 self._drain(pool, {pool.submit(work, a, ctx): a for a in level}, progress, task)
 
     def _run_items(self, items: list, work, ctx: Context, desc: str, key=lambda x: x):

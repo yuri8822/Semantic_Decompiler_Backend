@@ -126,6 +126,9 @@ class FunctionAnalysis(_Model):
     fields: list[FieldGuess] = []
     globals: list[GlobalGuess] = []
     notes: list[str] = []
+    # Set by deterministic cross-checks (knowledge/crosscheck.py), never by the LLM.
+    contradictions: list[str] = []
+    observed_return_type: str = ""   # what callers receive the result into
     # bookkeeping
     round: int = 0
     provider: str = ""

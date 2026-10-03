@@ -45,6 +45,9 @@ Rules:
 - Functions returning std::string (names ending in [abi:cxx11] or _abi_cxx11_, or building a string
   into the first pointer argument and returning it) take a hidden return slot: give that parameter
   role "return_slot" and set return_type "std::string".
+- If RETURN VALUE USE BY CALLERS shows callers using the result, the function returns a value of the type
+  they receive it as, even when its body seems not to produce one (e.g. it falls off the end of a non-void
+  function, which compilers turn into a trap). Never answer "void" for such a function.
 - Only report fields at offsets listed under OBSERVED MEMORY ACCESSES. "param" is the parameter index
   the offset is relative to; "class_name" is the type that parameter points to.
 - Use C++ types: int, unsigned int, int64_t, uint64_t, bool, char, char *, const char *, float, double,
@@ -91,6 +94,7 @@ def build_analyzer_prompt(ctx, fn, rec, round_num: int) -> str:
         "\nPARAMETER POINTERS PASSED TO CALLS:", ctx.arg_passes(fn),
         "\nCALLEES:", ctx.callees(fn),
         "\nCALLERS:", ctx.callers(fn),
+        "\nRETURN VALUE USE BY CALLERS (Ghidra's own call sites):", ctx.return_uses(fn),
         "\nGLOBALS:", ctx.globals(fn),
         "\nREFERENCED STRINGS:", ctx.strings(fn),
     ]
@@ -108,6 +112,9 @@ def build_analyzer_prompt(ctx, fn, rec, round_num: int) -> str:
         low = [f"param {p.index} {p.name} ({p.confidence:.2f})" for p in a.params if p.confidence < 0.6]
         if low:
             parts.append("  low-confidence: " + ", ".join(low))
+        if a.contradictions:
+            parts.append("  CONTRADICTED BY THE BINARY — resolve this:")
+            parts += [f"    - {c}" for c in a.contradictions]
     parts += [
         "\nGHIDRA DECOMPILATION:", ctx.decompiled(fn),
         "\nASSEMBLY:", ctx.assembly(fn),

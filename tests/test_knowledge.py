@@ -165,6 +165,34 @@ def test_validator_accepts_dropped_vtable_store(kb, chess_ir):
     assert Validator().check(ctx, fn, sigs[fn.address], code) == []
 
 
+def test_return_value_cross_check(kb, chess_ir):
+    """Engine::CheckState is a UD2 trap Ghidra types as void, but GameLoop uses its result as int."""
+    from agents.crosscheck import check_return_values, return_value_uses
+
+    seed(kb, chess_ir)
+    check_state = by_name(chess_ir, "Engine::CheckState")[0]
+    uses = return_value_uses(chess_ir, check_state.address)
+    assert len(uses) == 2 and all(u["type"] == "int" for u in uses)   # the third call discards it
+    assert return_value_uses(chess_ir, by_name(chess_ir, "Engine::Draw")[0].address) == []
+
+    rec = kb.functions[check_state.address]
+    rec.analysis = FunctionAnalysis.model_validate({
+        "name": "Engine::CheckState", "name_confidence": 0.98, "class_name": "Engine", "method_kind": "method",
+        "return_type": "void", "return_confidence": 0.95})
+    kb.save_function(rec)
+    assert check_return_values(kb, chess_ir, [check_state.address]) == [check_state.address]
+    a = kb.functions[check_state.address].analysis
+    assert a.contradictions and a.observed_return_type == "int" and a.return_confidence < 0.6
+    sig = build_signature(kb.functions[check_state.address], check_state)
+    assert sig.definition_head() == "int Engine::CheckState()" and any("callers" in t for t in sig.todos)
+    assert check_return_values(kb, chess_ir, [check_state.address]) == []   # idempotent
+
+    # Re-analysis that answers int clears the contradiction.
+    a.return_type, a.return_confidence = "int", 0.9
+    check_return_values(kb, chess_ir, [check_state.address])
+    assert not kb.functions[check_state.address].analysis.contradictions
+
+
 def test_empty_llm_answer_is_an_error(tmp_path, monkeypatch):
     import llm.client as client_mod
     from llm.client import LLMClient, LLMError
@@ -232,8 +260,14 @@ def test_offline_pipeline_end_to_end(tmp_path):
     assert not p.failures, p.failures
     kinds = {k for k, _ in llm.calls}
     assert {"analyze", "types", "code"} <= kinds
-    assert len(runner.plans) == 1          # round 2 had nothing at low confidence
+    # The fake analyzer calls Engine::CheckState void while GameLoop uses its result: the
+    # cross-check queues exactly that function for round 2, and the signature falls back
+    # to the type the callers receive.
+    round2 = [tag for kind, tag in llm.calls if kind == "analyze" and tag.startswith("analyze_r2_")]
+    assert round2 == ["analyze_r2_0x140005f80"]
+    assert len(runner.plans) == 2
     assert runner.plans[0]["structs"]      # class layouts reached Ghidra
+    assert "int CheckState();" in (out / "include" / "types.h").read_text()
     for name in ("CMakeLists.txt", "include/types.h", "include/reconstructed.h", "src/functions.cpp",
                  "src/Engine.cpp", "function_map.json"):
         assert (out / name).exists(), name

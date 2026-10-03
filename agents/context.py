@@ -5,6 +5,7 @@ they all describe functions, neighbours and classes the same way.
 
 from collections import defaultdict
 
+from agents.crosscheck import return_value_uses
 from config import PROMPT_MAX_ASSEMBLY_LINES, PROMPT_MAX_DECOMPILED_CHARS, PROMPT_MAX_NEIGHBOURS
 from ghidra_io.ir import FunctionIR, ProgramIR
 from knowledge.confidence import tier
@@ -14,9 +15,10 @@ from knowledge.filters import is_imported_data
 class Context:
     """Name resolution and rendering over one knowledge base + current IR."""
 
-    def __init__(self, kb, ir: ProgramIR, signatures: dict = None):
+    def __init__(self, kb, ir: ProgramIR, signatures: dict = None, ir0: ProgramIR = None):
         self.kb = kb
         self.ir = ir
+        self.ir0 = ir0 or ir      # round-0 export: Ghidra's inference before any applied knowledge
         self.signatures = signatures or {}
 
     # -- names ------------------------------------------------------------------
@@ -119,6 +121,15 @@ class Context:
         if len(fn.callers) > PROMPT_MAX_NEIGHBOURS:
             out.append(f"  ... and {len(fn.callers) - PROMPT_MAX_NEIGHBOURS} more")
         return "\n".join(out) or "  (none — entry point, callback, or called through a pointer)"
+
+    def return_uses(self, fn: FunctionIR) -> str:
+        if not fn.callers:
+            return "  (no known callers)"
+        uses = return_value_uses(self.ir0, fn.address)
+        if not uses:
+            return "  no caller uses the return value"
+        return "\n".join(f"  {u['caller_name']}: {u['line']}" + (f"   (received as {u['type']})" if u["type"] else "")
+                         for u in uses[:8])
 
     def strings(self, fn: FunctionIR) -> str:
         return "\n".join(f"  {s!r}" for s in fn.strings[:30]) or "  (none)"

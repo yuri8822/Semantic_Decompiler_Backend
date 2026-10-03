@@ -165,6 +165,10 @@ def build_signature(rec: FunctionRecord, fn: FunctionIR) -> CppSignature:
         ret = ghidra_to_cpp_type(a.return_type)
         if needs_todo(a.return_confidence):
             todos.append(todo(f"return type '{a.return_type}'", a.return_confidence))
+    elif a and a.observed_return_type:
+        ret = ghidra_to_cpp_type(a.observed_return_type)
+        todos.append(f"TODO: return type '{ret}' is inferred from how callers use the result "
+                     f"(the analysis said void)")
     else:
         ret = ghidra_return_to_cpp(fn.return_type)
 

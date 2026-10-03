@@ -2230,6 +2230,141 @@
    ]
   },
   {
+   "address": "0x140005f80",
+   "name": "CheckState",
+   "full_name": "Engine::CheckState",
+   "namespace": "Engine",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__fastcall",
+   "comment": "Engine::CheckState()",
+   "body_size": 10,
+   "decompiled": "\r\n/* Engine::CheckState() */\r\n\r\nvoid Engine::CheckState(void)\r\n\r\n{\r\n  code *pcVar1;\r\n  \r\n                    /* WARNING: Does not return */\r\n  pcVar1 = (code *)invalidInstructionException();\r\n  (*pcVar1)();\r\n}\r\n\r\n",
+   "signature": "void Engine::CheckState(void);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [],
+   "locals": [
+    {
+     "name": "pcVar1",
+     "type": "undefined *",
+     "storage": "unique:00059480:8"
+    }
+   ],
+   "field_accesses": [],
+   "arg_passes": [],
+   "assembly": [
+    "0x140005f80: PUSH RBP",
+    "0x140005f81: MOV RBP,RSP",
+    "0x140005f84: MOV qword ptr [RBP + 0x10],RCX",
+    "0x140005f88: UD2"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 1,
+    "indirect_calls": 1,
+    "loads": 0,
+    "stores": 0,
+    "returns": 1,
+    "instructions": 4,
+    "basic_blocks": 1
+   },
+   "callers": [
+    "0x140006460"
+   ],
+   "callees": [],
+   "calls": [],
+   "strings": [],
+   "globals": [],
+   "types": [
+    "undefined *",
+    "void"
+   ]
+  },
+  {
+   "address": "0x140005f90",
+   "name": "Draw",
+   "full_name": "Engine::Draw",
+   "namespace": "Engine",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Engine::Draw()",
+   "body_size": 31,
+   "decompiled": "\r\n/* Engine::Draw() */\r\n\r\nvoid __thiscall Engine::Draw(Engine *this)\r\n\r\n{\r\n  Chess::DrawBoard((Chess *)this);\r\n  return;\r\n}\r\n\r\n",
+   "signature": "void __thiscall Engine::Draw(Engine *this);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Engine *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    }
+   ],
+   "locals": [],
+   "field_accesses": [],
+   "arg_passes": [
+    {
+     "callee": "0x140002f70",
+     "arg": 0,
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "at": "0x140005fa3"
+    }
+   ],
+   "assembly": [
+    "0x140005f90: PUSH RBP",
+    "0x140005f91: MOV RBP,RSP",
+    "0x140005f94: SUB RSP,0x20",
+    "0x140005f98: MOV qword ptr [RBP + 0x10],RCX",
+    "0x140005f9c: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140005fa0: MOV RCX,RAX",
+    "0x140005fa3: CALL 0x140002f70",
+    "0x140005fa8: NOP",
+    "0x140005fa9: ADD RSP,0x20",
+    "0x140005fad: POP RBP",
+    "0x140005fae: RET"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 1,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 0,
+    "returns": 1,
+    "instructions": 11,
+    "basic_blocks": 1
+   },
+   "callers": [
+    "0x140006460"
+   ],
+   "callees": [
+    "0x140002f70"
+   ],
+   "calls": [
+    {
+     "address": "0x140002f70",
+     "name": "Chess::DrawBoard",
+     "external": false
+    }
+   ],
+   "strings": [],
+   "globals": [],
+   "types": [
+    "Engine *",
+    "void"
+   ]
+  },
+  {
    "address": "0x140005fb0",
    "name": "Update",
    "full_name": "Engine::Update",

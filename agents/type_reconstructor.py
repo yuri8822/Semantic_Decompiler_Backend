@@ -59,8 +59,10 @@ class TypeReconstructor:
             items.append(self._fn_evidence(ctx, addr, 0, class_name, member=True))
         for addr, param in cand["users"]:
             items.append(self._fn_evidence(ctx, addr, param, class_name, member=False))
+        # Round 0 only: later exports just echo back the layouts this pipeline applied,
+        # which would both mislabel our own guesses as Ghidra's and churn the evidence hash.
         ghidra_struct = ""
-        for c in ctx.ir.classes:
+        for c in ctx.ir0.classes:
             if sanitize_class_name(c.name) == class_name and c.fields:
                 ghidra_struct = "\n".join(f"  +{f.offset:#x} {f.type} {f.name} (size {f.size})" for f in c.fields)
         return {"functions": items, "ghidra_struct": ghidra_struct}
