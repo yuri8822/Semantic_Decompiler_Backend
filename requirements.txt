@@ -1,6 +1,6 @@
 anthropic
 openai
-networkx
-pydantic
+pydantic>=2
 rich
-sqlite-utils
+python-dotenv
+pytest

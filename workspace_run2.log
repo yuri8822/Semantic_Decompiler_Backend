@@ -1,0 +1,25 @@
+﻿┌──────────────────── Semantic Decompiler ─────────────────────┐
+│ Binary: TestBinaries\Chess.exe                               │
+│ Provider: deepseek                                           │
+│ Workspace: F:\MyProjects\Semantic_Decompiler\workspace\Chess │
+└──────────────────────────────────────────────────────────────┘
+
+[1] Ghidra headless analysis
+  reusing F:\MyProjects\Semantic_Decompiler\workspace\Chess\ghidra\round_0.json
+  101 functions, 1475 strings, x86:LE:64:default; current IR: round 1
+  28 functions in scope, 72 excluded as library/runtime code
+
+ nothing left at low confidence — done
+
+[5] Code Reconstructor + Validator
+  reconstructing code          ---------------------------------- 28/28 0:08:02
+
+[6] Writing and building the reconstructed project
+  CMake build: ok
+
+Done. 27/28 functions reconstructed — names: 28 high / 0 medium / 0 low 
+confidence; compile: 27 ok, 0 failing; 2 with unresolved validator errors; 
+project build: ok
+  project: F:\MyProjects\Semantic_Decompiler\workspace\Chess\reconstructed
+  report:  F:\MyProjects\Semantic_Decompiler\workspace\Chess\report.md
+  knowledge base: F:\MyProjects\Semantic_Decompiler\workspace\Chess

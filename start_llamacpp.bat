@@ -16,6 +16,9 @@ REM revision hash changes if you pull a different revision of the same repo.
 
 set MODEL=%USERPROFILE%\.cache\huggingface\hub\models--Tesslate--OmniCoder-9B-GGUF\snapshots\c06117a99179f36962d782946970726b9fc9e533\omnicoder-9b-q4_k_m.gguf
 
+REM Thinking switch: on or off. Restart the server after changing it.
+set THINKING=off
+
 if "%MODEL%"=="" (
   echo [start_llamacpp] Set MODEL in this script to the full path of a .gguf file first.
   exit /b 1
@@ -38,10 +41,12 @@ REM startup error stays readable instead of the window flashing shut.
 REM The model path is single-quoted so a %USERPROFILE% containing spaces
 REM still passes through as one argument.
 REM
-REM Thinking is ON with a hard 2048-token budget:
-REM   --reasoning on          force it on rather than auto-detecting from the
+REM Thinking is controlled by THINKING above; when on, it has a hard
+REM 2048-token budget:
+REM   --reasoning %THINKING%  on/off, forced rather than auto-detected from the
 REM                           template (OmniCoder's template supports it)
-REM   --reasoning-budget 2048 real token cap; -1 (the default) is unrestricted
+REM   --reasoning-budget 2048 real token cap; -1 (the default) is unrestricted.
+REM                           Has no effect when THINKING=off
 REM   --reasoning-format deepseek
 REM                           thoughts go to `message.reasoning_content`, NOT
 REM                           `message.content`. This matters: content is what
@@ -50,4 +55,4 @@ REM                           default 'auto' is pinned here so a reasoning
 REM                           trace can never end up inside the emitted C++.
 REM If you change the budget, note that thinking is drawn from the SAME
 REM generation budget as the answer (config.py's LLAMACPP_MAX_TOKENS).
-start "" wt --title "llama.cpp Server" powershell -NoExit -Command "llama serve --model '%MODEL%' -ngl 999 -c 49152 -np 1 --reasoning on --reasoning-budget 2048 --reasoning-format deepseek"
+start "" wt --title "llama.cpp Server" powershell -NoExit -Command "llama serve --model '%MODEL%' -ngl 999 -c 49152 -np 1 --reasoning %THINKING% --reasoning-budget 2048 --reasoning-format deepseek"

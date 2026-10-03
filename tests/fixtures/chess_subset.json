@@ -1,0 +1,5371 @@
+{
+ "program": {
+  "name": "Chess.exe",
+  "path": "/F:/MyProjects/Semantic_Decompiler/TestBinaries/Chess.exe",
+  "format": "Portable Executable (PE)",
+  "sha256": "e14156626f67c0708cae019e2910d1aec6415c7e872a20b02410169bbfcfd91f",
+  "language": "x86:LE:64:default",
+  "compiler": "windows",
+  "image_base": "0x140000000",
+  "pointer_size": 8
+ },
+ "functions": [
+  {
+   "address": "0x140001460",
+   "name": "main",
+   "full_name": "main",
+   "namespace": "",
+   "namespace_is_class": false,
+   "name_source": "IMPORTED",
+   "signature_source": "IMPORTED",
+   "calling_convention": "__cdecl",
+   "comment": "",
+   "body_size": 84,
+   "decompiled": "\r\nint __cdecl main(int _Argc,char **_Argv,char **_Env)\r\n\r\n{\r\n  Engine local_a8 [152];\r\n  \r\n  __main();\r\n  Engine::Engine(local_a8);\r\n  Engine::GameLoop(local_a8);\r\n  Engine::~Engine(local_a8);\r\n  return 0;\r\n}\r\n\r\n",
+   "signature": "int __cdecl main(int _Argc,char **_Argv,char **_Env);",
+   "decompile_error": "",
+   "return_type": "int",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "_Argc",
+     "type": "int",
+     "storage": "ECX:4",
+     "is_this": false,
+     "hidden_return": false
+    },
+    {
+     "index": 1,
+     "name": "_Argv",
+     "type": "char * *",
+     "storage": "RDX:8",
+     "is_this": false,
+     "hidden_return": false
+    },
+    {
+     "index": 2,
+     "name": "_Env",
+     "type": "char * *",
+     "storage": "R8:8",
+     "is_this": false,
+     "hidden_return": false
+    }
+   ],
+   "locals": [
+    {
+     "name": "local_a8",
+     "type": "Engine[152]",
+     "storage": "Stack[-0xa8]:152"
+    }
+   ],
+   "field_accesses": [],
+   "arg_passes": [],
+   "assembly": [
+    "0x140001460: PUSH RBP",
+    "0x140001461: PUSH RBX",
+    "0x140001462: SUB RSP,0xb8",
+    "0x140001469: LEA RBP,[RSP + 0xb0]",
+    "0x140001471: CALL 0x140001650",
+    "0x140001476: LEA RAX,[RBP + -0x90]",
+    "0x14000147d: MOV RCX,RAX",
+    "0x140001480: CALL 0x140006560",
+    "0x140001485: LEA RAX,[RBP + -0x90]",
+    "0x14000148c: MOV RCX,RAX",
+    "0x14000148f: CALL 0x140006460",
+    "0x140001494: LEA RAX,[RBP + -0x90]",
+    "0x14000149b: MOV RCX,RAX",
+    "0x14000149e: CALL 0x1400065b0",
+    "0x1400014a3: MOV EAX,0x0",
+    "0x1400014a8: JMP 0x1400014c7",
+    "0x1400014c7: ADD RSP,0xb8",
+    "0x1400014ce: POP RBX",
+    "0x1400014cf: POP RBP",
+    "0x1400014d0: RET"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 4,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 0,
+    "returns": 1,
+    "instructions": 20,
+    "basic_blocks": 2
+   },
+   "callers": [
+    "0x1400011b0"
+   ],
+   "callees": [
+    "0x140001650",
+    "0x140006460",
+    "0x140006560",
+    "0x1400065b0"
+   ],
+   "calls": [
+    {
+     "address": "0x140001650",
+     "name": "__main",
+     "external": false
+    },
+    {
+     "address": "0x140006460",
+     "name": "Engine::GameLoop",
+     "external": false
+    },
+    {
+     "address": "0x140006560",
+     "name": "Engine::Engine",
+     "external": false
+    },
+    {
+     "address": "0x1400065b0",
+     "name": "Engine::~Engine",
+     "external": false
+    }
+   ],
+   "strings": [],
+   "globals": [],
+   "types": [
+    "Engine[152]",
+    "char * *",
+    "int"
+   ]
+  },
+  {
+   "address": "0x1400014e8",
+   "name": "operator.new",
+   "full_name": "operator.new",
+   "namespace": "",
+   "namespace_is_class": false,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__fastcall",
+   "comment": "operator new(unsigned long long)",
+   "body_size": 6,
+   "decompiled": "\r\n/* operator new(unsigned long long) */\r\n\r\nvoid * operator_new(ulonglong param_1)\r\n\r\n{\r\n  void *pvVar1;\r\n  \r\n                    /* WARNING: Could not recover jumptable at 0x0001400014e8. Too many branches */\r\n                    /* WARNING: Treating indirect jump as call */\r\n  pvVar1 = operator_new(param_1);\r\n  return pvVar1;\r\n}\r\n\r\n",
+   "signature": "void * operator.new(ulonglong param_1);",
+   "decompile_error": "",
+   "return_type": "void *",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "param_1",
+     "type": "ulonglong",
+     "storage": "RCX:8",
+     "is_this": false,
+     "hidden_return": false
+    }
+   ],
+   "locals": [
+    {
+     "name": "pvVar1",
+     "type": "void *",
+     "storage": "RAX:8"
+    }
+   ],
+   "field_accesses": [],
+   "arg_passes": [
+    {
+     "callee": "0x14000e440",
+     "arg": 0,
+     "param": 0,
+     "param_name": "param_1",
+     "offset": 0,
+     "at": "0x1400014e8"
+    }
+   ],
+   "assembly": [
+    "0x1400014e8: JMP qword ptr [0x14000e440]"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 1,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 0,
+    "returns": 1,
+    "instructions": 1,
+    "basic_blocks": 1
+   },
+   "callers": [
+    "0x140002a10",
+    "0x140002ec0",
+    "0x140006660"
+   ],
+   "callees": [],
+   "calls": [
+    {
+     "address": "",
+     "name": "LIBSTDC++-6.DLL::operator.new",
+     "external": true,
+     "library": "LIBSTDC++-6.DLL"
+    }
+   ],
+   "strings": [],
+   "globals": [],
+   "types": [
+    "ulonglong",
+    "void *"
+   ]
+  },
+  {
+   "address": "0x1400014f8",
+   "name": "operator<<",
+   "full_name": "std::operator<<",
+   "namespace": "std",
+   "namespace_is_class": false,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__fastcall",
+   "comment": "std::ostream& std::TEMPNAMEPLACEHOLDERVALUE(std::ostream&, std::string const&)",
+   "body_size": 6,
+   "decompiled": "\r\n/* std::ostream& std::TEMPNAMEPLACEHOLDERVALUE(std::ostream&, std::string const&) */\r\n\r\nostream * std::operator<<(ostream *param_1,string *param_2)\r\n\r\n{\r\n  ostream *poVar1;\r\n  \r\n                    /* WARNING: Could not recover jumptable at 0x0001400014f8. Too many branches */\r\n                    /* WARNING: Treating indirect jump as call */\r\n  poVar1 = std::operator<<(param_1,param_2);\r\n  return poVar1;\r\n}\r\n\r\n",
+   "signature": "ostream * std::operator<<(ostream *param_1,string *param_2);",
+   "decompile_error": "",
+   "return_type": "ostream *",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "param_1",
+     "type": "ostream *",
+     "storage": "RCX:8",
+     "is_this": false,
+     "hidden_return": false
+    },
+    {
+     "index": 1,
+     "name": "param_2",
+     "type": "string *",
+     "storage": "RDX:8",
+     "is_this": false,
+     "hidden_return": false
+    }
+   ],
+   "locals": [
+    {
+     "name": "poVar1",
+     "type": "ostream *",
+     "storage": "RAX:8"
+    }
+   ],
+   "field_accesses": [],
+   "arg_passes": [
+    {
+     "callee": "0x14000e420",
+     "arg": 0,
+     "param": 0,
+     "param_name": "param_1",
+     "offset": 0,
+     "at": "0x1400014f8"
+    },
+    {
+     "callee": "0x14000e420",
+     "arg": 1,
+     "param": 1,
+     "param_name": "param_2",
+     "offset": 0,
+     "at": "0x1400014f8"
+    }
+   ],
+   "assembly": [
+    "0x1400014f8: JMP qword ptr [0x14000e420]"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 1,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 0,
+    "returns": 1,
+    "instructions": 1,
+    "basic_blocks": 1
+   },
+   "callers": [
+    "0x140002f70",
+    "0x140005fb0"
+   ],
+   "callees": [],
+   "calls": [
+    {
+     "address": "",
+     "name": "LIBSTDC++-6.DLL::std::operator<<",
+     "external": true,
+     "library": "LIBSTDC++-6.DLL"
+    }
+   ],
+   "strings": [],
+   "globals": [],
+   "types": [
+    "ostream *",
+    "string *"
+   ]
+  },
+  {
+   "address": "0x140001500",
+   "name": "operator<<",
+   "full_name": "std::operator<<",
+   "namespace": "std",
+   "namespace_is_class": false,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__fastcall",
+   "comment": "std::ostream& std::TEMPNAMEPLACEHOLDERVALUE(std::ostream&, char const*)",
+   "body_size": 6,
+   "decompiled": "\r\n/* std::ostream& std::TEMPNAMEPLACEHOLDERVALUE(std::ostream&, char const*) */\r\n\r\nostream * std::operator<<(ostream *param_1,char *param_2)\r\n\r\n{\r\n  ostream *poVar1;\r\n  \r\n                    /* WARNING: Could not recover jumptable at 0x000140001500. Too many branches */\r\n                    /* WARNING: Treating indirect jump as call */\r\n  poVar1 = std::operator<<(param_1,param_2);\r\n  return poVar1;\r\n}\r\n\r\n",
+   "signature": "ostream * std::operator<<(ostream *param_1,char *param_2);",
+   "decompile_error": "",
+   "return_type": "ostream *",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "param_1",
+     "type": "ostream *",
+     "storage": "RCX:8",
+     "is_this": false,
+     "hidden_return": false
+    },
+    {
+     "index": 1,
+     "name": "param_2",
+     "type": "char *",
+     "storage": "RDX:8",
+     "is_this": false,
+     "hidden_return": false
+    }
+   ],
+   "locals": [
+    {
+     "name": "poVar1",
+     "type": "ostream *",
+     "storage": "RAX:8"
+    }
+   ],
+   "field_accesses": [],
+   "arg_passes": [
+    {
+     "callee": "0x14000e418",
+     "arg": 0,
+     "param": 0,
+     "param_name": "param_1",
+     "offset": 0,
+     "at": "0x140001500"
+    },
+    {
+     "callee": "0x14000e418",
+     "arg": 1,
+     "param": 1,
+     "param_name": "param_2",
+     "offset": 0,
+     "at": "0x140001500"
+    }
+   ],
+   "assembly": [
+    "0x140001500: JMP qword ptr [0x14000e418]"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 1,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 0,
+    "returns": 1,
+    "instructions": 1,
+    "basic_blocks": 1
+   },
+   "callers": [
+    "0x140002a10",
+    "0x140002f70",
+    "0x140005fb0",
+    "0x140006460",
+    "0x140006660"
+   ],
+   "callees": [],
+   "calls": [
+    {
+     "address": "",
+     "name": "LIBSTDC++-6.DLL::std::operator<<",
+     "external": true,
+     "library": "LIBSTDC++-6.DLL"
+    }
+   ],
+   "strings": [],
+   "globals": [],
+   "types": [
+    "char *",
+    "ostream *"
+   ]
+  },
+  {
+   "address": "0x140001568",
+   "name": "operator>>",
+   "full_name": "std::istream::operator>>",
+   "namespace": "std::istream",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "std::istream::TEMPNAMEPLACEHOLDERVALUE(int&)",
+   "body_size": 6,
+   "decompiled": "\r\n/* std::istream::TEMPNAMEPLACEHOLDERVALUE(int&) */\r\n\r\nvoid __thiscall std::istream::operator>>(istream *this,int *param_1)\r\n\r\n{\r\n                    /* WARNING: Could not recover jumptable at 0x000140001568. Too many branches */\r\n                    /* WARNING: Treating indirect jump as call */\r\n  std::istream::operator>>(this,param_1);\r\n  return;\r\n}\r\n\r\n",
+   "signature": "void __thiscall std::istream::operator>>(istream *this,int *param_1);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "istream *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    },
+    {
+     "index": 1,
+     "name": "param_1",
+     "type": "int *",
+     "storage": "RDX:8",
+     "is_this": false,
+     "hidden_return": false
+    }
+   ],
+   "locals": [],
+   "field_accesses": [],
+   "arg_passes": [
+    {
+     "callee": "0x14000e3a0",
+     "arg": 0,
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "at": "0x140001568"
+    },
+    {
+     "callee": "0x14000e3a0",
+     "arg": 1,
+     "param": 1,
+     "param_name": "param_1",
+     "offset": 0,
+     "at": "0x140001568"
+    }
+   ],
+   "assembly": [
+    "0x140001568: JMP qword ptr [0x14000e3a0]"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 1,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 0,
+    "returns": 1,
+    "instructions": 1,
+    "basic_blocks": 1
+   },
+   "callers": [
+    "0x140002a10",
+    "0x140005fb0",
+    "0x140006660"
+   ],
+   "callees": [],
+   "calls": [
+    {
+     "address": "",
+     "name": "LIBSTDC++-6.DLL::std::istream::operator>>",
+     "external": true,
+     "library": "LIBSTDC++-6.DLL"
+    }
+   ],
+   "strings": [],
+   "globals": [],
+   "types": [
+    "int *",
+    "istream *",
+    "void"
+   ]
+  },
+  {
+   "address": "0x140001650",
+   "name": "__main",
+   "full_name": "__main",
+   "namespace": "",
+   "namespace_is_class": false,
+   "name_source": "IMPORTED",
+   "signature_source": "IMPORTED",
+   "calling_convention": "unknown",
+   "comment": "",
+   "body_size": 26,
+   "decompiled": "\r\n/* WARNING: Unknown calling convention -- yet parameter storage is locked */\r\n\r\nvoid __main(void)\r\n\r\n{\r\n  if (initialized != 0) {\r\n    return;\r\n  }\r\n  initialized = 1;\r\n  __do_global_ctors();\r\n  return;\r\n}\r\n\r\n",
+   "signature": "void __main(void);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [],
+   "locals": [],
+   "field_accesses": [],
+   "arg_passes": [],
+   "assembly": [
+    "0x140001650: MOV EAX,dword ptr [0x14000d030]",
+    "0x140001656: TEST EAX,EAX",
+    "0x140001658: JZ 0x140001660",
+    "0x14000165a: RET",
+    "0x140001660: MOV dword ptr [0x14000d030],0x1",
+    "0x14000166a: JMP 0x1400015d0"
+   ],
+   "stats": {
+    "cbranches": 1,
+    "switches": 0,
+    "calls": 1,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 0,
+    "returns": 2,
+    "instructions": 6,
+    "basic_blocks": 3
+   },
+   "callers": [
+    "0x1400011b0",
+    "0x140001460"
+   ],
+   "callees": [
+    "0x1400015d0"
+   ],
+   "calls": [
+    {
+     "address": "0x1400015d0",
+     "name": "__do_global_ctors",
+     "external": false
+    }
+   ],
+   "strings": [],
+   "globals": [
+    {
+     "address": "0x14000d030",
+     "name": "initialized",
+     "type": "int",
+     "external": false,
+     "read": true,
+     "write": true
+    }
+   ],
+   "types": [
+    "void"
+   ]
+  },
+  {
+   "address": "0x1400028b0",
+   "name": "King",
+   "full_name": "King::King",
+   "namespace": "King",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "King::King()",
+   "body_size": 53,
+   "decompiled": "\r\n/* King::King() */\r\n\r\nvoid __thiscall King::King(King *this)\r\n\r\n{\r\n  Piece::Piece((Piece *)this);\r\n  *(undefined ***)this = &PTR_Draw_abi_cxx11__140009a60;\r\n  this[0x10] = (King)0x1;\r\n  return;\r\n}\r\n\r\n",
+   "signature": "void __thiscall King::King(King *this);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "King *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    }
+   ],
+   "locals": [],
+   "field_accesses": [
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "size": 8,
+     "access": "write",
+     "at": "0x1400028d3"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 16,
+     "size": 1,
+     "access": "write",
+     "at": "0x1400028da"
+    }
+   ],
+   "arg_passes": [
+    {
+     "callee": "0x140005df0",
+     "arg": 0,
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "at": "0x1400028c3"
+    }
+   ],
+   "assembly": [
+    "0x1400028b0: PUSH RBP",
+    "0x1400028b1: MOV RBP,RSP",
+    "0x1400028b4: SUB RSP,0x20",
+    "0x1400028b8: MOV qword ptr [RBP + 0x10],RCX",
+    "0x1400028bc: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400028c0: MOV RCX,RAX",
+    "0x1400028c3: CALL 0x140005df0",
+    "0x1400028c8: LEA RDX,[0x140009a60]",
+    "0x1400028cf: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400028d3: MOV qword ptr [RAX],RDX",
+    "0x1400028d6: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400028da: MOV byte ptr [RAX + 0x10],0x1",
+    "0x1400028de: NOP",
+    "0x1400028df: ADD RSP,0x20",
+    "0x1400028e3: POP RBP",
+    "0x1400028e4: RET"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 1,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 2,
+    "returns": 1,
+    "instructions": 16,
+    "basic_blocks": 1
+   },
+   "callers": [
+    "0x140006b10"
+   ],
+   "callees": [
+    "0x140005df0"
+   ],
+   "calls": [
+    {
+     "address": "0x140005df0",
+     "name": "Piece::Piece",
+     "external": false
+    }
+   ],
+   "strings": [],
+   "globals": [
+    {
+     "address": "0x140009a60",
+     "name": "PTR_Draw[abi:cxx11]_140009a60",
+     "type": "pointer",
+     "external": false,
+     "read": true,
+     "write": false
+    }
+   ],
+   "types": [
+    "King *",
+    "void"
+   ]
+  },
+  {
+   "address": "0x1400029a0",
+   "name": "Draw[abi:cxx11]",
+   "full_name": "Rook::Draw[abi:cxx11]",
+   "namespace": "Rook",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Rook::Draw[abi:cxx11]()",
+   "body_size": 81,
+   "decompiled": "\r\n/* Rook::Draw[abi:cxx11]() */\r\n\r\nRook * __thiscall Rook::Draw_abi_cxx11_(Rook *this)\r\n\r\n{\r\n  allocator local_21;\r\n  allocator *local_20;\r\n  \r\n  local_20 = &local_21;\r\n  std::string::string<std::allocator<char>>((string *)this,\"|\",&local_21);\r\n  std::__new_allocator<char>::~__new_allocator();\r\n  return this;\r\n}\r\n\r\n",
+   "signature": "Rook * __thiscall Rook::Draw[abi:cxx11](Rook *this);",
+   "decompile_error": "",
+   "return_type": "Rook *",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Rook *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    }
+   ],
+   "locals": [
+    {
+     "name": "local_21",
+     "type": "allocator",
+     "storage": "Stack[-0x21]:1"
+    },
+    {
+     "name": "local_20",
+     "type": "allocator *",
+     "storage": "Stack[-0x20]:8"
+    }
+   ],
+   "field_accesses": [],
+   "arg_passes": [
+    {
+     "callee": "0x1400070d0",
+     "arg": 0,
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "at": "0x1400029d2"
+    }
+   ],
+   "assembly": [
+    "0x1400029a0: PUSH RBP",
+    "0x1400029a1: PUSH RBX",
+    "0x1400029a2: SUB RSP,0x38",
+    "0x1400029a6: LEA RBP,[RSP + 0x30]",
+    "0x1400029ab: MOV qword ptr [RBP + 0x20],RCX",
+    "0x1400029af: MOV qword ptr [RBP + 0x28],RDX",
+    "0x1400029b3: LEA RAX,[RBP + -0x9]",
+    "0x1400029b7: MOV qword ptr [RBP + -0x8],RAX",
+    "0x1400029bb: NOP",
+    "0x1400029bc: NOP",
+    "0x1400029bd: LEA RDX,[RBP + -0x9]",
+    "0x1400029c1: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400029c5: MOV R8,RDX",
+    "0x1400029c8: LEA RDX,[0x140009002]",
+    "0x1400029cf: MOV RCX,RAX",
+    "0x1400029d2: CALL 0x1400070d0",
+    "0x1400029d7: LEA RAX,[RBP + -0x9]",
+    "0x1400029db: MOV RCX,RAX",
+    "0x1400029de: CALL 0x140006f80",
+    "0x1400029e3: NOP",
+    "0x1400029e4: JMP 0x140002a01",
+    "0x140002a01: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002a05: ADD RSP,0x38",
+    "0x140002a09: POP RBX",
+    "0x140002a0a: POP RBP",
+    "0x140002a0b: RET"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 2,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 0,
+    "returns": 1,
+    "instructions": 26,
+    "basic_blocks": 2
+   },
+   "callers": [],
+   "callees": [
+    "0x140006f80",
+    "0x1400070d0"
+   ],
+   "calls": [
+    {
+     "address": "0x140006f80",
+     "name": "std::__new_allocator<char>::~__new_allocator",
+     "external": false
+    },
+    {
+     "address": "0x1400070d0",
+     "name": "std::string::string<std::allocator<char>>",
+     "external": false
+    }
+   ],
+   "strings": [],
+   "globals": [
+    {
+     "address": "0x140009002",
+     "name": "DAT_140009002",
+     "type": "undefined",
+     "external": false,
+     "read": true,
+     "write": false
+    }
+   ],
+   "types": [
+    "Rook *",
+    "allocator",
+    "allocator *"
+   ]
+  },
+  {
+   "address": "0x140002a10",
+   "name": "Move",
+   "full_name": "Rook::Move",
+   "namespace": "Rook",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Rook::Move(int, int, Board&)",
+   "body_size": 1126,
+   "decompiled": "\r\n/* Rook::Move(int, int, Board&) */\r\n\r\nundefined8 __thiscall Rook::Move(Rook *this,int param_1,int param_2,longlong *param_3)\r\n\r\n{\r\n  bool bVar1;\r\n  undefined8 uVar2;\r\n  Piece *pPVar3;\r\n  int local_24;\r\n  int local_20;\r\n  \r\n  bVar1 = true;\r\n  std::operator<<((ostream *)&_ZSt4cout,\"Rook!\\nWhere do you want to go?\\n\");\r\n  std::istream::operator>>((istream *)&_ZSt3cin,(int *)(this + 8));\r\n  std::istream::operator>>((istream *)&_ZSt3cin,(int *)(this + 0xc));\r\n  *(int *)(this + 8) = *(int *)(this + 8) + -1;\r\n  *(int *)(this + 0xc) = *(int *)(this + 0xc) + -1;\r\n  if (param_1 == *(int *)(this + 8)) {\r\n    for (local_20 = param_2 + 1; local_20 < *(int *)(this + 0xc); local_20 = local_20 + 1) {\r\n      if (0 < *(int *)(*(longlong *)\r\n                        ((longlong)*(int *)(this + 8) * 8 +\r\n                        *(longlong *)(*param_3 + (longlong)local_20 * 8)) + 0x14)) {\r\n        bVar1 = false;\r\n        break;\r\n      }\r\n    }\r\n  }\r\n  else if (param_2 == *(int *)(this + 0xc)) {\r\n    for (local_24 = param_1 + 1; local_24 < *(int *)(this + 8); local_24 = local_24 + 1) {\r\n      if (0 < *(int *)(*(longlong *)\r\n                        (*(longlong *)((longlong)*(int *)(this + 0xc) * 8 + *param_3) +\r\n                        (longlong)local_24 * 8) + 0x14)) {\r\n        bVar1 = false;\r\n        break;\r\n      }\r\n    }\r\n  }\r\n  if (bVar1) {\r\n    if ((param_2 == *(int *)(this + 0xc)) == (param_1 == *(int *)(this + 8))) {\r\n      std::operator<<((ostream *)&_ZSt4cout,\"Please choose the right move for your Piece!\\n\");\r\n      system(\"PAUSE\");\r\n      uVar2 = 0;\r\n    }\r\n    else if (*(int *)(*(longlong *)\r\n                       (*(longlong *)(*param_3 + (longlong)param_2 * 8) + (longlong)param_1 * 8) +\r\n                     0x14) == 1) {\r\n      if (*(int *)(*(longlong *)\r\n                    ((longlong)*(int *)(this + 8) * 8 +\r\n                    *(longlong *)((longlong)*(int *)(this + 0xc) * 8 + *param_3)) + 0x14) == 1) {\r\n        std::operator<<((ostream *)&_ZSt4cout,\"This is your own piece!\\n\");\r\n        system(\"PAUSE\");\r\n        uVar2 = 0;\r\n      }\r\n      else {\r\n        *(undefined8 *)\r\n         (*(longlong *)((longlong)*(int *)(this + 0xc) * 8 + *param_3) +\r\n         (longlong)*(int *)(this + 8) * 8) =\r\n             *(undefined8 *)\r\n              (*(longlong *)(*param_3 + (longlong)param_2 * 8) + (longlong)param_1 * 8);\r\n        pPVar3 = (Piece *)operator_new(0x18);\r\n        Piece::Piece(pPVar3);\r\n        *(Piece **)(*(longlong *)(*param_3 + (longlong)param_2 * 8) + (longlong)param_1 * 8) =\r\n             pPVar3;\r\n        uVar2 = 1;\r\n      }\r\n    }\r\n    else if (*(int *)(*(longlong *)\r\n                       (*(longlong *)(*param_3 + (longlong)param_2 * 8) + (longlong)param_1 * 8) +\r\n                     0x14) == 2) {\r\n      if (*(int *)(*(longlong *)\r\n                    ((longlong)*(int *)(this + 8) * 8 +\r\n                    *(longlong *)((longlong)*(int *)(this + 0xc) * 8 + *param_3)) + 0x14) == 2) {\r\n        std::operator<<((ostream *)&_ZSt4cout,\"This is your own piece!\\n\");\r\n        system(\"PAUSE\");\r\n        uVar2 = 0;\r\n      }\r\n      else {\r\n        *(undefined8 *)\r\n         (*(longlong *)((longlong)*(int *)(this + 0xc) * 8 + *param_3) +\r\n         (longlong)*(int *)(this + 8) * 8) =\r\n             *(undefined8 *)\r\n              (*(longlong *)(*param_3 + (longlong)param_2 * 8) + (longlong)param_1 * 8);\r\n        pPVar3 = (Piece *)operator_new(0x18);\r\n        Piece::Piece(pPVar3);\r\n        *(Piece **)(*(longlong *)(*param_3 + (longlong)param_2 * 8) + (longlong)param_1 * 8) =\r\n             pPVar3;\r\n        uVar2 = 1;\r\n      }\r\n    }\r\n    else {\r\n      uVar2 = 0;\r\n    }\r\n  }\r\n  else {\r\n    std::operator<<((ostream *)&_ZSt4cout,\"Path is blocked by another Piece!\\n\");\r\n    system(\"PAUSE\");\r\n    uVar2 = 0;\r\n  }\r\n  return uVar2;\r\n}\r\n\r\n",
+   "signature": "undefined8 __thiscall Rook::Move(Rook *this,int param_1,int param_2,longlong *param_3);",
+   "decompile_error": "",
+   "return_type": "undefined8",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Rook *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    },
+    {
+     "index": 1,
+     "name": "param_1",
+     "type": "int",
+     "storage": "EDX:4",
+     "is_this": false,
+     "hidden_return": false
+    },
+    {
+     "index": 2,
+     "name": "param_2",
+     "type": "int",
+     "storage": "R8D:4",
+     "is_this": false,
+     "hidden_return": false
+    },
+    {
+     "index": 3,
+     "name": "param_3",
+     "type": "longlong *",
+     "storage": "R9:8",
+     "is_this": false,
+     "hidden_return": false
+    }
+   ],
+   "locals": [
+    {
+     "name": "uVar2",
+     "type": "undefined8",
+     "storage": "RAX:8"
+    },
+    {
+     "name": "pPVar3",
+     "type": "Piece *",
+     "storage": "RAX:8"
+    },
+    {
+     "name": "bVar1",
+     "type": "bool",
+     "storage": "unique:10000149:1"
+    },
+    {
+     "name": "local_24",
+     "type": "int",
+     "storage": "Stack[-0x24]:4"
+    },
+    {
+     "name": "local_20",
+     "type": "int",
+     "storage": "Stack[-0x20]:4"
+    }
+   ],
+   "field_accesses": [
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002a83"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "write",
+     "at": "0x140002a8d"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002a94"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "write",
+     "at": "0x140002a9e"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002aa5"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002abc"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002ad3"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002af7"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002b05"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002b1c"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002b23"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002b57"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002b63"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002b73"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002c07"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002c3a"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002c41"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002c54"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002ca1"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002cc6"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002ccd"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002ce0"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002d0b"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002d3c"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002d6f"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002d76"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002d89"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002dd6"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002dfb"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002e02"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140002e15"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002e40"
+    }
+   ],
+   "arg_passes": [
+    {
+     "callee": "0x140001568",
+     "arg": 1,
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "at": "0x140002a60"
+    },
+    {
+     "callee": "0x140001568",
+     "arg": 1,
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "at": "0x140002a7a"
+    }
+   ],
+   "assembly": [
+    "0x140002a10: PUSH RBP",
+    "0x140002a11: PUSH RBX",
+    "0x140002a12: SUB RSP,0x38",
+    "0x140002a16: LEA RBP,[RSP + 0x30]",
+    "0x140002a1b: MOV qword ptr [RBP + 0x20],RCX",
+    "0x140002a1f: MOV dword ptr [RBP + 0x28],EDX",
+    "0x140002a22: MOV dword ptr [RBP + 0x30],R8D",
+    "0x140002a26: MOV qword ptr [RBP + 0x38],R9",
+    "0x140002a2a: MOV byte ptr [RBP + -0x1],0x0",
+    "0x140002a2e: MOV byte ptr [RBP + -0x2],0x1",
+    "0x140002a32: LEA RAX,[0x140009008]",
+    "0x140002a39: MOV RDX,RAX",
+    "0x140002a3c: MOV RAX,qword ptr [0x140009770]",
+    "0x140002a43: MOV RCX,RAX",
+    "0x140002a46: CALL 0x140001500",
+    "0x140002a4b: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002a4f: ADD RAX,0x8",
+    "0x140002a53: MOV RDX,RAX",
+    "0x140002a56: MOV RAX,qword ptr [0x140009760]",
+    "0x140002a5d: MOV RCX,RAX",
+    "0x140002a60: CALL 0x140001568",
+    "0x140002a65: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002a69: ADD RAX,0xc",
+    "0x140002a6d: MOV RDX,RAX",
+    "0x140002a70: MOV RAX,qword ptr [0x140009760]",
+    "0x140002a77: MOV RCX,RAX",
+    "0x140002a7a: CALL 0x140001568",
+    "0x140002a7f: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002a83: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x140002a86: LEA EDX,[RAX + -0x1]",
+    "0x140002a89: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002a8d: MOV dword ptr [RAX + 0x8],EDX",
+    "0x140002a90: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002a94: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x140002a97: LEA EDX,[RAX + -0x1]",
+    "0x140002a9a: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002a9e: MOV dword ptr [RAX + 0xc],EDX",
+    "0x140002aa1: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002aa5: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x140002aa8: CMP dword ptr [RBP + 0x28],EAX",
+    "0x140002aab: JNZ 0x140002b01",
+    "0x140002aad: MOV EAX,dword ptr [RBP + 0x30]",
+    "0x140002ab0: ADD EAX,0x1",
+    "0x140002ab3: MOV dword ptr [RBP + -0x8],EAX",
+    "0x140002ab6: JMP 0x140002af3",
+    "0x140002ab8: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140002abc: MOV RAX,qword ptr [RAX]",
+    "0x140002abf: MOV EDX,dword ptr [RBP + -0x8]",
+    "0x140002ac2: MOVSXD RDX,EDX",
+    "0x140002ac5: SHL RDX,0x3",
+    "0x140002ac9: ADD RAX,RDX",
+    "0x140002acc: MOV RDX,qword ptr [RAX]",
+    "0x140002acf: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002ad3: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x140002ad6: CDQE",
+    "0x140002ad8: SHL RAX,0x3",
+    "0x140002adc: ADD RAX,RDX",
+    "0x140002adf: MOV RAX,qword ptr [RAX]",
+    "0x140002ae2: MOV EAX,dword ptr [RAX + 0x14]",
+    "0x140002ae5: TEST EAX,EAX",
+    "0x140002ae7: JLE 0x140002aef",
+    "0x140002ae9: MOV byte ptr [RBP + -0x2],0x0",
+    "0x140002aed: JMP 0x140002b5f",
+    "0x140002aef: ADD dword ptr [RBP + -0x8],0x1",
+    "0x140002af3: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002af7: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x140002afa: CMP dword ptr [RBP + -0x8],EAX",
+    "0x140002afd: JL 0x140002ab8",
+    "0x140002aff: JMP 0x140002b5f",
+    "0x140002b01: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002b05: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x140002b08: CMP dword ptr [RBP + 0x30],EAX",
+    "0x140002b0b: JNZ 0x140002b5f",
+    "0x140002b0d: MOV EAX,dword ptr [RBP + 0x28]",
+    "0x140002b10: ADD EAX,0x1",
+    "0x140002b13: MOV dword ptr [RBP + -0xc],EAX",
+    "0x140002b16: JMP 0x140002b53",
+    "0x140002b18: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140002b1c: MOV RDX,qword ptr [RAX]",
+    "0x140002b1f: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002b23: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x140002b26: CDQE",
+    "0x140002b28: SHL RAX,0x3",
+    "0x140002b2c: ADD RAX,RDX",
+    "0x140002b2f: MOV RAX,qword ptr [RAX]",
+    "0x140002b32: MOV EDX,dword ptr [RBP + -0xc]",
+    "0x140002b35: MOVSXD RDX,EDX",
+    "0x140002b38: SHL RDX,0x3",
+    "0x140002b3c: ADD RAX,RDX",
+    "0x140002b3f: MOV RAX,qword ptr [RAX]",
+    "0x140002b42: MOV EAX,dword ptr [RAX + 0x14]",
+    "0x140002b45: TEST EAX,EAX",
+    "0x140002b47: JLE 0x140002b4f",
+    "0x140002b49: MOV byte ptr [RBP + -0x2],0x0",
+    "0x140002b4d: JMP 0x140002b5f",
+    "0x140002b4f: ADD dword ptr [RBP + -0xc],0x1",
+    "0x140002b53: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002b57: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x140002b5a: CMP dword ptr [RBP + -0xc],EAX",
+    "0x140002b5d: JL 0x140002b18",
+    "0x140002b5f: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002b63: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x140002b66: CMP dword ptr [RBP + 0x28],EAX",
+    "0x140002b69: SETZ AL",
+    "0x140002b6c: MOVZX EDX,AL",
+    "0x140002b6f: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002b73: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x140002b76: CMP dword ptr [RBP + 0x30],EAX",
+    "0x140002b79: SETZ AL",
+    "0x140002b7c: MOVZX EAX,AL",
+    "0x140002b7f: XOR EAX,EDX",
+    "0x140002b81: TEST EAX,EAX",
+    "0x140002b83: JZ 0x140002b89",
+    "0x140002b85: MOV byte ptr [RBP + -0x1],0x1",
+    "0x140002b89: MOVZX EAX,byte ptr [RBP + -0x2]",
+    "0x140002b8d: XOR EAX,0x1",
+    "0x140002b90: TEST AL,AL",
+    "0x140002b92: JZ 0x140002bc6",
+    "0x140002b94: LEA RAX,[0x140009028]",
+    "0x140002b9b: MOV RDX,RAX",
+    "0x140002b9e: MOV RAX,qword ptr [0x140009770]",
+    "0x140002ba5: MOV RCX,RAX",
+    "0x140002ba8: CALL 0x140001500",
+    "0x140002bad: LEA RAX,[0x14000904b]",
+    "0x140002bb4: MOV RCX,RAX",
+    "0x140002bb7: CALL 0x1400027e0",
+    "0x140002bbc: MOV EAX,0x0",
+    "0x140002bc1: JMP 0x140002e6f",
+    "0x140002bc6: MOVZX EAX,byte ptr [RBP + -0x1]",
+    "0x140002bca: XOR EAX,0x1",
+    "0x140002bcd: TEST AL,AL",
+    "0x140002bcf: JZ 0x140002c03",
+    "0x140002bd1: LEA RAX,[0x140009058]",
+    "0x140002bd8: MOV RDX,RAX",
+    "0x140002bdb: MOV RAX,qword ptr [0x140009770]",
+    "0x140002be2: MOV RCX,RAX",
+    "0x140002be5: CALL 0x140001500",
+    "0x140002bea: LEA RAX,[0x14000904b]",
+    "0x140002bf1: MOV RCX,RAX",
+    "0x140002bf4: CALL 0x1400027e0",
+    "0x140002bf9: MOV EAX,0x0",
+    "0x140002bfe: JMP 0x140002e6f",
+    "0x140002c03: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140002c07: MOV RAX,qword ptr [RAX]",
+    "0x140002c0a: MOV EDX,dword ptr [RBP + 0x30]",
+    "0x140002c0d: MOVSXD RDX,EDX",
+    "0x140002c10: SHL RDX,0x3",
+    "0x140002c14: ADD RAX,RDX",
+    "0x140002c17: MOV RAX,qword ptr [RAX]",
+    "0x140002c1a: MOV EDX,dword ptr [RBP + 0x28]",
+    "0x140002c1d: MOVSXD RDX,EDX",
+    "0x140002c20: SHL RDX,0x3",
+    "0x140002c24: ADD RAX,RDX",
+    "0x140002c27: MOV RAX,qword ptr [RAX]",
+    "0x140002c2a: MOV EAX,dword ptr [RAX + 0x14]",
+    "0x140002c2d: CMP EAX,0x1",
+    "0x140002c30: JNZ 0x140002d38",
+    "0x140002c36: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140002c3a: MOV RDX,qword ptr [RAX]",
+    "0x140002c3d: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002c41: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x140002c44: CDQE",
+    "0x140002c46: SHL RAX,0x3",
+    "0x140002c4a: ADD RAX,RDX",
+    "0x140002c4d: MOV RDX,qword ptr [RAX]",
+    "0x140002c50: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002c54: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x140002c57: CDQE",
+    "0x140002c59: SHL RAX,0x3",
+    "0x140002c5d: ADD RAX,RDX",
+    "0x140002c60: MOV RAX,qword ptr [RAX]",
+    "0x140002c63: MOV EAX,dword ptr [RAX + 0x14]",
+    "0x140002c66: CMP EAX,0x1",
+    "0x140002c69: JNZ 0x140002c9d",
+    "0x140002c6b: LEA RAX,[0x140009086]",
+    "0x140002c72: MOV RDX,RAX",
+    "0x140002c75: MOV RAX,qword ptr [0x140009770]",
+    "0x140002c7c: MOV RCX,RAX",
+    "0x140002c7f: CALL 0x140001500",
+    "0x140002c84: LEA RAX,[0x14000904b]",
+    "0x140002c8b: MOV RCX,RAX",
+    "0x140002c8e: CALL 0x1400027e0",
+    "0x140002c93: MOV EAX,0x0",
+    "0x140002c98: JMP 0x140002e6f",
+    "0x140002c9d: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140002ca1: MOV RAX,qword ptr [RAX]",
+    "0x140002ca4: MOV EDX,dword ptr [RBP + 0x30]",
+    "0x140002ca7: MOVSXD RDX,EDX",
+    "0x140002caa: SHL RDX,0x3",
+    "0x140002cae: ADD RAX,RDX",
+    "0x140002cb1: MOV RAX,qword ptr [RAX]",
+    "0x140002cb4: MOV EDX,dword ptr [RBP + 0x28]",
+    "0x140002cb7: MOVSXD RDX,EDX",
+    "0x140002cba: SHL RDX,0x3",
+    "0x140002cbe: LEA RCX,[RAX + RDX*0x1]",
+    "0x140002cc2: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140002cc6: MOV RDX,qword ptr [RAX]",
+    "0x140002cc9: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002ccd: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x140002cd0: CDQE",
+    "0x140002cd2: SHL RAX,0x3",
+    "0x140002cd6: ADD RAX,RDX",
+    "0x140002cd9: MOV RDX,qword ptr [RAX]",
+    "0x140002cdc: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002ce0: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x140002ce3: CDQE",
+    "0x140002ce5: SHL RAX,0x3",
+    "0x140002ce9: ADD RDX,RAX",
+    "0x140002cec: MOV RAX,qword ptr [RCX]",
+    "0x140002cef: MOV qword ptr [RDX],RAX",
+    "0x140002cf2: MOV ECX,0x18",
+    "0x140002cf7: CALL 0x1400014e8",
+    "0x140002cfc: MOV RBX,RAX",
+    "0x140002cff: MOV RCX,RBX",
+    "0x140002d02: CALL 0x140005dc0",
+    "0x140002d07: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140002d0b: MOV RAX,qword ptr [RAX]",
+    "0x140002d0e: MOV EDX,dword ptr [RBP + 0x30]",
+    "0x140002d11: MOVSXD RDX,EDX",
+    "0x140002d14: SHL RDX,0x3",
+    "0x140002d18: ADD RAX,RDX",
+    "0x140002d1b: MOV RAX,qword ptr [RAX]",
+    "0x140002d1e: MOV EDX,dword ptr [RBP + 0x28]",
+    "0x140002d21: MOVSXD RDX,EDX",
+    "0x140002d24: SHL RDX,0x3",
+    "0x140002d28: ADD RAX,RDX",
+    "0x140002d2b: MOV qword ptr [RAX],RBX",
+    "0x140002d2e: MOV EAX,0x1",
+    "0x140002d33: JMP 0x140002e6f",
+    "0x140002d38: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140002d3c: MOV RAX,qword ptr [RAX]",
+    "0x140002d3f: MOV EDX,dword ptr [RBP + 0x30]",
+    "0x140002d42: MOVSXD RDX,EDX",
+    "0x140002d45: SHL RDX,0x3",
+    "0x140002d49: ADD RAX,RDX",
+    "0x140002d4c: MOV RAX,qword ptr [RAX]",
+    "0x140002d4f: MOV EDX,dword ptr [RBP + 0x28]",
+    "0x140002d52: MOVSXD RDX,EDX",
+    "0x140002d55: SHL RDX,0x3",
+    "0x140002d59: ADD RAX,RDX",
+    "0x140002d5c: MOV RAX,qword ptr [RAX]",
+    "0x140002d5f: MOV EAX,dword ptr [RAX + 0x14]",
+    "0x140002d62: CMP EAX,0x2",
+    "0x140002d65: JNZ 0x140002e6a",
+    "0x140002d6b: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140002d6f: MOV RDX,qword ptr [RAX]",
+    "0x140002d72: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002d76: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x140002d79: CDQE",
+    "0x140002d7b: SHL RAX,0x3",
+    "0x140002d7f: ADD RAX,RDX",
+    "0x140002d82: MOV RDX,qword ptr [RAX]",
+    "0x140002d85: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002d89: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x140002d8c: CDQE",
+    "0x140002d8e: SHL RAX,0x3",
+    "0x140002d92: ADD RAX,RDX",
+    "0x140002d95: MOV RAX,qword ptr [RAX]",
+    "0x140002d98: MOV EAX,dword ptr [RAX + 0x14]",
+    "0x140002d9b: CMP EAX,0x2",
+    "0x140002d9e: JNZ 0x140002dd2",
+    "0x140002da0: LEA RAX,[0x140009086]",
+    "0x140002da7: MOV RDX,RAX",
+    "0x140002daa: MOV RAX,qword ptr [0x140009770]",
+    "0x140002db1: MOV RCX,RAX",
+    "0x140002db4: CALL 0x140001500",
+    "0x140002db9: LEA RAX,[0x14000904b]",
+    "0x140002dc0: MOV RCX,RAX",
+    "0x140002dc3: CALL 0x1400027e0",
+    "0x140002dc8: MOV EAX,0x0",
+    "0x140002dcd: JMP 0x140002e6f",
+    "0x140002dd2: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140002dd6: MOV RAX,qword ptr [RAX]",
+    "0x140002dd9: MOV EDX,dword ptr [RBP + 0x30]",
+    "0x140002ddc: MOVSXD RDX,EDX",
+    "0x140002ddf: SHL RDX,0x3",
+    "0x140002de3: ADD RAX,RDX",
+    "0x140002de6: MOV RAX,qword ptr [RAX]",
+    "0x140002de9: MOV EDX,dword ptr [RBP + 0x28]",
+    "0x140002dec: MOVSXD RDX,EDX",
+    "0x140002def: SHL RDX,0x3",
+    "0x140002df3: LEA RCX,[RAX + RDX*0x1]",
+    "0x140002df7: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140002dfb: MOV RDX,qword ptr [RAX]",
+    "0x140002dfe: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002e02: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x140002e05: CDQE",
+    "0x140002e07: SHL RAX,0x3",
+    "0x140002e0b: ADD RAX,RDX",
+    "0x140002e0e: MOV RDX,qword ptr [RAX]",
+    "0x140002e11: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002e15: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x140002e18: CDQE",
+    "0x140002e1a: SHL RAX,0x3",
+    "0x140002e1e: ADD RDX,RAX",
+    "0x140002e21: MOV RAX,qword ptr [RCX]",
+    "0x140002e24: MOV qword ptr [RDX],RAX",
+    "0x140002e27: MOV ECX,0x18",
+    "0x140002e2c: CALL 0x1400014e8",
+    "0x140002e31: MOV RBX,RAX",
+    "0x140002e34: MOV RCX,RBX",
+    "0x140002e37: CALL 0x140005dc0",
+    "0x140002e3c: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140002e40: MOV RAX,qword ptr [RAX]",
+    "0x140002e43: MOV EDX,dword ptr [RBP + 0x30]",
+    "0x140002e46: MOVSXD RDX,EDX",
+    "0x140002e49: SHL RDX,0x3",
+    "0x140002e4d: ADD RAX,RDX",
+    "0x140002e50: MOV RAX,qword ptr [RAX]",
+    "0x140002e53: MOV EDX,dword ptr [RBP + 0x28]",
+    "0x140002e56: MOVSXD RDX,EDX",
+    "0x140002e59: SHL RDX,0x3",
+    "0x140002e5d: ADD RAX,RDX",
+    "0x140002e60: MOV qword ptr [RAX],RBX",
+    "0x140002e63: MOV EAX,0x1",
+    "0x140002e68: JMP 0x140002e6f",
+    "0x140002e6a: MOV EAX,0x0",
+    "0x140002e6f: ADD RSP,0x38",
+    "0x140002e73: POP RBX",
+    "0x140002e74: POP RBP",
+    "0x140002e75: RET"
+   ],
+   "stats": {
+    "cbranches": 12,
+    "switches": 0,
+    "calls": 15,
+    "indirect_calls": 0,
+    "loads": 56,
+    "stores": 6,
+    "returns": 1,
+    "instructions": 321,
+    "basic_blocks": 29
+   },
+   "callers": [],
+   "callees": [
+    "0x1400014e8",
+    "0x140001500",
+    "0x140001568",
+    "0x140005dc0"
+   ],
+   "calls": [
+    {
+     "address": "0x1400014e8",
+     "name": "operator.new",
+     "external": false
+    },
+    {
+     "address": "0x140001500",
+     "name": "std::operator<<",
+     "external": false
+    },
+    {
+     "address": "0x140001568",
+     "name": "std::istream::operator>>",
+     "external": false
+    },
+    {
+     "address": "0x140005dc0",
+     "name": "Piece::Piece",
+     "external": false
+    },
+    {
+     "address": "",
+     "name": "MSVCRT.DLL::system",
+     "external": true,
+     "library": "MSVCRT.DLL"
+    }
+   ],
+   "strings": [
+    "Rook!\nWhere do you want to go?\n",
+    "Path is blocked by another Piece!\n",
+    "PAUSE",
+    "Please choose the right move for your Piece!\n",
+    "This is your own piece!\n"
+   ],
+   "globals": [
+    {
+     "address": "0x10000010",
+     "name": "_ZSt3cin",
+     "type": "undefined",
+     "external": false,
+     "read": true,
+     "write": false
+    },
+    {
+     "address": "0x10000018",
+     "name": "_ZSt4cout",
+     "type": "undefined",
+     "external": false,
+     "read": true,
+     "write": false
+    },
+    {
+     "address": "0x140009760",
+     "name": "__fu7__ZSt3cin",
+     "type": "pointer",
+     "external": false,
+     "read": true,
+     "write": false
+    },
+    {
+     "address": "0x140009770",
+     "name": ".refptr._ZSt4cout",
+     "type": "pointer",
+     "external": false,
+     "read": true,
+     "write": false
+    }
+   ],
+   "types": [
+    "Piece *",
+    "Rook *",
+    "bool",
+    "int",
+    "longlong *",
+    "undefined8"
+   ]
+  },
+  {
+   "address": "0x140002e80",
+   "name": "Rook",
+   "full_name": "Rook::Rook",
+   "namespace": "Rook",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Rook::Rook()",
+   "body_size": 53,
+   "decompiled": "\r\n/* Rook::Rook() */\r\n\r\nvoid __thiscall Rook::Rook(Rook *this)\r\n\r\n{\r\n  Piece::Piece((Piece *)this);\r\n  *(undefined ***)this = &PTR_Draw_abi_cxx11__140009aa0;\r\n  this[0x10] = (Rook)0x1;\r\n  return;\r\n}\r\n\r\n",
+   "signature": "void __thiscall Rook::Rook(Rook *this);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Rook *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    }
+   ],
+   "locals": [],
+   "field_accesses": [
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "size": 8,
+     "access": "write",
+     "at": "0x140002ea3"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 16,
+     "size": 1,
+     "access": "write",
+     "at": "0x140002eaa"
+    }
+   ],
+   "arg_passes": [
+    {
+     "callee": "0x140005df0",
+     "arg": 0,
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "at": "0x140002e93"
+    }
+   ],
+   "assembly": [
+    "0x140002e80: PUSH RBP",
+    "0x140002e81: MOV RBP,RSP",
+    "0x140002e84: SUB RSP,0x20",
+    "0x140002e88: MOV qword ptr [RBP + 0x10],RCX",
+    "0x140002e8c: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140002e90: MOV RCX,RAX",
+    "0x140002e93: CALL 0x140005df0",
+    "0x140002e98: LEA RDX,[0x140009aa0]",
+    "0x140002e9f: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140002ea3: MOV qword ptr [RAX],RDX",
+    "0x140002ea6: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140002eaa: MOV byte ptr [RAX + 0x10],0x1",
+    "0x140002eae: NOP",
+    "0x140002eaf: ADD RSP,0x20",
+    "0x140002eb3: POP RBP",
+    "0x140002eb4: RET"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 1,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 2,
+    "returns": 1,
+    "instructions": 16,
+    "basic_blocks": 1
+   },
+   "callers": [
+    "0x140006b10"
+   ],
+   "callees": [
+    "0x140005df0"
+   ],
+   "calls": [
+    {
+     "address": "0x140005df0",
+     "name": "Piece::Piece",
+     "external": false
+    }
+   ],
+   "strings": [],
+   "globals": [
+    {
+     "address": "0x140009aa0",
+     "name": "PTR_Draw[abi:cxx11]_140009aa0",
+     "type": "pointer",
+     "external": false,
+     "read": true,
+     "write": false
+    }
+   ],
+   "types": [
+    "Rook *",
+    "void"
+   ]
+  },
+  {
+   "address": "0x140002ec0",
+   "name": "Board",
+   "full_name": "Board::Board",
+   "namespace": "Board",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Board::Board()",
+   "body_size": 176,
+   "decompiled": "\r\n/* Board::Board() */\r\n\r\nvoid __thiscall Board::Board(Board *this)\r\n\r\n{\r\n  longlong lVar1;\r\n  void *pvVar2;\r\n  Piece *this_00;\r\n  undefined4 local_20;\r\n  undefined4 local_1c;\r\n  \r\n  pvVar2 = operator_new__(0x40);\r\n  *(void **)this = pvVar2;\r\n  for (local_1c = 0; local_1c < 8; local_1c = local_1c + 1) {\r\n    lVar1 = *(longlong *)this;\r\n    pvVar2 = operator_new__(0x40);\r\n    *(void **)(lVar1 + (longlong)local_1c * 8) = pvVar2;\r\n    for (local_20 = 0; local_20 < 8; local_20 = local_20 + 1) {\r\n      this_00 = (Piece *)operator_new(0x18);\r\n      Piece::Piece(this_00);\r\n      *(Piece **)\r\n       (*(longlong *)(*(longlong *)this + (longlong)local_1c * 8) + (longlong)local_20 * 8) =\r\n           this_00;\r\n    }\r\n  }\r\n  return;\r\n}\r\n\r\n",
+   "signature": "void __thiscall Board::Board(Board *this);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Board *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    }
+   ],
+   "locals": [
+    {
+     "name": "local_20",
+     "type": "undefined4",
+     "storage": "Stack[-0x20]:4"
+    },
+    {
+     "name": "local_1c",
+     "type": "undefined4",
+     "storage": "Stack[-0x1c]:4"
+    },
+    {
+     "name": "lVar1",
+     "type": "longlong",
+     "storage": "unique:0000dc00:8"
+    },
+    {
+     "name": "this_00",
+     "type": "Piece *",
+     "storage": "RAX:8"
+    },
+    {
+     "name": "pvVar2",
+     "type": "void *",
+     "storage": "RAX:8"
+    }
+   ],
+   "field_accesses": [
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "size": 8,
+     "access": "write",
+     "at": "0x140002ee0"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002ef0"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140002f30"
+    }
+   ],
+   "arg_passes": [],
+   "assembly": [
+    "0x140002ec0: PUSH RBP",
+    "0x140002ec1: PUSH RBX",
+    "0x140002ec2: SUB RSP,0x38",
+    "0x140002ec6: LEA RBP,[RSP + 0x30]",
+    "0x140002ecb: MOV qword ptr [RBP + 0x20],RCX",
+    "0x140002ecf: MOV ECX,0x40",
+    "0x140002ed4: CALL 0x1400014f0",
+    "0x140002ed9: MOV RDX,RAX",
+    "0x140002edc: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002ee0: MOV qword ptr [RAX],RDX",
+    "0x140002ee3: MOV dword ptr [RBP + -0x4],0x0",
+    "0x140002eea: JMP 0x140002f61",
+    "0x140002eec: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002ef0: MOV RAX,qword ptr [RAX]",
+    "0x140002ef3: MOV EDX,dword ptr [RBP + -0x4]",
+    "0x140002ef6: MOVSXD RDX,EDX",
+    "0x140002ef9: SHL RDX,0x3",
+    "0x140002efd: LEA RBX,[RAX + RDX*0x1]",
+    "0x140002f01: MOV ECX,0x40",
+    "0x140002f06: CALL 0x1400014f0",
+    "0x140002f0b: MOV qword ptr [RBX],RAX",
+    "0x140002f0e: MOV dword ptr [RBP + -0x8],0x0",
+    "0x140002f15: JMP 0x140002f57",
+    "0x140002f17: MOV ECX,0x18",
+    "0x140002f1c: CALL 0x1400014e8",
+    "0x140002f21: MOV RBX,RAX",
+    "0x140002f24: MOV RCX,RBX",
+    "0x140002f27: CALL 0x140005dc0",
+    "0x140002f2c: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140002f30: MOV RAX,qword ptr [RAX]",
+    "0x140002f33: MOV EDX,dword ptr [RBP + -0x4]",
+    "0x140002f36: MOVSXD RDX,EDX",
+    "0x140002f39: SHL RDX,0x3",
+    "0x140002f3d: ADD RAX,RDX",
+    "0x140002f40: MOV RAX,qword ptr [RAX]",
+    "0x140002f43: MOV EDX,dword ptr [RBP + -0x8]",
+    "0x140002f46: MOVSXD RDX,EDX",
+    "0x140002f49: SHL RDX,0x3",
+    "0x140002f4d: ADD RAX,RDX",
+    "0x140002f50: MOV qword ptr [RAX],RBX",
+    "0x140002f53: ADD dword ptr [RBP + -0x8],0x1",
+    "0x140002f57: CMP dword ptr [RBP + -0x8],0x7",
+    "0x140002f5b: JLE 0x140002f17",
+    "0x140002f5d: ADD dword ptr [RBP + -0x4],0x1",
+    "0x140002f61: CMP dword ptr [RBP + -0x4],0x7",
+    "0x140002f65: JLE 0x140002eec",
+    "0x140002f67: NOP",
+    "0x140002f68: NOP",
+    "0x140002f69: ADD RSP,0x38",
+    "0x140002f6d: POP RBX",
+    "0x140002f6e: POP RBP",
+    "0x140002f6f: RET"
+   ],
+   "stats": {
+    "cbranches": 2,
+    "switches": 0,
+    "calls": 4,
+    "indirect_calls": 0,
+    "loads": 3,
+    "stores": 3,
+    "returns": 1,
+    "instructions": 52,
+    "basic_blocks": 7
+   },
+   "callers": [
+    "0x1400058e0"
+   ],
+   "callees": [
+    "0x1400014e8",
+    "0x1400014f0",
+    "0x140005dc0"
+   ],
+   "calls": [
+    {
+     "address": "0x1400014e8",
+     "name": "operator.new",
+     "external": false
+    },
+    {
+     "address": "0x1400014f0",
+     "name": "operator.new[]",
+     "external": false
+    },
+    {
+     "address": "0x140005dc0",
+     "name": "Piece::Piece",
+     "external": false
+    }
+   ],
+   "strings": [],
+   "globals": [],
+   "types": [
+    "Board *",
+    "Piece *",
+    "longlong",
+    "undefined4",
+    "void",
+    "void *"
+   ]
+  },
+  {
+   "address": "0x140005d30",
+   "name": "Draw[abi:cxx11]",
+   "full_name": "Piece::Draw[abi:cxx11]",
+   "namespace": "Piece",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Piece::Draw[abi:cxx11]()",
+   "body_size": 81,
+   "decompiled": "\r\n/* Piece::Draw[abi:cxx11]() */\r\n\r\nPiece * __thiscall Piece::Draw_abi_cxx11_(Piece *this)\r\n\r\n{\r\n  allocator local_21;\r\n  allocator *local_20;\r\n  \r\n  local_20 = &local_21;\r\n  std::string::string<std::allocator<char>>((string *)this,\" \",&local_21);\r\n  std::__new_allocator<char>::~__new_allocator();\r\n  return this;\r\n}\r\n\r\n",
+   "signature": "Piece * __thiscall Piece::Draw[abi:cxx11](Piece *this);",
+   "decompile_error": "",
+   "return_type": "Piece *",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Piece *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    }
+   ],
+   "locals": [
+    {
+     "name": "local_21",
+     "type": "allocator",
+     "storage": "Stack[-0x21]:1"
+    },
+    {
+     "name": "local_20",
+     "type": "allocator *",
+     "storage": "Stack[-0x20]:8"
+    }
+   ],
+   "field_accesses": [],
+   "arg_passes": [
+    {
+     "callee": "0x1400070d0",
+     "arg": 0,
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "at": "0x140005d62"
+    }
+   ],
+   "assembly": [
+    "0x140005d30: PUSH RBP",
+    "0x140005d31: PUSH RBX",
+    "0x140005d32: SUB RSP,0x38",
+    "0x140005d36: LEA RBP,[RSP + 0x30]",
+    "0x140005d3b: MOV qword ptr [RBP + 0x20],RCX",
+    "0x140005d3f: MOV qword ptr [RBP + 0x28],RDX",
+    "0x140005d43: LEA RAX,[RBP + -0x9]",
+    "0x140005d47: MOV qword ptr [RBP + -0x8],RAX",
+    "0x140005d4b: NOP",
+    "0x140005d4c: NOP",
+    "0x140005d4d: LEA RDX,[RBP + -0x9]",
+    "0x140005d51: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140005d55: MOV R8,RDX",
+    "0x140005d58: LEA RDX,[0x140009000]",
+    "0x140005d5f: MOV RCX,RAX",
+    "0x140005d62: CALL 0x1400070d0",
+    "0x140005d67: LEA RAX,[RBP + -0x9]",
+    "0x140005d6b: MOV RCX,RAX",
+    "0x140005d6e: CALL 0x140006f80",
+    "0x140005d73: NOP",
+    "0x140005d74: JMP 0x140005d91",
+    "0x140005d91: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140005d95: ADD RSP,0x38",
+    "0x140005d99: POP RBX",
+    "0x140005d9a: POP RBP",
+    "0x140005d9b: RET"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 2,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 0,
+    "returns": 1,
+    "instructions": 26,
+    "basic_blocks": 2
+   },
+   "callers": [],
+   "callees": [
+    "0x140006f80",
+    "0x1400070d0"
+   ],
+   "calls": [
+    {
+     "address": "0x140006f80",
+     "name": "std::__new_allocator<char>::~__new_allocator",
+     "external": false
+    },
+    {
+     "address": "0x1400070d0",
+     "name": "std::string::string<std::allocator<char>>",
+     "external": false
+    }
+   ],
+   "strings": [],
+   "globals": [
+    {
+     "address": "0x140009000",
+     "name": "DAT_140009000",
+     "type": "undefined",
+     "external": false,
+     "read": true,
+     "write": false
+    }
+   ],
+   "types": [
+    "Piece *",
+    "allocator",
+    "allocator *"
+   ]
+  },
+  {
+   "address": "0x140005da0",
+   "name": "Move",
+   "full_name": "Piece::Move",
+   "namespace": "Piece",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__fastcall",
+   "comment": "Piece::Move(int, int, Board&)",
+   "body_size": 26,
+   "decompiled": "\r\n/* Piece::Move(int, int, Board&) */\r\n\r\nundefined8 Piece::Move(void)\r\n\r\n{\r\n  return 0;\r\n}\r\n\r\n",
+   "signature": "undefined8 Piece::Move(void);",
+   "decompile_error": "",
+   "return_type": "undefined8",
+   "parameters": [],
+   "locals": [],
+   "field_accesses": [],
+   "arg_passes": [],
+   "assembly": [
+    "0x140005da0: PUSH RBP",
+    "0x140005da1: MOV RBP,RSP",
+    "0x140005da4: MOV qword ptr [RBP + 0x10],RCX",
+    "0x140005da8: MOV dword ptr [RBP + 0x18],EDX",
+    "0x140005dab: MOV dword ptr [RBP + 0x20],R8D",
+    "0x140005daf: MOV qword ptr [RBP + 0x28],R9",
+    "0x140005db3: MOV EAX,0x0",
+    "0x140005db8: POP RBP",
+    "0x140005db9: RET"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 0,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 0,
+    "returns": 1,
+    "instructions": 9,
+    "basic_blocks": 1
+   },
+   "callers": [],
+   "callees": [],
+   "calls": [],
+   "strings": [],
+   "globals": [],
+   "types": [
+    "undefined8"
+   ]
+  },
+  {
+   "address": "0x140005dc0",
+   "name": "Piece",
+   "full_name": "Piece::Piece",
+   "namespace": "Piece",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Piece::Piece()",
+   "body_size": 44,
+   "decompiled": "\r\n/* Piece::Piece() */\r\n\r\nvoid __thiscall Piece::Piece(Piece *this)\r\n\r\n{\r\n  *(undefined ***)this = &PTR_Draw_abi_cxx11__140009ac0;\r\n  this[0x10] = (Piece)0x0;\r\n  *(undefined4 *)(this + 0x14) = 0;\r\n  return;\r\n}\r\n\r\n",
+   "signature": "void __thiscall Piece::Piece(Piece *this);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Piece *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    }
+   ],
+   "locals": [],
+   "field_accesses": [
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "size": 8,
+     "access": "write",
+     "at": "0x140005dd3"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 16,
+     "size": 1,
+     "access": "write",
+     "at": "0x140005dda"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 20,
+     "size": 4,
+     "access": "write",
+     "at": "0x140005de2"
+    }
+   ],
+   "arg_passes": [],
+   "assembly": [
+    "0x140005dc0: PUSH RBP",
+    "0x140005dc1: MOV RBP,RSP",
+    "0x140005dc4: MOV qword ptr [RBP + 0x10],RCX",
+    "0x140005dc8: LEA RDX,[0x140009ac0]",
+    "0x140005dcf: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140005dd3: MOV qword ptr [RAX],RDX",
+    "0x140005dd6: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140005dda: MOV byte ptr [RAX + 0x10],0x0",
+    "0x140005dde: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140005de2: MOV dword ptr [RAX + 0x14],0x0",
+    "0x140005de9: NOP",
+    "0x140005dea: POP RBP",
+    "0x140005deb: RET"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 0,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 3,
+    "returns": 1,
+    "instructions": 13,
+    "basic_blocks": 1
+   },
+   "callers": [
+    "0x140002a10",
+    "0x140002ec0",
+    "0x140006660"
+   ],
+   "callees": [],
+   "calls": [],
+   "strings": [],
+   "globals": [
+    {
+     "address": "0x140009ac0",
+     "name": "PTR_Draw[abi:cxx11]_140009ac0",
+     "type": "pointer",
+     "external": false,
+     "read": true,
+     "write": false
+    }
+   ],
+   "types": [
+    "Piece *",
+    "void"
+   ]
+  },
+  {
+   "address": "0x140005df0",
+   "name": "Piece",
+   "full_name": "Piece::Piece",
+   "namespace": "Piece",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Piece::Piece()",
+   "body_size": 44,
+   "decompiled": "\r\n/* Piece::Piece() */\r\n\r\nvoid __thiscall Piece::Piece(Piece *this)\r\n\r\n{\r\n  *(undefined ***)this = &PTR_Draw_abi_cxx11__140009ac0;\r\n  this[0x10] = (Piece)0x0;\r\n  *(undefined4 *)(this + 0x14) = 0;\r\n  return;\r\n}\r\n\r\n",
+   "signature": "void __thiscall Piece::Piece(Piece *this);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Piece *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    }
+   ],
+   "locals": [],
+   "field_accesses": [
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "size": 8,
+     "access": "write",
+     "at": "0x140005e03"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 16,
+     "size": 1,
+     "access": "write",
+     "at": "0x140005e0a"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 20,
+     "size": 4,
+     "access": "write",
+     "at": "0x140005e12"
+    }
+   ],
+   "arg_passes": [],
+   "assembly": [
+    "0x140005df0: PUSH RBP",
+    "0x140005df1: MOV RBP,RSP",
+    "0x140005df4: MOV qword ptr [RBP + 0x10],RCX",
+    "0x140005df8: LEA RDX,[0x140009ac0]",
+    "0x140005dff: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140005e03: MOV qword ptr [RAX],RDX",
+    "0x140005e06: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140005e0a: MOV byte ptr [RAX + 0x10],0x0",
+    "0x140005e0e: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140005e12: MOV dword ptr [RAX + 0x14],0x0",
+    "0x140005e19: NOP",
+    "0x140005e1a: POP RBP",
+    "0x140005e1b: RET"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 0,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 3,
+    "returns": 1,
+    "instructions": 13,
+    "basic_blocks": 1
+   },
+   "callers": [
+    "0x1400028b0",
+    "0x140002960",
+    "0x140002e80",
+    "0x140005e90",
+    "0x140005f40",
+    "0x140006ad0"
+   ],
+   "callees": [],
+   "calls": [],
+   "strings": [],
+   "globals": [
+    {
+     "address": "0x140009ac0",
+     "name": "PTR_Draw[abi:cxx11]_140009ac0",
+     "type": "pointer",
+     "external": false,
+     "read": true,
+     "write": false
+    }
+   ],
+   "types": [
+    "Piece *",
+    "void"
+   ]
+  },
+  {
+   "address": "0x140005fb0",
+   "name": "Update",
+   "full_name": "Engine::Update",
+   "namespace": "Engine",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Engine::Update()",
+   "body_size": 1194,
+   "decompiled": "\r\n/* Engine::Update() */\r\n\r\nvoid __thiscall Engine::Update(Engine *this)\r\n\r\n{\r\n  char cVar1;\r\n  ostream *poVar2;\r\n  \r\n  if ((*(uint *)(this + 0x80) & 1) == 0) {\r\n    poVar2 = std::operator<<((ostream *)&_ZSt4cout,(string *)(this + 0x38));\r\n    std::operator<<(poVar2,\", Please choose the co-ordinates of the piece you would like to move\\n\")\r\n    ;\r\n    do {\r\n      while( true ) {\r\n        while( true ) {\r\n          while( true ) {\r\n            std::istream::operator>>((istream *)&_ZSt3cin,(int *)(this + 0x78));\r\n            std::istream::operator>>((istream *)&_ZSt3cin,(int *)(this + 0x7c));\r\n            *(int *)(this + 0x78) = *(int *)(this + 0x78) + -1;\r\n            *(int *)(this + 0x7c) = *(int *)(this + 0x7c) + -1;\r\n            if (((*(int *)(this + 0x78) < 8) && (-1 < *(int *)(this + 0x78))) &&\r\n               ((*(int *)(this + 0x7c) < 8 && (-1 < *(int *)(this + 0x7c))))) break;\r\n            std::operator<<((ostream *)&_ZSt4cout,\r\n                            \"Please enter values within the chess board range!\\n\");\r\n            system(\"PAUSE\");\r\n          }\r\n          if (*(char *)(*(longlong *)\r\n                         ((longlong)*(int *)(this + 0x78) * 8 +\r\n                         *(longlong *)\r\n                          ((longlong)*(int *)(this + 0x7c) * 8 + *(longlong *)(this + 0x30))) + 0x10\r\n                       ) != '\\0') break;\r\n          std::operator<<((ostream *)&_ZSt4cout,\"No Piece exits on location\\n\");\r\n          system(\"PAUSE\");\r\n        }\r\n        if (*(int *)(*(longlong *)\r\n                      ((longlong)*(int *)(this + 0x78) * 8 +\r\n                      *(longlong *)\r\n                       ((longlong)*(int *)(this + 0x7c) * 8 + *(longlong *)(this + 0x30))) + 0x14)\r\n            != 2) break;\r\n        std::operator<<((ostream *)&_ZSt4cout,\"This Piece belongs to player 2!\\n\");\r\n        system(\"PAUSE\");\r\n      }\r\n      cVar1 = (**(code **)(**(longlong **)\r\n                             ((longlong)*(int *)(this + 0x78) * 8 +\r\n                             *(longlong *)\r\n                              ((longlong)*(int *)(this + 0x7c) * 8 + *(longlong *)(this + 0x30))) +\r\n                          8))(*(undefined8 *)\r\n                               ((longlong)*(int *)(this + 0x78) * 8 +\r\n                               *(longlong *)\r\n                                ((longlong)*(int *)(this + 0x7c) * 8 + *(longlong *)(this + 0x30))),\r\n                              *(undefined4 *)(this + 0x78),*(undefined4 *)(this + 0x7c),this + 0x30)\r\n      ;\r\n    } while (cVar1 == '\\0');\r\n  }\r\n  else {\r\n    poVar2 = std::operator<<((ostream *)&_ZSt4cout,(string *)(this + 0x58));\r\n    std::operator<<(poVar2,\", Please choose the co-ordinates of the piece you would like to move\\n\")\r\n    ;\r\n    do {\r\n      while( true ) {\r\n        while( true ) {\r\n          while( true ) {\r\n            std::istream::operator>>((istream *)&_ZSt3cin,(int *)(this + 0x78));\r\n            std::istream::operator>>((istream *)&_ZSt3cin,(int *)(this + 0x7c));\r\n            *(int *)(this + 0x78) = *(int *)(this + 0x78) + -1;\r\n            *(int *)(this + 0x7c) = *(int *)(this + 0x7c) + -1;\r\n            if ((((*(int *)(this + 0x78) < 8) && (-1 < *(int *)(this + 0x78))) &&\r\n                (*(int *)(this + 0x7c) < 8)) && (-1 < *(int *)(this + 0x7c))) break;\r\n            std::operator<<((ostream *)&_ZSt4cout,\r\n                            \"Please enter values within the chess board range!\\n\");\r\n            system(\"PAUSE\");\r\n          }\r\n          if (*(char *)(*(longlong *)\r\n                         ((longlong)*(int *)(this + 0x78) * 8 +\r\n                         *(longlong *)\r\n                          ((longlong)*(int *)(this + 0x7c) * 8 + *(longlong *)(this + 0x30))) + 0x10\r\n                       ) != '\\0') break;\r\n          std::operator<<((ostream *)&_ZSt4cout,\"No Piece exits on location\\n\");\r\n          system(\"PAUSE\");\r\n        }\r\n        if (*(int *)(*(longlong *)\r\n                      ((longlong)*(int *)(this + 0x78) * 8 +\r\n                      *(longlong *)\r\n                       ((longlong)*(int *)(this + 0x7c) * 8 + *(longlong *)(this + 0x30))) + 0x14)\r\n            != 1) break;\r\n        std::operator<<((ostream *)&_ZSt4cout,\"This Piece belongs to player 1!\\n\");\r\n        system(\"PAUSE\");\r\n      }\r\n      cVar1 = (**(code **)(**(longlong **)\r\n                             ((longlong)*(int *)(this + 0x78) * 8 +\r\n                             *(longlong *)\r\n                              ((longlong)*(int *)(this + 0x7c) * 8 + *(longlong *)(this + 0x30))) +\r\n                          8))(*(undefined8 *)\r\n                               ((longlong)*(int *)(this + 0x78) * 8 +\r\n                               *(longlong *)\r\n                                ((longlong)*(int *)(this + 0x7c) * 8 + *(longlong *)(this + 0x30))),\r\n                              *(undefined4 *)(this + 0x78),*(undefined4 *)(this + 0x7c),this + 0x30)\r\n      ;\r\n    } while (cVar1 == '\\0');\r\n  }\r\n  return;\r\n}\r\n\r\n",
+   "signature": "void __thiscall Engine::Update(Engine *this);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Engine *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    }
+   ],
+   "locals": [
+    {
+     "name": "cVar1",
+     "type": "char",
+     "storage": "AL:1"
+    },
+    {
+     "name": "poVar2",
+     "type": "ostream *",
+     "storage": "RAX:8"
+    }
+   ],
+   "field_accesses": [
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 128,
+     "size": 4,
+     "access": "read",
+     "at": "0x140005fc0"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006035"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "write",
+     "at": "0x14000603f"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006046"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "write",
+     "at": "0x140006050"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006057"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006063"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x14000606e"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x14000607a"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 48,
+     "size": 8,
+     "access": "read",
+     "at": "0x1400060b2"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400060ba"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400060cd"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 48,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006118"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006120"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006133"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 48,
+     "size": 8,
+     "access": "read",
+     "at": "0x14000617b"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006183"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006196"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 48,
+     "size": 8,
+     "access": "read",
+     "at": "0x1400061b3"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400061bb"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400061ce"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400061e9"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400061f0"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006278"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "write",
+     "at": "0x140006282"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006289"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "write",
+     "at": "0x140006293"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x14000629a"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400062a6"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400062b1"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400062bd"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 48,
+     "size": 8,
+     "access": "read",
+     "at": "0x1400062f5"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400062fd"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006310"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 48,
+     "size": 8,
+     "access": "read",
+     "at": "0x14000635b"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006363"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006376"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 48,
+     "size": 8,
+     "access": "read",
+     "at": "0x1400063be"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400063c6"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400063d9"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 48,
+     "size": 8,
+     "access": "read",
+     "at": "0x1400063f6"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400063fe"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006411"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "size": 4,
+     "access": "read",
+     "at": "0x14000642c"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006433"
+    }
+   ],
+   "arg_passes": [
+    {
+     "callee": "0x1400014f8",
+     "arg": 1,
+     "param": 0,
+     "param_name": "this",
+     "offset": 56,
+     "at": "0x140005fe6"
+    },
+    {
+     "callee": "0x140001568",
+     "arg": 1,
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "at": "0x140006012"
+    },
+    {
+     "callee": "0x140001568",
+     "arg": 1,
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "at": "0x14000602c"
+    },
+    {
+     "callee": "0x1400014f8",
+     "arg": 1,
+     "param": 0,
+     "param_name": "this",
+     "offset": 88,
+     "at": "0x140006229"
+    },
+    {
+     "callee": "0x140001568",
+     "arg": 1,
+     "param": 0,
+     "param_name": "this",
+     "offset": 120,
+     "at": "0x140006255"
+    },
+    {
+     "callee": "0x140001568",
+     "arg": 1,
+     "param": 0,
+     "param_name": "this",
+     "offset": 124,
+     "at": "0x14000626f"
+    }
+   ],
+   "assembly": [
+    "0x140005fb0: PUSH RBP",
+    "0x140005fb1: MOV RBP,RSP",
+    "0x140005fb4: SUB RSP,0x20",
+    "0x140005fb8: MOV qword ptr [RBP + 0x10],RCX",
+    "0x140005fbc: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140005fc0: MOV EAX,dword ptr [RAX + 0x80]",
+    "0x140005fc6: AND EAX,0x1",
+    "0x140005fc9: TEST EAX,EAX",
+    "0x140005fcb: JNZ 0x140006214",
+    "0x140005fd1: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140005fd5: ADD RAX,0x38",
+    "0x140005fd9: MOV RDX,RAX",
+    "0x140005fdc: MOV RAX,qword ptr [0x140009770]",
+    "0x140005fe3: MOV RCX,RAX",
+    "0x140005fe6: CALL 0x1400014f8",
+    "0x140005feb: MOV RCX,RAX",
+    "0x140005fee: LEA RAX,[0x1400092d0]",
+    "0x140005ff5: MOV RDX,RAX",
+    "0x140005ff8: CALL 0x140001500",
+    "0x140005ffd: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006001: ADD RAX,0x78",
+    "0x140006005: MOV RDX,RAX",
+    "0x140006008: MOV RAX,qword ptr [0x140009760]",
+    "0x14000600f: MOV RCX,RAX",
+    "0x140006012: CALL 0x140001568",
+    "0x140006017: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x14000601b: ADD RAX,0x7c",
+    "0x14000601f: MOV RDX,RAX",
+    "0x140006022: MOV RAX,qword ptr [0x140009760]",
+    "0x140006029: MOV RCX,RAX",
+    "0x14000602c: CALL 0x140001568",
+    "0x140006031: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006035: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x140006038: LEA EDX,[RAX + -0x1]",
+    "0x14000603b: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x14000603f: MOV dword ptr [RAX + 0x78],EDX",
+    "0x140006042: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006046: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x140006049: LEA EDX,[RAX + -0x1]",
+    "0x14000604c: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006050: MOV dword ptr [RAX + 0x7c],EDX",
+    "0x140006053: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006057: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x14000605a: CMP EAX,0x7",
+    "0x14000605d: JG 0x140006081",
+    "0x14000605f: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006063: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x140006066: TEST EAX,EAX",
+    "0x140006068: JS 0x140006081",
+    "0x14000606a: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x14000606e: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x140006071: CMP EAX,0x7",
+    "0x140006074: JG 0x140006081",
+    "0x140006076: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x14000607a: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x14000607d: TEST EAX,EAX",
+    "0x14000607f: JNS 0x1400060ae",
+    "0x140006081: LEA RAX,[0x140009318]",
+    "0x140006088: MOV RDX,RAX",
+    "0x14000608b: MOV RAX,qword ptr [0x140009770]",
+    "0x140006092: MOV RCX,RAX",
+    "0x140006095: CALL 0x140001500",
+    "0x14000609a: LEA RAX,[0x14000904b]",
+    "0x1400060a1: MOV RCX,RAX",
+    "0x1400060a4: CALL 0x1400027e0",
+    "0x1400060a9: JMP 0x140005ffd",
+    "0x1400060ae: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400060b2: MOV RDX,qword ptr [RAX + 0x30]",
+    "0x1400060b6: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400060ba: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x1400060bd: CDQE",
+    "0x1400060bf: SHL RAX,0x3",
+    "0x1400060c3: ADD RAX,RDX",
+    "0x1400060c6: MOV RDX,qword ptr [RAX]",
+    "0x1400060c9: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400060cd: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x1400060d0: CDQE",
+    "0x1400060d2: SHL RAX,0x3",
+    "0x1400060d6: ADD RAX,RDX",
+    "0x1400060d9: MOV RAX,qword ptr [RAX]",
+    "0x1400060dc: MOVZX EAX,byte ptr [RAX + 0x10]",
+    "0x1400060e0: MOVZX EAX,AL",
+    "0x1400060e3: TEST EAX,EAX",
+    "0x1400060e5: JNZ 0x140006114",
+    "0x1400060e7: LEA RAX,[0x14000934b]",
+    "0x1400060ee: MOV RDX,RAX",
+    "0x1400060f1: MOV RAX,qword ptr [0x140009770]",
+    "0x1400060f8: MOV RCX,RAX",
+    "0x1400060fb: CALL 0x140001500",
+    "0x140006100: LEA RAX,[0x14000904b]",
+    "0x140006107: MOV RCX,RAX",
+    "0x14000610a: CALL 0x1400027e0",
+    "0x14000610f: JMP 0x140005ffd",
+    "0x140006114: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006118: MOV RDX,qword ptr [RAX + 0x30]",
+    "0x14000611c: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006120: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x140006123: CDQE",
+    "0x140006125: SHL RAX,0x3",
+    "0x140006129: ADD RAX,RDX",
+    "0x14000612c: MOV RDX,qword ptr [RAX]",
+    "0x14000612f: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006133: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x140006136: CDQE",
+    "0x140006138: SHL RAX,0x3",
+    "0x14000613c: ADD RAX,RDX",
+    "0x14000613f: MOV RAX,qword ptr [RAX]",
+    "0x140006142: MOV EAX,dword ptr [RAX + 0x14]",
+    "0x140006145: CMP EAX,0x2",
+    "0x140006148: JNZ 0x140006177",
+    "0x14000614a: LEA RAX,[0x140009368]",
+    "0x140006151: MOV RDX,RAX",
+    "0x140006154: MOV RAX,qword ptr [0x140009770]",
+    "0x14000615b: MOV RCX,RAX",
+    "0x14000615e: CALL 0x140001500",
+    "0x140006163: LEA RAX,[0x14000904b]",
+    "0x14000616a: MOV RCX,RAX",
+    "0x14000616d: CALL 0x1400027e0",
+    "0x140006172: JMP 0x140005ffd",
+    "0x140006177: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x14000617b: MOV RDX,qword ptr [RAX + 0x30]",
+    "0x14000617f: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006183: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x140006186: CDQE",
+    "0x140006188: SHL RAX,0x3",
+    "0x14000618c: ADD RAX,RDX",
+    "0x14000618f: MOV RDX,qword ptr [RAX]",
+    "0x140006192: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006196: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x140006199: CDQE",
+    "0x14000619b: SHL RAX,0x3",
+    "0x14000619f: ADD RAX,RDX",
+    "0x1400061a2: MOV RAX,qword ptr [RAX]",
+    "0x1400061a5: MOV RAX,qword ptr [RAX]",
+    "0x1400061a8: ADD RAX,0x8",
+    "0x1400061ac: MOV R10,qword ptr [RAX]",
+    "0x1400061af: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400061b3: MOV RDX,qword ptr [RAX + 0x30]",
+    "0x1400061b7: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400061bb: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x1400061be: CDQE",
+    "0x1400061c0: SHL RAX,0x3",
+    "0x1400061c4: ADD RAX,RDX",
+    "0x1400061c7: MOV RDX,qword ptr [RAX]",
+    "0x1400061ca: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400061ce: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x1400061d1: CDQE",
+    "0x1400061d3: SHL RAX,0x3",
+    "0x1400061d7: ADD RAX,RDX",
+    "0x1400061da: MOV RAX,qword ptr [RAX]",
+    "0x1400061dd: MOV RDX,qword ptr [RBP + 0x10]",
+    "0x1400061e1: LEA R8,[RDX + 0x30]",
+    "0x1400061e5: MOV RDX,qword ptr [RBP + 0x10]",
+    "0x1400061e9: MOV ECX,dword ptr [RDX + 0x7c]",
+    "0x1400061ec: MOV RDX,qword ptr [RBP + 0x10]",
+    "0x1400061f0: MOV EDX,dword ptr [RDX + 0x78]",
+    "0x1400061f3: MOV R9,R8",
+    "0x1400061f6: MOV R8D,ECX",
+    "0x1400061f9: MOV RCX,RAX",
+    "0x1400061fc: CALL R10",
+    "0x1400061ff: MOVZX EAX,AL",
+    "0x140006202: TEST EAX,EAX",
+    "0x140006204: SETZ AL",
+    "0x140006207: TEST AL,AL",
+    "0x140006209: JZ 0x140006453",
+    "0x14000620f: JMP 0x140005ffd",
+    "0x140006214: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006218: ADD RAX,0x58",
+    "0x14000621c: MOV RDX,RAX",
+    "0x14000621f: MOV RAX,qword ptr [0x140009770]",
+    "0x140006226: MOV RCX,RAX",
+    "0x140006229: CALL 0x1400014f8",
+    "0x14000622e: MOV RCX,RAX",
+    "0x140006231: LEA RAX,[0x1400092d0]",
+    "0x140006238: MOV RDX,RAX",
+    "0x14000623b: CALL 0x140001500",
+    "0x140006240: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006244: ADD RAX,0x78",
+    "0x140006248: MOV RDX,RAX",
+    "0x14000624b: MOV RAX,qword ptr [0x140009760]",
+    "0x140006252: MOV RCX,RAX",
+    "0x140006255: CALL 0x140001568",
+    "0x14000625a: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x14000625e: ADD RAX,0x7c",
+    "0x140006262: MOV RDX,RAX",
+    "0x140006265: MOV RAX,qword ptr [0x140009760]",
+    "0x14000626c: MOV RCX,RAX",
+    "0x14000626f: CALL 0x140001568",
+    "0x140006274: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006278: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x14000627b: LEA EDX,[RAX + -0x1]",
+    "0x14000627e: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006282: MOV dword ptr [RAX + 0x78],EDX",
+    "0x140006285: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006289: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x14000628c: LEA EDX,[RAX + -0x1]",
+    "0x14000628f: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006293: MOV dword ptr [RAX + 0x7c],EDX",
+    "0x140006296: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x14000629a: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x14000629d: CMP EAX,0x7",
+    "0x1400062a0: JG 0x1400062c4",
+    "0x1400062a2: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400062a6: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x1400062a9: TEST EAX,EAX",
+    "0x1400062ab: JS 0x1400062c4",
+    "0x1400062ad: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400062b1: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x1400062b4: CMP EAX,0x7",
+    "0x1400062b7: JG 0x1400062c4",
+    "0x1400062b9: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400062bd: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x1400062c0: TEST EAX,EAX",
+    "0x1400062c2: JNS 0x1400062f1",
+    "0x1400062c4: LEA RAX,[0x140009318]",
+    "0x1400062cb: MOV RDX,RAX",
+    "0x1400062ce: MOV RAX,qword ptr [0x140009770]",
+    "0x1400062d5: MOV RCX,RAX",
+    "0x1400062d8: CALL 0x140001500",
+    "0x1400062dd: LEA RAX,[0x14000904b]",
+    "0x1400062e4: MOV RCX,RAX",
+    "0x1400062e7: CALL 0x1400027e0",
+    "0x1400062ec: JMP 0x140006240",
+    "0x1400062f1: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400062f5: MOV RDX,qword ptr [RAX + 0x30]",
+    "0x1400062f9: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400062fd: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x140006300: CDQE",
+    "0x140006302: SHL RAX,0x3",
+    "0x140006306: ADD RAX,RDX",
+    "0x140006309: MOV RDX,qword ptr [RAX]",
+    "0x14000630c: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006310: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x140006313: CDQE",
+    "0x140006315: SHL RAX,0x3",
+    "0x140006319: ADD RAX,RDX",
+    "0x14000631c: MOV RAX,qword ptr [RAX]",
+    "0x14000631f: MOVZX EAX,byte ptr [RAX + 0x10]",
+    "0x140006323: MOVZX EAX,AL",
+    "0x140006326: TEST EAX,EAX",
+    "0x140006328: JNZ 0x140006357",
+    "0x14000632a: LEA RAX,[0x14000934b]",
+    "0x140006331: MOV RDX,RAX",
+    "0x140006334: MOV RAX,qword ptr [0x140009770]",
+    "0x14000633b: MOV RCX,RAX",
+    "0x14000633e: CALL 0x140001500",
+    "0x140006343: LEA RAX,[0x14000904b]",
+    "0x14000634a: MOV RCX,RAX",
+    "0x14000634d: CALL 0x1400027e0",
+    "0x140006352: JMP 0x140006240",
+    "0x140006357: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x14000635b: MOV RDX,qword ptr [RAX + 0x30]",
+    "0x14000635f: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006363: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x140006366: CDQE",
+    "0x140006368: SHL RAX,0x3",
+    "0x14000636c: ADD RAX,RDX",
+    "0x14000636f: MOV RDX,qword ptr [RAX]",
+    "0x140006372: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006376: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x140006379: CDQE",
+    "0x14000637b: SHL RAX,0x3",
+    "0x14000637f: ADD RAX,RDX",
+    "0x140006382: MOV RAX,qword ptr [RAX]",
+    "0x140006385: MOV EAX,dword ptr [RAX + 0x14]",
+    "0x140006388: CMP EAX,0x1",
+    "0x14000638b: JNZ 0x1400063ba",
+    "0x14000638d: LEA RAX,[0x140009390]",
+    "0x140006394: MOV RDX,RAX",
+    "0x140006397: MOV RAX,qword ptr [0x140009770]",
+    "0x14000639e: MOV RCX,RAX",
+    "0x1400063a1: CALL 0x140001500",
+    "0x1400063a6: LEA RAX,[0x14000904b]",
+    "0x1400063ad: MOV RCX,RAX",
+    "0x1400063b0: CALL 0x1400027e0",
+    "0x1400063b5: JMP 0x140006240",
+    "0x1400063ba: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400063be: MOV RDX,qword ptr [RAX + 0x30]",
+    "0x1400063c2: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400063c6: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x1400063c9: CDQE",
+    "0x1400063cb: SHL RAX,0x3",
+    "0x1400063cf: ADD RAX,RDX",
+    "0x1400063d2: MOV RDX,qword ptr [RAX]",
+    "0x1400063d5: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400063d9: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x1400063dc: CDQE",
+    "0x1400063de: SHL RAX,0x3",
+    "0x1400063e2: ADD RAX,RDX",
+    "0x1400063e5: MOV RAX,qword ptr [RAX]",
+    "0x1400063e8: MOV RAX,qword ptr [RAX]",
+    "0x1400063eb: ADD RAX,0x8",
+    "0x1400063ef: MOV R10,qword ptr [RAX]",
+    "0x1400063f2: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400063f6: MOV RDX,qword ptr [RAX + 0x30]",
+    "0x1400063fa: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400063fe: MOV EAX,dword ptr [RAX + 0x7c]",
+    "0x140006401: CDQE",
+    "0x140006403: SHL RAX,0x3",
+    "0x140006407: ADD RAX,RDX",
+    "0x14000640a: MOV RDX,qword ptr [RAX]",
+    "0x14000640d: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006411: MOV EAX,dword ptr [RAX + 0x78]",
+    "0x140006414: CDQE",
+    "0x140006416: SHL RAX,0x3",
+    "0x14000641a: ADD RAX,RDX",
+    "0x14000641d: MOV RAX,qword ptr [RAX]",
+    "0x140006420: MOV RDX,qword ptr [RBP + 0x10]",
+    "0x140006424: LEA R8,[RDX + 0x30]",
+    "0x140006428: MOV RDX,qword ptr [RBP + 0x10]",
+    "0x14000642c: MOV ECX,dword ptr [RDX + 0x7c]",
+    "0x14000642f: MOV RDX,qword ptr [RBP + 0x10]",
+    "0x140006433: MOV EDX,dword ptr [RDX + 0x78]",
+    "0x140006436: MOV R9,R8",
+    "0x140006439: MOV R8D,ECX",
+    "0x14000643c: MOV RCX,RAX",
+    "0x14000643f: CALL R10",
+    "0x140006442: MOVZX EAX,AL",
+    "0x140006445: TEST EAX,EAX",
+    "0x140006447: SETZ AL",
+    "0x14000644a: TEST AL,AL",
+    "0x14000644c: JZ 0x140006453",
+    "0x14000644e: JMP 0x140006240",
+    "0x140006453: NOP",
+    "0x140006454: ADD RSP,0x20",
+    "0x140006458: POP RBP",
+    "0x140006459: RET"
+   ],
+   "stats": {
+    "cbranches": 15,
+    "switches": 0,
+    "calls": 22,
+    "indirect_calls": 2,
+    "loads": 65,
+    "stores": 4,
+    "returns": 1,
+    "instructions": 327,
+    "basic_blocks": 26
+   },
+   "callers": [
+    "0x140006460"
+   ],
+   "callees": [
+    "0x1400014f8",
+    "0x140001500",
+    "0x140001568"
+   ],
+   "calls": [
+    {
+     "address": "0x1400014f8",
+     "name": "std::operator<<",
+     "external": false
+    },
+    {
+     "address": "0x140001500",
+     "name": "std::operator<<",
+     "external": false
+    },
+    {
+     "address": "0x140001568",
+     "name": "std::istream::operator>>",
+     "external": false
+    },
+    {
+     "address": "",
+     "name": "MSVCRT.DLL::system",
+     "external": true,
+     "library": "MSVCRT.DLL"
+    }
+   ],
+   "strings": [
+    ", Please choose the co-ordinates of the piece you would like to move\n",
+    "Please enter values within the chess board range!\n",
+    "PAUSE",
+    "No Piece exits on location\n",
+    "This Piece belongs to player 2!\n",
+    "This Piece belongs to player 1!\n"
+   ],
+   "globals": [
+    {
+     "address": "0x10000010",
+     "name": "_ZSt3cin",
+     "type": "undefined",
+     "external": false,
+     "read": true,
+     "write": false
+    },
+    {
+     "address": "0x10000018",
+     "name": "_ZSt4cout",
+     "type": "undefined",
+     "external": false,
+     "read": true,
+     "write": false
+    },
+    {
+     "address": "0x140009760",
+     "name": "__fu7__ZSt3cin",
+     "type": "pointer",
+     "external": false,
+     "read": true,
+     "write": false
+    },
+    {
+     "address": "0x140009770",
+     "name": ".refptr._ZSt4cout",
+     "type": "pointer",
+     "external": false,
+     "read": true,
+     "write": false
+    }
+   ],
+   "types": [
+    "Engine *",
+    "char",
+    "ostream *",
+    "void"
+   ]
+  },
+  {
+   "address": "0x140006460",
+   "name": "GameLoop",
+   "full_name": "Engine::GameLoop",
+   "namespace": "Engine",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Engine::GameLoop()",
+   "body_size": 252,
+   "decompiled": "\r\n/* Engine::GameLoop() */\r\n\r\nvoid __thiscall Engine::GameLoop(Engine *this)\r\n\r\n{\r\n  int iVar1;\r\n  \r\n  system(\"CLS\");\r\n  std::operator<<((ostream *)&_ZSt4cout,\"Player One, please enter your name:\\n\");\r\n  std::getline<char,std::char_traits<char>,std::allocator<char>>\r\n            ((istream *)&_ZSt3cin,(string *)(this + 0x38));\r\n  std::operator<<((ostream *)&_ZSt4cout,\"Player Two, please enter your name:\\n\");\r\n  std::getline<char,std::char_traits<char>,std::allocator<char>>\r\n            ((istream *)&_ZSt3cin,(string *)(this + 0x58));\r\n  do {\r\n    system(\"CLS\");\r\n    Draw(this);\r\n    Update(this);\r\n    iVar1 = CheckState();\r\n    if (iVar1 != 1) {\r\n      iVar1 = CheckState();\r\n      if (iVar1 != 2) {\r\n        CheckState();\r\n      }\r\n    }\r\n    *(int *)(this + 0x80) = *(int *)(this + 0x80) + 1;\r\n  } while( true );\r\n}\r\n\r\n",
+   "signature": "void __thiscall Engine::GameLoop(Engine *this);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Engine *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    }
+   ],
+   "locals": [
+    {
+     "name": "iVar1",
+     "type": "int",
+     "storage": "EAX:4"
+    }
+   ],
+   "field_accesses": [
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 128,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006547"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 128,
+     "size": 4,
+     "access": "write",
+     "at": "0x140006554"
+    }
+   ],
+   "arg_passes": [
+    {
+     "callee": "0x140001508",
+     "arg": 1,
+     "param": 0,
+     "param_name": "this",
+     "offset": 56,
+     "at": "0x1400064a9"
+    },
+    {
+     "callee": "0x140001508",
+     "arg": 1,
+     "param": 0,
+     "param_name": "this",
+     "offset": 88,
+     "at": "0x1400064dc"
+    },
+    {
+     "callee": "0x140005f90",
+     "arg": 0,
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "at": "0x1400064f7"
+    },
+    {
+     "callee": "0x140005fb0",
+     "arg": 0,
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "at": "0x140006503"
+    }
+   ],
+   "assembly": [
+    "0x140006460: PUSH RBP",
+    "0x140006461: MOV RBP,RSP",
+    "0x140006464: SUB RSP,0x20",
+    "0x140006468: MOV qword ptr [RBP + 0x10],RCX",
+    "0x14000646c: LEA RAX,[0x140009275]",
+    "0x140006473: MOV RCX,RAX",
+    "0x140006476: CALL 0x1400027e0",
+    "0x14000647b: LEA RAX,[0x140009280]",
+    "0x140006482: MOV RDX,RAX",
+    "0x140006485: MOV RAX,qword ptr [0x140009770]",
+    "0x14000648c: MOV RCX,RAX",
+    "0x14000648f: CALL 0x140001500",
+    "0x140006494: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006498: ADD RAX,0x38",
+    "0x14000649c: MOV RDX,RAX",
+    "0x14000649f: MOV RAX,qword ptr [0x140009760]",
+    "0x1400064a6: MOV RCX,RAX",
+    "0x1400064a9: CALL 0x140001508",
+    "0x1400064ae: LEA RAX,[0x1400092a8]",
+    "0x1400064b5: MOV RDX,RAX",
+    "0x1400064b8: MOV RAX,qword ptr [0x140009770]",
+    "0x1400064bf: MOV RCX,RAX",
+    "0x1400064c2: CALL 0x140001500",
+    "0x1400064c7: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400064cb: ADD RAX,0x58",
+    "0x1400064cf: MOV RDX,RAX",
+    "0x1400064d2: MOV RAX,qword ptr [0x140009760]",
+    "0x1400064d9: MOV RCX,RAX",
+    "0x1400064dc: CALL 0x140001508",
+    "0x1400064e1: LEA RAX,[0x140009275]",
+    "0x1400064e8: MOV RCX,RAX",
+    "0x1400064eb: CALL 0x1400027e0",
+    "0x1400064f0: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400064f4: MOV RCX,RAX",
+    "0x1400064f7: CALL 0x140005f90",
+    "0x1400064fc: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006500: MOV RCX,RAX",
+    "0x140006503: CALL 0x140005fb0",
+    "0x140006508: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x14000650c: MOV RCX,RAX",
+    "0x14000650f: CALL 0x140005f80",
+    "0x140006514: CMP EAX,0x1",
+    "0x140006517: SETZ AL",
+    "0x14000651a: TEST AL,AL",
+    "0x14000651c: JNZ 0x140006543",
+    "0x14000651e: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006522: MOV RCX,RAX",
+    "0x140006525: CALL 0x140005f80",
+    "0x14000652a: CMP EAX,0x2",
+    "0x14000652d: SETZ AL",
+    "0x140006530: TEST AL,AL",
+    "0x140006532: JNZ 0x140006543",
+    "0x140006534: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006538: MOV RCX,RAX",
+    "0x14000653b: CALL 0x140005f80",
+    "0x140006540: CMP EAX,0x3",
+    "0x140006543: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006547: MOV EAX,dword ptr [RAX + 0x80]",
+    "0x14000654d: LEA EDX,[RAX + 0x1]",
+    "0x140006550: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006554: MOV dword ptr [RAX + 0x80],EDX",
+    "0x14000655a: JMP 0x1400064e1"
+   ],
+   "stats": {
+    "cbranches": 2,
+    "switches": 0,
+    "calls": 11,
+    "indirect_calls": 0,
+    "loads": 1,
+    "stores": 1,
+    "returns": 0,
+    "instructions": 62,
+    "basic_blocks": 5
+   },
+   "callers": [
+    "0x140001460"
+   ],
+   "callees": [
+    "0x140001500",
+    "0x140001508",
+    "0x140005f80",
+    "0x140005f90",
+    "0x140005fb0"
+   ],
+   "calls": [
+    {
+     "address": "0x140001500",
+     "name": "std::operator<<",
+     "external": false
+    },
+    {
+     "address": "0x140001508",
+     "name": "std::getline<char,std::char_traits<char>,std::allocator<char>>",
+     "external": false
+    },
+    {
+     "address": "0x140005f80",
+     "name": "Engine::CheckState",
+     "external": false
+    },
+    {
+     "address": "0x140005f90",
+     "name": "Engine::Draw",
+     "external": false
+    },
+    {
+     "address": "0x140005fb0",
+     "name": "Engine::Update",
+     "external": false
+    },
+    {
+     "address": "",
+     "name": "MSVCRT.DLL::system",
+     "external": true,
+     "library": "MSVCRT.DLL"
+    }
+   ],
+   "strings": [
+    "Player One, please enter your name:\n",
+    "Player Two, please enter your name:\n"
+   ],
+   "globals": [
+    {
+     "address": "0x10000010",
+     "name": "_ZSt3cin",
+     "type": "undefined",
+     "external": false,
+     "read": true,
+     "write": false
+    },
+    {
+     "address": "0x10000018",
+     "name": "_ZSt4cout",
+     "type": "undefined",
+     "external": false,
+     "read": true,
+     "write": false
+    },
+    {
+     "address": "0x140009275",
+     "name": "DAT_140009275",
+     "type": "undefined",
+     "external": false,
+     "read": true,
+     "write": false
+    },
+    {
+     "address": "0x140009760",
+     "name": "__fu7__ZSt3cin",
+     "type": "pointer",
+     "external": false,
+     "read": true,
+     "write": false
+    },
+    {
+     "address": "0x140009770",
+     "name": ".refptr._ZSt4cout",
+     "type": "pointer",
+     "external": false,
+     "read": true,
+     "write": false
+    }
+   ],
+   "types": [
+    "Engine *",
+    "int",
+    "void"
+   ]
+  },
+  {
+   "address": "0x140006560",
+   "name": "Engine",
+   "full_name": "Engine::Engine",
+   "namespace": "Engine",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Engine::Engine()",
+   "body_size": 77,
+   "decompiled": "\r\n/* Engine::Engine() */\r\n\r\nvoid __thiscall Engine::Engine(Engine *this)\r\n\r\n{\r\n  Chess::Chess((Chess *)this);\r\n  std::string::string((string *)(this + 0x38));\r\n  std::string::string((string *)(this + 0x58));\r\n  *(undefined4 *)(this + 0x80) = 0;\r\n  return;\r\n}\r\n\r\n",
+   "signature": "void __thiscall Engine::Engine(Engine *this);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Engine *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    }
+   ],
+   "locals": [],
+   "field_accesses": [
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 128,
+     "size": 4,
+     "access": "write",
+     "at": "0x14000659c"
+    }
+   ],
+   "arg_passes": [
+    {
+     "callee": "0x1400058e0",
+     "arg": 0,
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "at": "0x140006573"
+    },
+    {
+     "callee": "0x140001520",
+     "arg": 0,
+     "param": 0,
+     "param_name": "this",
+     "offset": 56,
+     "at": "0x140006583"
+    },
+    {
+     "callee": "0x140001520",
+     "arg": 0,
+     "param": 0,
+     "param_name": "this",
+     "offset": 88,
+     "at": "0x140006593"
+    }
+   ],
+   "assembly": [
+    "0x140006560: PUSH RBP",
+    "0x140006561: MOV RBP,RSP",
+    "0x140006564: SUB RSP,0x20",
+    "0x140006568: MOV qword ptr [RBP + 0x10],RCX",
+    "0x14000656c: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x140006570: MOV RCX,RAX",
+    "0x140006573: CALL 0x1400058e0",
+    "0x140006578: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x14000657c: ADD RAX,0x38",
+    "0x140006580: MOV RCX,RAX",
+    "0x140006583: CALL 0x140001520",
+    "0x140006588: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x14000658c: ADD RAX,0x58",
+    "0x140006590: MOV RCX,RAX",
+    "0x140006593: CALL 0x140001520",
+    "0x140006598: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x14000659c: MOV dword ptr [RAX + 0x80],0x0",
+    "0x1400065a6: NOP",
+    "0x1400065a7: ADD RSP,0x20",
+    "0x1400065ab: POP RBP",
+    "0x1400065ac: RET"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 3,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 1,
+    "returns": 1,
+    "instructions": 21,
+    "basic_blocks": 1
+   },
+   "callers": [
+    "0x140001460"
+   ],
+   "callees": [
+    "0x140001520",
+    "0x1400058e0"
+   ],
+   "calls": [
+    {
+     "address": "0x140001520",
+     "name": "std::string::string",
+     "external": false
+    },
+    {
+     "address": "0x1400058e0",
+     "name": "Chess::Chess",
+     "external": false
+    }
+   ],
+   "strings": [],
+   "globals": [],
+   "types": [
+    "Engine *",
+    "void"
+   ]
+  },
+  {
+   "address": "0x1400065b0",
+   "name": "~Engine",
+   "full_name": "Engine::~Engine",
+   "namespace": "Engine",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Engine::~Engine()",
+   "body_size": 51,
+   "decompiled": "\r\n/* Engine::~Engine() */\r\n\r\nvoid __thiscall Engine::~Engine(Engine *this)\r\n\r\n{\r\n  std::string::~string((string *)(this + 0x58));\r\n  std::string::~string((string *)(this + 0x38));\r\n  return;\r\n}\r\n\r\n",
+   "signature": "void __thiscall Engine::~Engine(Engine *this);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Engine *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    }
+   ],
+   "locals": [],
+   "field_accesses": [],
+   "arg_passes": [
+    {
+     "callee": "0x140001518",
+     "arg": 0,
+     "param": 0,
+     "param_name": "this",
+     "offset": 88,
+     "at": "0x1400065c7"
+    },
+    {
+     "callee": "0x140001518",
+     "arg": 0,
+     "param": 0,
+     "param_name": "this",
+     "offset": 56,
+     "at": "0x1400065d7"
+    }
+   ],
+   "assembly": [
+    "0x1400065b0: PUSH RBP",
+    "0x1400065b1: MOV RBP,RSP",
+    "0x1400065b4: SUB RSP,0x20",
+    "0x1400065b8: MOV qword ptr [RBP + 0x10],RCX",
+    "0x1400065bc: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400065c0: ADD RAX,0x58",
+    "0x1400065c4: MOV RCX,RAX",
+    "0x1400065c7: CALL 0x140001518",
+    "0x1400065cc: MOV RAX,qword ptr [RBP + 0x10]",
+    "0x1400065d0: ADD RAX,0x38",
+    "0x1400065d4: MOV RCX,RAX",
+    "0x1400065d7: CALL 0x140001518",
+    "0x1400065dc: NOP",
+    "0x1400065dd: ADD RSP,0x20",
+    "0x1400065e1: POP RBP",
+    "0x1400065e2: RET"
+   ],
+   "stats": {
+    "cbranches": 0,
+    "switches": 0,
+    "calls": 2,
+    "indirect_calls": 0,
+    "loads": 0,
+    "stores": 0,
+    "returns": 1,
+    "instructions": 16,
+    "basic_blocks": 1
+   },
+   "callers": [
+    "0x140001460"
+   ],
+   "callees": [
+    "0x140001518"
+   ],
+   "calls": [
+    {
+     "address": "0x140001518",
+     "name": "std::string::~string",
+     "external": false
+    }
+   ],
+   "strings": [],
+   "globals": [],
+   "types": [
+    "Engine *",
+    "void"
+   ]
+  },
+  {
+   "address": "0x140006660",
+   "name": "Move",
+   "full_name": "Knight::Move",
+   "namespace": "Knight",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Knight::Move(int, int, Board&)",
+   "body_size": 1133,
+   "decompiled": "\r\n/* Knight::Move(int, int, Board&) */\r\n\r\nundefined8 __thiscall Knight::Move(Knight *this,int param_1,int param_2,longlong *param_3)\r\n\r\n{\r\n  bool bVar1;\r\n  undefined8 uVar2;\r\n  Piece *pPVar3;\r\n  \r\n  bVar1 = false;\r\n  std::operator<<((ostream *)&_ZSt4cout,\"Knight!\\nWhere do you want to go?\\n\");\r\n  std::istream::operator>>((istream *)&_ZSt3cin,(int *)(this + 8));\r\n  std::istream::operator>>((istream *)&_ZSt3cin,(int *)(this + 0xc));\r\n  *(int *)(this + 8) = *(int *)(this + 8) + -1;\r\n  *(int *)(this + 0xc) = *(int *)(this + 0xc) + -1;\r\n  if ((*(int *)(this + 8) == param_1 + 1) && (*(int *)(this + 0xc) == param_2 + 2)) {\r\n    bVar1 = true;\r\n  }\r\n  if ((*(int *)(this + 8) == param_1 + -1) && (*(int *)(this + 0xc) == param_2 + 2)) {\r\n    bVar1 = true;\r\n  }\r\n  if ((*(int *)(this + 8) == param_1 + 1) && (*(int *)(this + 0xc) == param_2 + -2)) {\r\n    bVar1 = true;\r\n  }\r\n  if ((*(int *)(this + 8) == param_1 + -1) && (*(int *)(this + 0xc) == param_2 + -2)) {\r\n    bVar1 = true;\r\n  }\r\n  if ((*(int *)(this + 8) == param_1 + 2) && (*(int *)(this + 0xc) == param_2 + 1)) {\r\n    bVar1 = true;\r\n  }\r\n  if ((*(int *)(this + 8) == param_1 + -2) && (*(int *)(this + 0xc) == param_2 + 1)) {\r\n    bVar1 = true;\r\n  }\r\n  if ((*(int *)(this + 8) == param_1 + 2) && (*(int *)(this + 0xc) == param_2 + -1)) {\r\n    bVar1 = true;\r\n  }\r\n  if ((*(int *)(this + 8) == param_1 + -2) && (*(int *)(this + 0xc) == param_2 + -1)) {\r\n    bVar1 = true;\r\n  }\r\n  if (bVar1) {\r\n    if (*(int *)(*(longlong *)\r\n                  (*(longlong *)(*param_3 + (longlong)param_2 * 8) + (longlong)param_1 * 8) + 0x14)\r\n        == 1) {\r\n      if (*(int *)(*(longlong *)\r\n                    ((longlong)*(int *)(this + 8) * 8 +\r\n                    *(longlong *)((longlong)*(int *)(this + 0xc) * 8 + *param_3)) + 0x14) == 1) {\r\n        std::operator<<((ostream *)&_ZSt4cout,\"This is your own piece!\\n\");\r\n        system(\"PAUSE\");\r\n        uVar2 = 0;\r\n      }\r\n      else {\r\n        *(undefined8 *)\r\n         (*(longlong *)((longlong)*(int *)(this + 0xc) * 8 + *param_3) +\r\n         (longlong)*(int *)(this + 8) * 8) =\r\n             *(undefined8 *)\r\n              (*(longlong *)(*param_3 + (longlong)param_2 * 8) + (longlong)param_1 * 8);\r\n        pPVar3 = (Piece *)operator_new(0x18);\r\n        Piece::Piece(pPVar3);\r\n        *(Piece **)(*(longlong *)(*param_3 + (longlong)param_2 * 8) + (longlong)param_1 * 8) =\r\n             pPVar3;\r\n        uVar2 = 1;\r\n      }\r\n    }\r\n    else if (*(int *)(*(longlong *)\r\n                       (*(longlong *)(*param_3 + (longlong)param_2 * 8) + (longlong)param_1 * 8) +\r\n                     0x14) == 2) {\r\n      if (*(int *)(*(longlong *)\r\n                    ((longlong)*(int *)(this + 8) * 8 +\r\n                    *(longlong *)((longlong)*(int *)(this + 0xc) * 8 + *param_3)) + 0x14) == 2) {\r\n        std::operator<<((ostream *)&_ZSt4cout,\"This is your own piece!\\n\");\r\n        system(\"PAUSE\");\r\n        uVar2 = 0;\r\n      }\r\n      else {\r\n        *(undefined8 *)\r\n         (*(longlong *)((longlong)*(int *)(this + 0xc) * 8 + *param_3) +\r\n         (longlong)*(int *)(this + 8) * 8) =\r\n             *(undefined8 *)\r\n              (*(longlong *)(*param_3 + (longlong)param_2 * 8) + (longlong)param_1 * 8);\r\n        pPVar3 = (Piece *)operator_new(0x18);\r\n        Piece::Piece(pPVar3);\r\n        *(Piece **)(*(longlong *)(*param_3 + (longlong)param_2 * 8) + (longlong)param_1 * 8) =\r\n             pPVar3;\r\n        uVar2 = 1;\r\n      }\r\n    }\r\n    else {\r\n      uVar2 = 0;\r\n    }\r\n  }\r\n  else {\r\n    std::operator<<((ostream *)&_ZSt4cout,\"Please choose the right move for your Piece!\\n\");\r\n    system(\"PAUSE\");\r\n    uVar2 = 0;\r\n  }\r\n  return uVar2;\r\n}\r\n\r\n",
+   "signature": "undefined8 __thiscall Knight::Move(Knight *this,int param_1,int param_2,longlong *param_3);",
+   "decompile_error": "",
+   "return_type": "undefined8",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Knight *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    },
+    {
+     "index": 1,
+     "name": "param_1",
+     "type": "int",
+     "storage": "EDX:4",
+     "is_this": false,
+     "hidden_return": false
+    },
+    {
+     "index": 2,
+     "name": "param_2",
+     "type": "int",
+     "storage": "R8D:4",
+     "is_this": false,
+     "hidden_return": false
+    },
+    {
+     "index": 3,
+     "name": "param_3",
+     "type": "longlong *",
+     "storage": "R9:8",
+     "is_this": false,
+     "hidden_return": false
+    }
+   ],
+   "locals": [
+    {
+     "name": "uVar2",
+     "type": "undefined8",
+     "storage": "RAX:8"
+    },
+    {
+     "name": "pPVar3",
+     "type": "Piece *",
+     "storage": "RAX:8"
+    },
+    {
+     "name": "bVar1",
+     "type": "bool",
+     "storage": "unique:10000175:1"
+    }
+   ],
+   "field_accesses": [
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400066cf"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "write",
+     "at": "0x1400066d9"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400066e0"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "write",
+     "at": "0x1400066ea"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400066f1"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006702"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006717"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006728"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x14000673d"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x14000674e"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006763"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006774"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006789"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x14000679a"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400067af"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400067c0"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400067d5"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400067e6"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400067fb"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x14000680c"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x14000685e"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006891"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006898"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400068ab"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x1400068f8"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x14000691d"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006924"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006937"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006962"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006993"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x1400069c6"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400069cd"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x1400069e0"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006a2d"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006a52"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006a59"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 4,
+     "access": "read",
+     "at": "0x140006a6c"
+    },
+    {
+     "param": 3,
+     "param_name": "param_3",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006a97"
+    }
+   ],
+   "arg_passes": [
+    {
+     "callee": "0x140001568",
+     "arg": 1,
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "at": "0x1400066ac"
+    },
+    {
+     "callee": "0x140001568",
+     "arg": 1,
+     "param": 0,
+     "param_name": "this",
+     "offset": 12,
+     "at": "0x1400066c6"
+    }
+   ],
+   "assembly": [
+    "0x140006660: PUSH RBP",
+    "0x140006661: PUSH RBX",
+    "0x140006662: SUB RSP,0x38",
+    "0x140006666: LEA RBP,[RSP + 0x30]",
+    "0x14000666b: MOV qword ptr [RBP + 0x20],RCX",
+    "0x14000666f: MOV dword ptr [RBP + 0x28],EDX",
+    "0x140006672: MOV dword ptr [RBP + 0x30],R8D",
+    "0x140006676: MOV qword ptr [RBP + 0x38],R9",
+    "0x14000667a: MOV byte ptr [RBP + -0x1],0x0",
+    "0x14000667e: LEA RAX,[0x1400090a8]",
+    "0x140006685: MOV RDX,RAX",
+    "0x140006688: MOV RAX,qword ptr [0x140009770]",
+    "0x14000668f: MOV RCX,RAX",
+    "0x140006692: CALL 0x140001500",
+    "0x140006697: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x14000669b: ADD RAX,0x8",
+    "0x14000669f: MOV RDX,RAX",
+    "0x1400066a2: MOV RAX,qword ptr [0x140009760]",
+    "0x1400066a9: MOV RCX,RAX",
+    "0x1400066ac: CALL 0x140001568",
+    "0x1400066b1: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400066b5: ADD RAX,0xc",
+    "0x1400066b9: MOV RDX,RAX",
+    "0x1400066bc: MOV RAX,qword ptr [0x140009760]",
+    "0x1400066c3: MOV RCX,RAX",
+    "0x1400066c6: CALL 0x140001568",
+    "0x1400066cb: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400066cf: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x1400066d2: LEA EDX,[RAX + -0x1]",
+    "0x1400066d5: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400066d9: MOV dword ptr [RAX + 0x8],EDX",
+    "0x1400066dc: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400066e0: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x1400066e3: LEA EDX,[RAX + -0x1]",
+    "0x1400066e6: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400066ea: MOV dword ptr [RAX + 0xc],EDX",
+    "0x1400066ed: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400066f1: MOV EDX,dword ptr [RAX + 0x8]",
+    "0x1400066f4: MOV EAX,dword ptr [RBP + 0x28]",
+    "0x1400066f7: ADD EAX,0x1",
+    "0x1400066fa: CMP EDX,EAX",
+    "0x1400066fc: JNZ 0x140006713",
+    "0x1400066fe: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140006702: MOV EDX,dword ptr [RAX + 0xc]",
+    "0x140006705: MOV EAX,dword ptr [RBP + 0x30]",
+    "0x140006708: ADD EAX,0x2",
+    "0x14000670b: CMP EDX,EAX",
+    "0x14000670d: JNZ 0x140006713",
+    "0x14000670f: MOV byte ptr [RBP + -0x1],0x1",
+    "0x140006713: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140006717: MOV EDX,dword ptr [RAX + 0x8]",
+    "0x14000671a: MOV EAX,dword ptr [RBP + 0x28]",
+    "0x14000671d: SUB EAX,0x1",
+    "0x140006720: CMP EDX,EAX",
+    "0x140006722: JNZ 0x140006739",
+    "0x140006724: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140006728: MOV EDX,dword ptr [RAX + 0xc]",
+    "0x14000672b: MOV EAX,dword ptr [RBP + 0x30]",
+    "0x14000672e: ADD EAX,0x2",
+    "0x140006731: CMP EDX,EAX",
+    "0x140006733: JNZ 0x140006739",
+    "0x140006735: MOV byte ptr [RBP + -0x1],0x1",
+    "0x140006739: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x14000673d: MOV EDX,dword ptr [RAX + 0x8]",
+    "0x140006740: MOV EAX,dword ptr [RBP + 0x28]",
+    "0x140006743: ADD EAX,0x1",
+    "0x140006746: CMP EDX,EAX",
+    "0x140006748: JNZ 0x14000675f",
+    "0x14000674a: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x14000674e: MOV EDX,dword ptr [RAX + 0xc]",
+    "0x140006751: MOV EAX,dword ptr [RBP + 0x30]",
+    "0x140006754: SUB EAX,0x2",
+    "0x140006757: CMP EDX,EAX",
+    "0x140006759: JNZ 0x14000675f",
+    "0x14000675b: MOV byte ptr [RBP + -0x1],0x1",
+    "0x14000675f: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140006763: MOV EDX,dword ptr [RAX + 0x8]",
+    "0x140006766: MOV EAX,dword ptr [RBP + 0x28]",
+    "0x140006769: SUB EAX,0x1",
+    "0x14000676c: CMP EDX,EAX",
+    "0x14000676e: JNZ 0x140006785",
+    "0x140006770: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140006774: MOV EDX,dword ptr [RAX + 0xc]",
+    "0x140006777: MOV EAX,dword ptr [RBP + 0x30]",
+    "0x14000677a: SUB EAX,0x2",
+    "0x14000677d: CMP EDX,EAX",
+    "0x14000677f: JNZ 0x140006785",
+    "0x140006781: MOV byte ptr [RBP + -0x1],0x1",
+    "0x140006785: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140006789: MOV EDX,dword ptr [RAX + 0x8]",
+    "0x14000678c: MOV EAX,dword ptr [RBP + 0x28]",
+    "0x14000678f: ADD EAX,0x2",
+    "0x140006792: CMP EDX,EAX",
+    "0x140006794: JNZ 0x1400067ab",
+    "0x140006796: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x14000679a: MOV EDX,dword ptr [RAX + 0xc]",
+    "0x14000679d: MOV EAX,dword ptr [RBP + 0x30]",
+    "0x1400067a0: ADD EAX,0x1",
+    "0x1400067a3: CMP EDX,EAX",
+    "0x1400067a5: JNZ 0x1400067ab",
+    "0x1400067a7: MOV byte ptr [RBP + -0x1],0x1",
+    "0x1400067ab: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400067af: MOV EDX,dword ptr [RAX + 0x8]",
+    "0x1400067b2: MOV EAX,dword ptr [RBP + 0x28]",
+    "0x1400067b5: SUB EAX,0x2",
+    "0x1400067b8: CMP EDX,EAX",
+    "0x1400067ba: JNZ 0x1400067d1",
+    "0x1400067bc: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400067c0: MOV EDX,dword ptr [RAX + 0xc]",
+    "0x1400067c3: MOV EAX,dword ptr [RBP + 0x30]",
+    "0x1400067c6: ADD EAX,0x1",
+    "0x1400067c9: CMP EDX,EAX",
+    "0x1400067cb: JNZ 0x1400067d1",
+    "0x1400067cd: MOV byte ptr [RBP + -0x1],0x1",
+    "0x1400067d1: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400067d5: MOV EDX,dword ptr [RAX + 0x8]",
+    "0x1400067d8: MOV EAX,dword ptr [RBP + 0x28]",
+    "0x1400067db: ADD EAX,0x2",
+    "0x1400067de: CMP EDX,EAX",
+    "0x1400067e0: JNZ 0x1400067f7",
+    "0x1400067e2: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400067e6: MOV EDX,dword ptr [RAX + 0xc]",
+    "0x1400067e9: MOV EAX,dword ptr [RBP + 0x30]",
+    "0x1400067ec: SUB EAX,0x1",
+    "0x1400067ef: CMP EDX,EAX",
+    "0x1400067f1: JNZ 0x1400067f7",
+    "0x1400067f3: MOV byte ptr [RBP + -0x1],0x1",
+    "0x1400067f7: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400067fb: MOV EDX,dword ptr [RAX + 0x8]",
+    "0x1400067fe: MOV EAX,dword ptr [RBP + 0x28]",
+    "0x140006801: SUB EAX,0x2",
+    "0x140006804: CMP EDX,EAX",
+    "0x140006806: JNZ 0x14000681d",
+    "0x140006808: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x14000680c: MOV EDX,dword ptr [RAX + 0xc]",
+    "0x14000680f: MOV EAX,dword ptr [RBP + 0x30]",
+    "0x140006812: SUB EAX,0x1",
+    "0x140006815: CMP EDX,EAX",
+    "0x140006817: JNZ 0x14000681d",
+    "0x140006819: MOV byte ptr [RBP + -0x1],0x1",
+    "0x14000681d: MOVZX EAX,byte ptr [RBP + -0x1]",
+    "0x140006821: XOR EAX,0x1",
+    "0x140006824: TEST AL,AL",
+    "0x140006826: JZ 0x14000685a",
+    "0x140006828: LEA RAX,[0x140009058]",
+    "0x14000682f: MOV RDX,RAX",
+    "0x140006832: MOV RAX,qword ptr [0x140009770]",
+    "0x140006839: MOV RCX,RAX",
+    "0x14000683c: CALL 0x140001500",
+    "0x140006841: LEA RAX,[0x14000904b]",
+    "0x140006848: MOV RCX,RAX",
+    "0x14000684b: CALL 0x1400027e0",
+    "0x140006850: MOV EAX,0x0",
+    "0x140006855: JMP 0x140006ac6",
+    "0x14000685a: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x14000685e: MOV RAX,qword ptr [RAX]",
+    "0x140006861: MOV EDX,dword ptr [RBP + 0x30]",
+    "0x140006864: MOVSXD RDX,EDX",
+    "0x140006867: SHL RDX,0x3",
+    "0x14000686b: ADD RAX,RDX",
+    "0x14000686e: MOV RAX,qword ptr [RAX]",
+    "0x140006871: MOV EDX,dword ptr [RBP + 0x28]",
+    "0x140006874: MOVSXD RDX,EDX",
+    "0x140006877: SHL RDX,0x3",
+    "0x14000687b: ADD RAX,RDX",
+    "0x14000687e: MOV RAX,qword ptr [RAX]",
+    "0x140006881: MOV EAX,dword ptr [RAX + 0x14]",
+    "0x140006884: CMP EAX,0x1",
+    "0x140006887: JNZ 0x14000698f",
+    "0x14000688d: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140006891: MOV RDX,qword ptr [RAX]",
+    "0x140006894: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140006898: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x14000689b: CDQE",
+    "0x14000689d: SHL RAX,0x3",
+    "0x1400068a1: ADD RAX,RDX",
+    "0x1400068a4: MOV RDX,qword ptr [RAX]",
+    "0x1400068a7: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400068ab: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x1400068ae: CDQE",
+    "0x1400068b0: SHL RAX,0x3",
+    "0x1400068b4: ADD RAX,RDX",
+    "0x1400068b7: MOV RAX,qword ptr [RAX]",
+    "0x1400068ba: MOV EAX,dword ptr [RAX + 0x14]",
+    "0x1400068bd: CMP EAX,0x1",
+    "0x1400068c0: JNZ 0x1400068f4",
+    "0x1400068c2: LEA RAX,[0x140009086]",
+    "0x1400068c9: MOV RDX,RAX",
+    "0x1400068cc: MOV RAX,qword ptr [0x140009770]",
+    "0x1400068d3: MOV RCX,RAX",
+    "0x1400068d6: CALL 0x140001500",
+    "0x1400068db: LEA RAX,[0x14000904b]",
+    "0x1400068e2: MOV RCX,RAX",
+    "0x1400068e5: CALL 0x1400027e0",
+    "0x1400068ea: MOV EAX,0x0",
+    "0x1400068ef: JMP 0x140006ac6",
+    "0x1400068f4: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x1400068f8: MOV RAX,qword ptr [RAX]",
+    "0x1400068fb: MOV EDX,dword ptr [RBP + 0x30]",
+    "0x1400068fe: MOVSXD RDX,EDX",
+    "0x140006901: SHL RDX,0x3",
+    "0x140006905: ADD RAX,RDX",
+    "0x140006908: MOV RAX,qword ptr [RAX]",
+    "0x14000690b: MOV EDX,dword ptr [RBP + 0x28]",
+    "0x14000690e: MOVSXD RDX,EDX",
+    "0x140006911: SHL RDX,0x3",
+    "0x140006915: LEA RCX,[RAX + RDX*0x1]",
+    "0x140006919: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x14000691d: MOV RDX,qword ptr [RAX]",
+    "0x140006920: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140006924: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x140006927: CDQE",
+    "0x140006929: SHL RAX,0x3",
+    "0x14000692d: ADD RAX,RDX",
+    "0x140006930: MOV RDX,qword ptr [RAX]",
+    "0x140006933: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140006937: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x14000693a: CDQE",
+    "0x14000693c: SHL RAX,0x3",
+    "0x140006940: ADD RDX,RAX",
+    "0x140006943: MOV RAX,qword ptr [RCX]",
+    "0x140006946: MOV qword ptr [RDX],RAX",
+    "0x140006949: MOV ECX,0x18",
+    "0x14000694e: CALL 0x1400014e8",
+    "0x140006953: MOV RBX,RAX",
+    "0x140006956: MOV RCX,RBX",
+    "0x140006959: CALL 0x140005dc0",
+    "0x14000695e: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140006962: MOV RAX,qword ptr [RAX]",
+    "0x140006965: MOV EDX,dword ptr [RBP + 0x30]",
+    "0x140006968: MOVSXD RDX,EDX",
+    "0x14000696b: SHL RDX,0x3",
+    "0x14000696f: ADD RAX,RDX",
+    "0x140006972: MOV RAX,qword ptr [RAX]",
+    "0x140006975: MOV EDX,dword ptr [RBP + 0x28]",
+    "0x140006978: MOVSXD RDX,EDX",
+    "0x14000697b: SHL RDX,0x3",
+    "0x14000697f: ADD RAX,RDX",
+    "0x140006982: MOV qword ptr [RAX],RBX",
+    "0x140006985: MOV EAX,0x1",
+    "0x14000698a: JMP 0x140006ac6",
+    "0x14000698f: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140006993: MOV RAX,qword ptr [RAX]",
+    "0x140006996: MOV EDX,dword ptr [RBP + 0x30]",
+    "0x140006999: MOVSXD RDX,EDX",
+    "0x14000699c: SHL RDX,0x3",
+    "0x1400069a0: ADD RAX,RDX",
+    "0x1400069a3: MOV RAX,qword ptr [RAX]",
+    "0x1400069a6: MOV EDX,dword ptr [RBP + 0x28]",
+    "0x1400069a9: MOVSXD RDX,EDX",
+    "0x1400069ac: SHL RDX,0x3",
+    "0x1400069b0: ADD RAX,RDX",
+    "0x1400069b3: MOV RAX,qword ptr [RAX]",
+    "0x1400069b6: MOV EAX,dword ptr [RAX + 0x14]",
+    "0x1400069b9: CMP EAX,0x2",
+    "0x1400069bc: JNZ 0x140006ac1",
+    "0x1400069c2: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x1400069c6: MOV RDX,qword ptr [RAX]",
+    "0x1400069c9: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400069cd: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x1400069d0: CDQE",
+    "0x1400069d2: SHL RAX,0x3",
+    "0x1400069d6: ADD RAX,RDX",
+    "0x1400069d9: MOV RDX,qword ptr [RAX]",
+    "0x1400069dc: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x1400069e0: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x1400069e3: CDQE",
+    "0x1400069e5: SHL RAX,0x3",
+    "0x1400069e9: ADD RAX,RDX",
+    "0x1400069ec: MOV RAX,qword ptr [RAX]",
+    "0x1400069ef: MOV EAX,dword ptr [RAX + 0x14]",
+    "0x1400069f2: CMP EAX,0x2",
+    "0x1400069f5: JNZ 0x140006a29",
+    "0x1400069f7: LEA RAX,[0x140009086]",
+    "0x1400069fe: MOV RDX,RAX",
+    "0x140006a01: MOV RAX,qword ptr [0x140009770]",
+    "0x140006a08: MOV RCX,RAX",
+    "0x140006a0b: CALL 0x140001500",
+    "0x140006a10: LEA RAX,[0x14000904b]",
+    "0x140006a17: MOV RCX,RAX",
+    "0x140006a1a: CALL 0x1400027e0",
+    "0x140006a1f: MOV EAX,0x0",
+    "0x140006a24: JMP 0x140006ac6",
+    "0x140006a29: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140006a2d: MOV RAX,qword ptr [RAX]",
+    "0x140006a30: MOV EDX,dword ptr [RBP + 0x30]",
+    "0x140006a33: MOVSXD RDX,EDX",
+    "0x140006a36: SHL RDX,0x3",
+    "0x140006a3a: ADD RAX,RDX",
+    "0x140006a3d: MOV RAX,qword ptr [RAX]",
+    "0x140006a40: MOV EDX,dword ptr [RBP + 0x28]",
+    "0x140006a43: MOVSXD RDX,EDX",
+    "0x140006a46: SHL RDX,0x3",
+    "0x140006a4a: LEA RCX,[RAX + RDX*0x1]",
+    "0x140006a4e: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140006a52: MOV RDX,qword ptr [RAX]",
+    "0x140006a55: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140006a59: MOV EAX,dword ptr [RAX + 0xc]",
+    "0x140006a5c: CDQE",
+    "0x140006a5e: SHL RAX,0x3",
+    "0x140006a62: ADD RAX,RDX",
+    "0x140006a65: MOV RDX,qword ptr [RAX]",
+    "0x140006a68: MOV RAX,qword ptr [RBP + 0x20]",
+    "0x140006a6c: MOV EAX,dword ptr [RAX + 0x8]",
+    "0x140006a6f: CDQE",
+    "0x140006a71: SHL RAX,0x3",
+    "0x140006a75: ADD RDX,RAX",
+    "0x140006a78: MOV RAX,qword ptr [RCX]",
+    "0x140006a7b: MOV qword ptr [RDX],RAX",
+    "0x140006a7e: MOV ECX,0x18",
+    "0x140006a83: CALL 0x1400014e8",
+    "0x140006a88: MOV RBX,RAX",
+    "0x140006a8b: MOV RCX,RBX",
+    "0x140006a8e: CALL 0x140005dc0",
+    "0x140006a93: MOV RAX,qword ptr [RBP + 0x38]",
+    "0x140006a97: MOV RAX,qword ptr [RAX]",
+    "0x140006a9a: MOV EDX,dword ptr [RBP + 0x30]",
+    "0x140006a9d: MOVSXD RDX,EDX",
+    "0x140006aa0: SHL RDX,0x3",
+    "0x140006aa4: ADD RAX,RDX",
+    "0x140006aa7: MOV RAX,qword ptr [RAX]",
+    "0x140006aaa: MOV EDX,dword ptr [RBP + 0x28]",
+    "0x140006aad: MOVSXD RDX,EDX",
+    "0x140006ab0: SHL RDX,0x3",
+    "0x140006ab4: ADD RAX,RDX",
+    "0x140006ab7: MOV qword ptr [RAX],RBX",
+    "0x140006aba: MOV EAX,0x1",
+    "0x140006abf: JMP 0x140006ac6",
+    "0x140006ac1: MOV EAX,0x0",
+    "0x140006ac6: ADD RSP,0x38",
+    "0x140006aca: POP RBX",
+    "0x140006acb: POP RBP",
+    "0x140006acc: RET"
+   ],
+   "stats": {
+    "cbranches": 21,
+    "switches": 0,
+    "calls": 13,
+    "indirect_calls": 0,
+    "loads": 56,
+    "stores": 6,
+    "returns": 1,
+    "instructions": 333,
+    "basic_blocks": 36
+   },
+   "callers": [],
+   "callees": [
+    "0x1400014e8",
+    "0x140001500",
+    "0x140001568",
+    "0x140005dc0"
+   ],
+   "calls": [
+    {
+     "address": "0x1400014e8",
+     "name": "operator.new",
+     "external": false
+    },
+    {
+     "address": "0x140001500",
+     "name": "std::operator<<",
+     "external": false
+    },
+    {
+     "address": "0x140001568",
+     "name": "std::istream::operator>>",
+     "external": false
+    },
+    {
+     "address": "0x140005dc0",
+     "name": "Piece::Piece",
+     "external": false
+    },
+    {
+     "address": "",
+     "name": "MSVCRT.DLL::system",
+     "external": true,
+     "library": "MSVCRT.DLL"
+    }
+   ],
+   "strings": [
+    "Knight!\nWhere do you want to go?\n",
+    "Please choose the right move for your Piece!\n",
+    "PAUSE",
+    "This is your own piece!\n"
+   ],
+   "globals": [
+    {
+     "address": "0x10000010",
+     "name": "_ZSt3cin",
+     "type": "undefined",
+     "external": false,
+     "read": true,
+     "write": false
+    },
+    {
+     "address": "0x10000018",
+     "name": "_ZSt4cout",
+     "type": "undefined",
+     "external": false,
+     "read": true,
+     "write": false
+    },
+    {
+     "address": "0x140009760",
+     "name": "__fu7__ZSt3cin",
+     "type": "pointer",
+     "external": false,
+     "read": true,
+     "write": false
+    },
+    {
+     "address": "0x140009770",
+     "name": ".refptr._ZSt4cout",
+     "type": "pointer",
+     "external": false,
+     "read": true,
+     "write": false
+    }
+   ],
+   "types": [
+    "Knight *",
+    "Piece *",
+    "bool",
+    "int",
+    "longlong *",
+    "undefined8"
+   ]
+  },
+  {
+   "address": "0x140006b10",
+   "name": "Pieces",
+   "full_name": "Pieces::Pieces",
+   "namespace": "Pieces",
+   "namespace_is_class": true,
+   "name_source": "ANALYSIS",
+   "signature_source": "ANALYSIS",
+   "calling_convention": "__thiscall",
+   "comment": "Pieces::Pieces()",
+   "body_size": 938,
+   "decompiled": "\r\n/* Pieces::Pieces() */\r\n\r\nvoid __thiscall Pieces::Pieces(Pieces *this)\r\n\r\n{\r\n  Rook *pRVar1;\r\n  Knight *pKVar2;\r\n  Bishop *pBVar3;\r\n  Queen *pQVar4;\r\n  King *pKVar5;\r\n  Pawn *pPVar6;\r\n  longlong lVar7;\r\n  Rook *this_00;\r\n  Knight *this_01;\r\n  Bishop *this_02;\r\n  Queen *this_03;\r\n  King *this_04;\r\n  Pawn *this_05;\r\n  \r\n  pRVar1 = (Rook *)operator_new__(0x60);\r\n  this_00 = pRVar1;\r\n  for (lVar7 = 3; -1 < lVar7; lVar7 = lVar7 + -1) {\r\n    Rook::Rook(this_00);\r\n    this_00 = this_00 + 0x18;\r\n  }\r\n  *(Rook **)this = pRVar1;\r\n  pKVar2 = (Knight *)operator_new__(0x60);\r\n  this_01 = pKVar2;\r\n  for (lVar7 = 3; -1 < lVar7; lVar7 = lVar7 + -1) {\r\n    Knight::Knight(this_01);\r\n    this_01 = this_01 + 0x18;\r\n  }\r\n  *(Knight **)(this + 8) = pKVar2;\r\n  pBVar3 = (Bishop *)operator_new__(0x60);\r\n  this_02 = pBVar3;\r\n  for (lVar7 = 3; -1 < lVar7; lVar7 = lVar7 + -1) {\r\n    Bishop::Bishop(this_02);\r\n    this_02 = this_02 + 0x18;\r\n  }\r\n  *(Bishop **)(this + 0x10) = pBVar3;\r\n  pQVar4 = (Queen *)operator_new__(0x30);\r\n  this_03 = pQVar4;\r\n  for (lVar7 = 1; -1 < lVar7; lVar7 = lVar7 + -1) {\r\n    Queen::Queen(this_03);\r\n    this_03 = this_03 + 0x18;\r\n  }\r\n  *(Queen **)(this + 0x18) = pQVar4;\r\n  pKVar5 = (King *)operator_new__(0x30);\r\n  this_04 = pKVar5;\r\n  for (lVar7 = 1; -1 < lVar7; lVar7 = lVar7 + -1) {\r\n    King::King(this_04);\r\n    this_04 = this_04 + 0x18;\r\n  }\r\n  *(King **)(this + 0x20) = pKVar5;\r\n  pPVar6 = (Pawn *)operator_new__(0x180);\r\n  this_05 = pPVar6;\r\n  for (lVar7 = 0xf; -1 < lVar7; lVar7 = lVar7 + -1) {\r\n    Pawn::Pawn(this_05);\r\n    this_05 = this_05 + 0x18;\r\n  }\r\n  *(Pawn **)(this + 0x28) = pPVar6;\r\n  *(undefined4 *)(*(longlong *)this + 0x14) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 8) + 0x14) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 0x10) + 0x14) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 0x18) + 0x14) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 0x20) + 0x14) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 0x10) + 0x2c) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 8) + 0x2c) = 1;\r\n  *(undefined4 *)(*(longlong *)this + 0x2c) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0x14) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0x2c) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0x44) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0x5c) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0x74) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0x8c) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0xa4) = 1;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0xbc) = 1;\r\n  *(undefined4 *)(*(longlong *)this + 0x44) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 8) + 0x44) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 0x10) + 0x44) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 0x18) + 0x2c) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 0x20) + 0x2c) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 0x10) + 0x5c) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 8) + 0x5c) = 2;\r\n  *(undefined4 *)(*(longlong *)this + 0x5c) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0xd4) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0xec) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0x104) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0x11c) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0x134) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0x14c) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0x164) = 2;\r\n  *(undefined4 *)(*(longlong *)(this + 0x28) + 0x17c) = 2;\r\n  return;\r\n}\r\n\r\n",
+   "signature": "void __thiscall Pieces::Pieces(Pieces *this);",
+   "decompile_error": "",
+   "return_type": "void",
+   "parameters": [
+    {
+     "index": 0,
+     "name": "this",
+     "type": "Pieces *",
+     "storage": "RCX:8 (auto)",
+     "is_this": true,
+     "hidden_return": false
+    }
+   ],
+   "locals": [
+    {
+     "name": "pBVar3",
+     "type": "Bishop *",
+     "storage": "RAX:8"
+    },
+    {
+     "name": "pKVar2",
+     "type": "Knight *",
+     "storage": "RAX:8"
+    },
+    {
+     "name": "pKVar5",
+     "type": "King *",
+     "storage": "RAX:8"
+    },
+    {
+     "name": "pQVar4",
+     "type": "Queen *",
+     "storage": "RAX:8"
+    },
+    {
+     "name": "pRVar1",
+     "type": "Rook *",
+     "storage": "RAX:8"
+    },
+    {
+     "name": "this_03",
+     "type": "Queen *",
+     "storage": "RSI:8"
+    },
+    {
+     "name": "this_02",
+     "type": "Bishop *",
+     "storage": "RSI:8"
+    },
+    {
+     "name": "this_05",
+     "type": "Pawn *",
+     "storage": "RSI:8"
+    },
+    {
+     "name": "this_04",
+     "type": "King *",
+     "storage": "RSI:8"
+    },
+    {
+     "name": "lVar7",
+     "type": "longlong",
+     "storage": "RBX:8"
+    },
+    {
+     "name": "pPVar6",
+     "type": "Pawn *",
+     "storage": "RAX:8"
+    },
+    {
+     "name": "this_01",
+     "type": "Knight *",
+     "storage": "RSI:8"
+    },
+    {
+     "name": "this_00",
+     "type": "Rook *",
+     "storage": "RSI:8"
+    }
+   ],
+   "field_accesses": [
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "size": 8,
+     "access": "write",
+     "at": "0x140006b51"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 8,
+     "access": "write",
+     "at": "0x140006b84"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 16,
+     "size": 8,
+     "access": "write",
+     "at": "0x140006bb8"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 24,
+     "size": 8,
+     "access": "write",
+     "at": "0x140006bec"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 32,
+     "size": 8,
+     "access": "write",
+     "at": "0x140006c20"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "write",
+     "at": "0x140006c54"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006c5c"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006c6a"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 16,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006c79"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 24,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006c88"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 32,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006c97"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 16,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006ca6"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006cb9"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006ccc"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006cde"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006ced"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006d00"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006d13"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006d26"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006d39"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006d4c"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006d61"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006d76"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006d88"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 16,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006d9b"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 24,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006dae"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 32,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006dc1"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 16,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006dd4"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 8,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006de7"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 0,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006dfa"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006e0c"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006e21"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006e36"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006e4b"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006e60"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006e75"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006e8a"
+    },
+    {
+     "param": 0,
+     "param_name": "this",
+     "offset": 40,
+     "size": 8,
+     "access": "read",
+     "at": "0x140006e9f"
+    }
+   ],
+   "arg_passes": [],
+   "assembly": [
+    "0x140006b10: PUSH RBP",
+    "0x140006b11: PUSH RDI",
+    "0x140006b12: PUSH RSI",
+    "0x140006b13: PUSH RBX",
+    "0x140006b14: SUB RSP,0x28",
+    "0x140006b18: LEA RBP,[RSP + 0x20]",
+    "0x140006b1d: MOV qword ptr [RBP + 0x30],RCX",
+    "0x140006b21: MOV ECX,0x60",
+    "0x140006b26: CALL 0x1400014f0",
+    "0x140006b2b: MOV RDI,RAX",
+    "0x140006b2e: MOV RSI,RDI",
+    "0x140006b31: MOV EBX,0x3",
+    "0x140006b36: JMP 0x140006b48",
+    "0x140006b38: MOV RCX,RSI",
+    "0x140006b3b: CALL 0x140002e80",
+    "0x140006b40: SUB RBX,0x1",
+    "0x140006b44: ADD RSI,0x18",
+    "0x140006b48: TEST RBX,RBX",
+    "0x140006b4b: JNS 0x140006b38",
+    "0x140006b4d: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006b51: MOV qword ptr [RAX],RDI",
+    "0x140006b54: MOV ECX,0x60",
+    "0x140006b59: CALL 0x1400014f0",
+    "0x140006b5e: MOV RDI,RAX",
+    "0x140006b61: MOV RSI,RDI",
+    "0x140006b64: MOV EBX,0x3",
+    "0x140006b69: JMP 0x140006b7b",
+    "0x140006b6b: MOV RCX,RSI",
+    "0x140006b6e: CALL 0x140006ad0",
+    "0x140006b73: SUB RBX,0x1",
+    "0x140006b77: ADD RSI,0x18",
+    "0x140006b7b: TEST RBX,RBX",
+    "0x140006b7e: JNS 0x140006b6b",
+    "0x140006b80: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006b84: MOV qword ptr [RAX + 0x8],RDI",
+    "0x140006b88: MOV ECX,0x60",
+    "0x140006b8d: CALL 0x1400014f0",
+    "0x140006b92: MOV RDI,RAX",
+    "0x140006b95: MOV RSI,RDI",
+    "0x140006b98: MOV EBX,0x3",
+    "0x140006b9d: JMP 0x140006baf",
+    "0x140006b9f: MOV RCX,RSI",
+    "0x140006ba2: CALL 0x140005f40",
+    "0x140006ba7: SUB RBX,0x1",
+    "0x140006bab: ADD RSI,0x18",
+    "0x140006baf: TEST RBX,RBX",
+    "0x140006bb2: JNS 0x140006b9f",
+    "0x140006bb4: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006bb8: MOV qword ptr [RAX + 0x10],RDI",
+    "0x140006bbc: MOV ECX,0x30",
+    "0x140006bc1: CALL 0x1400014f0",
+    "0x140006bc6: MOV RDI,RAX",
+    "0x140006bc9: MOV RSI,RDI",
+    "0x140006bcc: MOV EBX,0x1",
+    "0x140006bd1: JMP 0x140006be3",
+    "0x140006bd3: MOV RCX,RSI",
+    "0x140006bd6: CALL 0x140005e90",
+    "0x140006bdb: SUB RBX,0x1",
+    "0x140006bdf: ADD RSI,0x18",
+    "0x140006be3: TEST RBX,RBX",
+    "0x140006be6: JNS 0x140006bd3",
+    "0x140006be8: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006bec: MOV qword ptr [RAX + 0x18],RDI",
+    "0x140006bf0: MOV ECX,0x30",
+    "0x140006bf5: CALL 0x1400014f0",
+    "0x140006bfa: MOV RDI,RAX",
+    "0x140006bfd: MOV RSI,RDI",
+    "0x140006c00: MOV EBX,0x1",
+    "0x140006c05: JMP 0x140006c17",
+    "0x140006c07: MOV RCX,RSI",
+    "0x140006c0a: CALL 0x1400028b0",
+    "0x140006c0f: SUB RBX,0x1",
+    "0x140006c13: ADD RSI,0x18",
+    "0x140006c17: TEST RBX,RBX",
+    "0x140006c1a: JNS 0x140006c07",
+    "0x140006c1c: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006c20: MOV qword ptr [RAX + 0x20],RDI",
+    "0x140006c24: MOV ECX,0x180",
+    "0x140006c29: CALL 0x1400014f0",
+    "0x140006c2e: MOV RDI,RAX",
+    "0x140006c31: MOV RSI,RDI",
+    "0x140006c34: MOV EBX,0xf",
+    "0x140006c39: JMP 0x140006c4b",
+    "0x140006c3b: MOV RCX,RSI",
+    "0x140006c3e: CALL 0x140002960",
+    "0x140006c43: SUB RBX,0x1",
+    "0x140006c47: ADD RSI,0x18",
+    "0x140006c4b: TEST RBX,RBX",
+    "0x140006c4e: JNS 0x140006c3b",
+    "0x140006c50: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006c54: MOV qword ptr [RAX + 0x28],RDI",
+    "0x140006c58: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006c5c: MOV RAX,qword ptr [RAX]",
+    "0x140006c5f: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006c66: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006c6a: MOV RAX,qword ptr [RAX + 0x8]",
+    "0x140006c6e: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006c75: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006c79: MOV RAX,qword ptr [RAX + 0x10]",
+    "0x140006c7d: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006c84: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006c88: MOV RAX,qword ptr [RAX + 0x18]",
+    "0x140006c8c: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006c93: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006c97: MOV RAX,qword ptr [RAX + 0x20]",
+    "0x140006c9b: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006ca2: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006ca6: MOV RAX,qword ptr [RAX + 0x10]",
+    "0x140006caa: ADD RAX,0x18",
+    "0x140006cae: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006cb5: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006cb9: MOV RAX,qword ptr [RAX + 0x8]",
+    "0x140006cbd: ADD RAX,0x18",
+    "0x140006cc1: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006cc8: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006ccc: MOV RAX,qword ptr [RAX]",
+    "0x140006ccf: ADD RAX,0x18",
+    "0x140006cd3: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006cda: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006cde: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006ce2: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006ce9: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006ced: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006cf1: ADD RAX,0x18",
+    "0x140006cf5: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006cfc: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006d00: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006d04: ADD RAX,0x30",
+    "0x140006d08: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006d0f: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006d13: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006d17: ADD RAX,0x48",
+    "0x140006d1b: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006d22: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006d26: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006d2a: ADD RAX,0x60",
+    "0x140006d2e: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006d35: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006d39: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006d3d: ADD RAX,0x78",
+    "0x140006d41: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006d48: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006d4c: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006d50: ADD RAX,0x90",
+    "0x140006d56: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006d5d: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006d61: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006d65: ADD RAX,0xa8",
+    "0x140006d6b: MOV dword ptr [RAX + 0x14],0x1",
+    "0x140006d72: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006d76: MOV RAX,qword ptr [RAX]",
+    "0x140006d79: ADD RAX,0x30",
+    "0x140006d7d: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006d84: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006d88: MOV RAX,qword ptr [RAX + 0x8]",
+    "0x140006d8c: ADD RAX,0x30",
+    "0x140006d90: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006d97: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006d9b: MOV RAX,qword ptr [RAX + 0x10]",
+    "0x140006d9f: ADD RAX,0x30",
+    "0x140006da3: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006daa: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006dae: MOV RAX,qword ptr [RAX + 0x18]",
+    "0x140006db2: ADD RAX,0x18",
+    "0x140006db6: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006dbd: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006dc1: MOV RAX,qword ptr [RAX + 0x20]",
+    "0x140006dc5: ADD RAX,0x18",
+    "0x140006dc9: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006dd0: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006dd4: MOV RAX,qword ptr [RAX + 0x10]",
+    "0x140006dd8: ADD RAX,0x48",
+    "0x140006ddc: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006de3: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006de7: MOV RAX,qword ptr [RAX + 0x8]",
+    "0x140006deb: ADD RAX,0x48",
+    "0x140006def: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006df6: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006dfa: MOV RAX,qword ptr [RAX]",
+    "0x140006dfd: ADD RAX,0x48",
+    "0x140006e01: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006e08: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006e0c: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006e10: ADD RAX,0xc0",
+    "0x140006e16: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006e1d: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006e21: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006e25: ADD RAX,0xd8",
+    "0x140006e2b: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006e32: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006e36: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006e3a: ADD RAX,0xf0",
+    "0x140006e40: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006e47: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006e4b: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006e4f: ADD RAX,0x108",
+    "0x140006e55: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006e5c: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006e60: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006e64: ADD RAX,0x120",
+    "0x140006e6a: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006e71: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006e75: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006e79: ADD RAX,0x138",
+    "0x140006e7f: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006e86: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006e8a: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006e8e: ADD RAX,0x150",
+    "0x140006e94: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006e9b: MOV RAX,qword ptr [RBP + 0x30]",
+    "0x140006e9f: MOV RAX,qword ptr [RAX + 0x28]",
+    "0x140006ea3: ADD RAX,0x168",
+    "0x140006ea9: MOV dword ptr [RAX + 0x14],0x2",
+    "0x140006eb0: NOP",
+    "0x140006eb1: ADD RSP,0x28",
+    "0x140006eb5: POP RBX",
+    "0x140006eb6: POP RSI",
+    "0x140006eb7: POP RDI",
+    "0x140006eb8: POP RBP",
+    "0x140006eb9: RET"
+   ],
+   "stats": {
+    "cbranches": 6,
+    "switches": 0,
+    "calls": 12,
+    "indirect_calls": 0,
+    "loads": 32,
+    "stores": 38,
+    "returns": 1,
+    "instructions": 220,
+    "basic_blocks": 19
+   },
+   "callers": [
+    "0x1400058e0"
+   ],
+   "callees": [
+    "0x1400014f0",
+    "0x1400028b0",
+    "0x140002960",
+    "0x140002e80",
+    "0x140005e90",
+    "0x140005f40",
+    "0x140006ad0"
+   ],
+   "calls": [
+    {
+     "address": "0x1400014f0",
+     "name": "operator.new[]",
+     "external": false
+    },
+    {
+     "address": "0x1400028b0",
+     "name": "King::King",
+     "external": false
+    },
+    {
+     "address": "0x140002960",
+     "name": "Pawn::Pawn",
+     "external": false
+    },
+    {
+     "address": "0x140002e80",
+     "name": "Rook::Rook",
+     "external": false
+    },
+    {
+     "address": "0x140005e90",
+     "name": "Queen::Queen",
+     "external": false
+    },
+    {
+     "address": "0x140005f40",
+     "name": "Bishop::Bishop",
+     "external": false
+    },
+    {
+     "address": "0x140006ad0",
+     "name": "Knight::Knight",
+     "external": false
+    }
+   ],
+   "strings": [],
+   "globals": [],
+   "types": [
+    "Bishop *",
+    "King *",
+    "Knight *",
+    "Pawn *",
+    "Pieces *",
+    "Queen *",
+    "Rook *",
+    "longlong",
+    "void"
+   ]
+  }
+ ],
+ "strings": [
+  {
+   "address": "0x140009008",
+   "value": "Rook!\nWhere do you want to go?\n"
+  },
+  {
+   "address": "0x140009028",
+   "value": "Path is blocked by another Piece!\n"
+  },
+  {
+   "address": "0x14000904b",
+   "value": "PAUSE"
+  },
+  {
+   "address": "0x140009058",
+   "value": "Please choose the right move for your Piece!\n"
+  },
+  {
+   "address": "0x140009086",
+   "value": "This is your own piece!\n"
+  },
+  {
+   "address": "0x1400090a8",
+   "value": "Knight!\nWhere do you want to go?\n"
+  },
+  {
+   "address": "0x1400090d8",
+   "value": "-----1---------2---------3---------4---------5---------6---------7---------8-----\n"
+  },
+  {
+   "address": "0x140009130",
+   "value": "|#########|         |#########|         |#########|         |#########|         |\n"
+  },
+  {
+   "address": "0x140009183",
+   "value": "1    "
+  },
+  {
+   "address": "0x140009189",
+   "value": "    |"
+  },
+  {
+   "address": "0x140009194",
+   "value": "    |\n"
+  },
+  {
+   "address": "0x1400091a0",
+   "value": "---------------------------------------------------------------------------------\n"
+  },
+  {
+   "address": "0x1400091f8",
+   "value": "|         |#########|         |#########|         |#########|         |#########|\n"
+  },
+  {
+   "address": "0x14000924b",
+   "value": "2    "
+  },
+  {
+   "address": "0x140009251",
+   "value": "3    "
+  },
+  {
+   "address": "0x140009257",
+   "value": "4    "
+  },
+  {
+   "address": "0x14000925d",
+   "value": "5    "
+  },
+  {
+   "address": "0x140009263",
+   "value": "6    "
+  },
+  {
+   "address": "0x140009269",
+   "value": "7    "
+  },
+  {
+   "address": "0x14000926f",
+   "value": "8    "
+  },
+  {
+   "address": "0x140009280",
+   "value": "Player One, please enter your name:\n"
+  },
+  {
+   "address": "0x1400092a8",
+   "value": "Player Two, please enter your name:\n"
+  },
+  {
+   "address": "0x1400092d0",
+   "value": ", Please choose the co-ordinates of the piece you would like to move\n"
+  },
+  {
+   "address": "0x140009318",
+   "value": "Please enter values within the chess board range!\n"
+  },
+  {
+   "address": "0x14000934b",
+   "value": "No Piece exits on location\n"
+  },
+  {
+   "address": "0x140009368",
+   "value": "This Piece belongs to player 2!\n"
+  },
+  {
+   "address": "0x140009390",
+   "value": "This Piece belongs to player 1!\n"
+  },
+  {
+   "address": "0x1400093b8",
+   "value": "basic_string: construction from null is not valid"
+  },
+  {
+   "address": "0x140009460",
+   "value": "Argument domain error (DOMAIN)"
+  },
+  {
+   "address": "0x14000947f",
+   "value": "Argument singularity (SIGN)"
+  },
+  {
+   "address": "0x1400094a0",
+   "value": "Overflow range error (OVERFLOW)"
+  },
+  {
+   "address": "0x1400094c0",
+   "value": "Partial loss of significance (PLOSS)"
+  },
+  {
+   "address": "0x1400094e8",
+   "value": "Total loss of significance (TLOSS)"
+  },
+  {
+   "address": "0x140009510",
+   "value": "The result is too small to be represented (UNDERFLOW)"
+  },
+  {
+   "address": "0x140009546",
+   "value": "Unknown error"
+  },
+  {
+   "address": "0x140009558",
+   "value": "_matherr(): %s in %s(%g, %g)  (retval=%g)\n"
+  },
+  {
+   "address": "0x1400095a0",
+   "value": "Mingw-w64 runtime failure:\n"
+  },
+  {
+   "address": "0x1400095c0",
+   "value": "Address %p has no image-section"
+  },
+  {
+   "address": "0x1400095e0",
+   "value": "  VirtualQuery failed for %d bytes at address %p"
+  },
+  {
+   "address": "0x140009618",
+   "value": "  VirtualProtect failed with code 0x%x"
+  },
+  {
+   "address": "0x140009640",
+   "value": "  Unknown pseudo relocation protocol version %d.\n"
+  },
+  {
+   "address": "0x140009678",
+   "value": "  Unknown pseudo relocation bit size %d.\n"
+  },
+  {
+   "address": "0x1400096a8",
+   "value": "%d bit pseudo relocation at %p out of range, targeting %p, yielding the value %p.\n"
+  },
+  {
+   "address": "0x1400099e0",
+   "value": "4King"
+  },
+  {
+   "address": "0x1400099f0",
+   "value": "4Pawn"
+  },
+  {
+   "address": "0x140009a00",
+   "value": "4Rook"
+  },
+  {
+   "address": "0x140009a10",
+   "value": "5Piece"
+  },
+  {
+   "address": "0x140009a20",
+   "value": "5Queen"
+  },
+  {
+   "address": "0x140009a30",
+   "value": "6Bishop"
+  },
+  {
+   "address": "0x140009a40",
+   "value": "6Knight"
+  }
+ ],
+ "classes": [
+  {
+   "name": "std::string",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "std::string::_Alloc_hider",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "std::istream",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "King",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "Pawn",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "Rook",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "Board",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "Chess",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "Piece",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "Queen",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "Bishop",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "Engine",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "Knight",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "Pieces",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "std::__new_allocator<char>",
+   "size": 0,
+   "fields": []
+  },
+  {
+   "name": "std::string::_M_construct<char_const*>(char_const*,char_const*,std::forward_iterator_tag)::_Guard",
+   "size": 0,
+   "fields": []
+  }
+ ]
+}
