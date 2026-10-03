@@ -39,8 +39,24 @@ def _ir(path: Path) -> ProgramIR:
 
 
 class Workspaces:
-    def __init__(self, root_getter):
+    def __init__(self, root_getter, binary_dirs=()):
         self._root_getter = root_getter   # the workspace root can change with the settings
+        self._binary_dirs = tuple(Path(d) for d in binary_dirs)
+
+    def resolve_binary(self, recorded: str) -> tuple:
+        """
+        (path, found). Workspaces record the binary's absolute path, which goes
+        stale when the project is moved; fall back to a file of the same name in
+        the binary folders.
+        """
+        if recorded and Path(recorded).is_file():
+            return recorded, True
+        name = Path(recorded).name if recorded else ""
+        for d in self._binary_dirs:
+            candidate = d / name
+            if name and candidate.is_file():
+                return str(candidate), True
+        return recorded, False
 
     @property
     def root(self) -> Path:
@@ -91,9 +107,11 @@ class Workspaces:
         for r in analyzed:
             tiers[tier(r.analysis.name_confidence)] += 1
         m = kb.meta
+        binary, binary_found = self.resolve_binary(m.get("binary", ""))
         return {
             "name": name,
-            "binary": m.get("binary", ""),
+            "binary": binary,
+            "binary_found": binary_found,
             "program": m.get("program", {}),
             "updated_at": m.get("updated_at", ""),
             "current_round": m.get("current_round", 0),

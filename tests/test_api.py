@@ -97,6 +97,7 @@ def test_job_lifecycle_and_workspace_views(api):
     workspaces = client.get("/api/workspaces").json()
     assert [w["name"] for w in workspaces] == ["Chess"]
     assert workspaces[0]["counts"]["analyzed"] == 6
+    assert workspaces[0]["binary"] == str(binary.resolve()) and workspaces[0]["binary_found"] is True
 
     functions = client.get("/api/workspaces/Chess/functions").json()
     analyzed = [f for f in functions if f["tier"]]

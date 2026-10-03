@@ -66,7 +66,8 @@ run can override them. The CLI flags are shortcuts for common overrides:
 ### HTTP API
 
 `python serve.py` serves a local API on `127.0.0.1:8765`. Interactive docs are at `/docs`, and
-the full route list is at the top of `api/app.py`. Any localhost origin is allowed, so a
+the full route list is at the top of `api/app.py`. The web UI lives in its own repo:
+[Semantic_Decompiler_Frontend](https://github.com/yuri8822/Semantic_Decompiler_Frontend). Any localhost origin is allowed, so a
 frontend dev server on another port can call it directly.
 
 - **Settings:** `GET /api/settings/schema` returns the JSON Schema, which a UI can render as a

@@ -73,7 +73,7 @@ def create_app(jobs: JobManager = None, settings_file: Path = settings_mod.SETTI
         allow_methods=["*"], allow_headers=["*"],
     )
     jobs = jobs or JobManager(workspace_root() / "_jobs", defaults_loader=load_saved)
-    ws = Workspaces(workspace_root)
+    ws = Workspaces(workspace_root, binary_dirs=BINARY_DIRS)
     app.state.jobs = jobs
 
     @app.exception_handler(NotFound)
