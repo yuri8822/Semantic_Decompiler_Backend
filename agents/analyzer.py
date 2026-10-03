@@ -10,12 +10,10 @@ the apply threshold. The LLM proposes; the binary disposes.
 from pydantic import ValidationError
 
 from agents.prompts import ANALYZER_SYSTEM, build_analyzer_prompt
-from config import CONFIDENCE_MEDIUM
 from ghidra_io.ir import FunctionIR
+from knowledge.confidence import demoted
 from knowledge.models import FunctionAnalysis, to_int
 from knowledge.naming import split_qualified, type_size
-
-_MISMATCH_CAP = CONFIDENCE_MEDIUM - 0.05
 
 
 class Analyzer:
@@ -80,7 +78,7 @@ def ground(a: FunctionAnalysis, fn: FunctionIR, pointer_size: int = 8) -> Functi
         if size and key in observed and size not in observed[key]:
             notes.append(f"grounding: {f.name} ({f.type}, {size} bytes) at +{f.offset:#x} contradicts observed "
                          f"access sizes {sorted(observed[key])}; confidence capped")
-            f.confidence = min(f.confidence, _MISMATCH_CAP)
+            f.confidence = demoted(f.confidence, 0.05)
         kept.append(f)
     a.fields = kept
 

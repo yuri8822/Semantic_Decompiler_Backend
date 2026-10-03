@@ -1,6 +1,7 @@
 """Tests over a real Ghidra export of TestBinaries/Chess.exe (tests/fixtures/chess_subset.json)."""
 
 import shutil
+from pathlib import Path
 
 import pytest
 
@@ -202,8 +203,10 @@ def test_empty_llm_answer_is_an_error(tmp_path, monkeypatch):
             return "   "
 
     monkeypatch.setattr(client_mod.time, "sleep", lambda s: None)
+    calls = []
     with pytest.raises(LLMError):
-        LLMClient("deepseek", impl=Empty(), log_dir=tmp_path).complete("s", "u")
+        LLMClient("deepseek", impl=Empty(), on_call=calls.append).complete("s", "u")
+    assert len(calls) == 3 and not any(c["ok"] for c in calls)
 
 
 @pytest.mark.skipif(shutil.which("g++") is None, reason="g++ not available")
@@ -246,18 +249,26 @@ def test_header_layout_offsets_are_exact(kb, chess_ir, tmp_path):
 
 @pytest.mark.skipif(shutil.which("g++") is None, reason="g++ not available")
 def test_offline_pipeline_end_to_end(tmp_path):
-    from rich.console import Console
-
     from pipeline import Pipeline
+    from settings import Settings
     from tests.conftest import FIXTURE
     from tests.fakes import FakeLLM, FakeRunner
 
     llm, runner = FakeLLM(), FakeRunner(FIXTURE)
-    p = Pipeline(tmp_path / "Chess.exe", "fake", rounds=2, workspace=tmp_path / "ws", llm=llm, runner=runner,
-                 concurrency=4, console=Console(quiet=True))
-    out = p.run()
+    s = Settings().with_overrides({"workspace_dir": str(tmp_path / "ws"), "analysis": {"rounds": 2}})
+    events = []
+    p = Pipeline(tmp_path / "Chess.exe", s, llm=llm, runner=runner, on_event=events.append)
+    summary = p.run()
+    out = Path(summary["project"])
 
     assert not p.failures, p.failures
+    types = [e["type"] for e in events]
+    assert types[0] == "run_started" and types[-1] == "run_finished" and events[-1]["status"] == "done"
+    stages = [(e["stage"], e["round"]) for e in events if e["type"] == "stage"]
+    assert stages[:4] == [("ghidra", 0), ("scope", 0), ("analysis", 1), ("types", 1)]
+    assert ("analysis", 2) in stages and stages[-1] == ("project", 0)
+    progress = [e for e in events if e["type"] == "progress" and e["stage"] == "code"]
+    assert progress and progress[-1]["done"] == progress[-1]["total"]
     kinds = {k for k, _ in llm.calls}
     assert {"analyze", "types", "code"} <= kinds
     # The fake analyzer calls Engine::CheckState void while GameLoop uses its result: the
@@ -283,6 +294,49 @@ def test_offline_pipeline_end_to_end(tmp_path):
 
     # Rerun resumes: nothing new is sent to the LLM.
     before = len(llm.calls)
-    Pipeline(tmp_path / "Chess.exe", "fake", rounds=2, workspace=tmp_path / "ws", llm=llm, runner=runner,
-             console=Console(quiet=True)).run()
+    Pipeline(tmp_path / "Chess.exe", s, llm=llm, runner=runner).run()
     assert len([c for c in llm.calls[before:] if c[0] != "code"]) == 0
+
+
+def test_scope_settings_and_cancellation(tmp_path):
+    import threading
+
+    from pipeline import Cancelled, Pipeline
+    from settings import Settings
+    from tests.conftest import FIXTURE
+    from tests.fakes import FakeLLM, FakeRunner
+
+    # only/exclude/include: GameLoop by name, Rook::Move by address; force a filtered
+    # std:: function in, and exclude Rook::Move again — exclude wins.
+    s = Settings().with_overrides({
+        "workspace_dir": str(tmp_path / "ws"),
+        "analysis": {"rounds": 1, "apply_to_ghidra": False, "reconstruct_types": False},
+        "code": {"enabled": False},
+        "scope": {"only": ["Engine::GameLoop", "0x140002A10", "std::operator<<"],
+                  "include": ["std::operator<<"], "exclude": ["0x140002a10"]},
+    })
+    llm = FakeLLM()
+    p = Pipeline(tmp_path / "Chess.exe", s, llm=llm, runner=FakeRunner(FIXTURE))
+    p.run()
+    # a name selects every overload: both std::operator<< functions come in
+    assert {tag for kind, tag in llm.calls} == {"analyze_r1_0x140006460", "analyze_r1_0x1400014f8",
+                                                "analyze_r1_0x140001500"}
+    assert p.kb.functions["0x140002a10"].excluded.startswith("excluded by settings")
+
+    # Cancelling mid-analysis stops the run with a cancelled event, and nothing is lost.
+    gate = threading.Event()
+
+    class SlowLLM(FakeLLM):
+        def complete_json(self, *a, **k):
+            gate.set()
+            return super().complete_json(*a, **k)
+
+    s2 = Settings().with_overrides({"workspace_dir": str(tmp_path / "ws2"), "llm": {"concurrency": 1}})
+    events = []
+    p2 = Pipeline(tmp_path / "Chess.exe", s2, llm=SlowLLM(), runner=FakeRunner(FIXTURE), on_event=events.append)
+    threading.Thread(target=lambda: (gate.wait(), p2.cancel()), daemon=True).start()
+    with pytest.raises(Cancelled):
+        p2.run()
+    assert events[-1] == {**events[-1], "type": "run_finished", "status": "cancelled"}
+    analyzed = sum(1 for r in p2.kb.functions.values() if r.analysis)
+    assert 1 <= analyzed < len(p2.kb.in_scope())

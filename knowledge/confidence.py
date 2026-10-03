@@ -8,26 +8,38 @@ Confidence gating — what a discovery's confidence allows:
 This is what stops one bad guess from poisoning the whole reconstruction.
 """
 
-from config import CONFIDENCE_HIGH, CONFIDENCE_MEDIUM
+import settings
 
 HIGH, MEDIUM, LOW = "high", "medium", "low"
 
 
+def thresholds() -> tuple:
+    c = settings.current().confidence
+    return c.high, c.medium
+
+
 def tier(confidence: float) -> str:
-    if confidence >= CONFIDENCE_HIGH:
+    high, medium = thresholds()
+    if confidence >= high:
         return HIGH
-    if confidence >= CONFIDENCE_MEDIUM:
+    if confidence >= medium:
         return MEDIUM
     return LOW
 
 
 def accepted(confidence: float) -> bool:
     """High or medium: safe to apply."""
-    return confidence >= CONFIDENCE_MEDIUM
+    return confidence >= thresholds()[1]
 
 
 def needs_todo(confidence: float) -> bool:
-    return CONFIDENCE_MEDIUM <= confidence < CONFIDENCE_HIGH
+    high, medium = thresholds()
+    return medium <= confidence < high
+
+
+def demoted(confidence: float, margin: float) -> float:
+    """`confidence` capped `margin` below the medium threshold (i.e. withheld)."""
+    return min(confidence, max(0.0, thresholds()[1] - margin))
 
 
 def todo(what: str, confidence: float) -> str:

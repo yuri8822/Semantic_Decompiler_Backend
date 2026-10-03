@@ -18,6 +18,7 @@ import json
 import re
 import shutil
 import threading
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -27,9 +28,28 @@ from knowledge.models import FunctionRecord, GlobalRecord, TypeRecord
 
 def _write_json(path: Path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp = path.with_suffix(path.suffix + f".{threading.get_ident()}.tmp")
     tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
-    tmp.replace(path)
+    # On Windows, replacing a file another thread is reading at that instant
+    # (e.g. the API serving a live workspace) fails transiently; retry briefly.
+    for attempt in range(20):
+        try:
+            tmp.replace(path)
+            return
+        except PermissionError:
+            if attempt == 19:
+                raise
+            time.sleep(0.05)
+
+
+def _read_text(path: Path) -> str:
+    for attempt in range(20):
+        try:
+            return path.read_text(encoding="utf-8")
+        except PermissionError:  # Windows: the file is being replaced right now
+            if attempt == 19:
+                raise
+            time.sleep(0.05)
 
 
 def _file_key(name: str) -> str:
@@ -82,16 +102,16 @@ class KnowledgeBase:
     def _load(self):
         meta_path = self.root / "knowledge.json"
         if meta_path.exists():
-            self.meta = json.loads(meta_path.read_text(encoding="utf-8"))
+            self.meta = json.loads(_read_text(meta_path))
         self.meta.setdefault("rounds", [])
         for path in sorted((self.root / "functions").glob("*.json")):
-            rec = FunctionRecord.model_validate_json(path.read_text(encoding="utf-8"))
+            rec = FunctionRecord.model_validate_json(_read_text(path))
             self.functions[rec.address] = rec
         for path in sorted((self.root / "types").glob("*.json")):
-            rec = TypeRecord.model_validate_json(path.read_text(encoding="utf-8"))
+            rec = TypeRecord.model_validate_json(_read_text(path))
             self.types[rec.name] = rec
         for path in sorted((self.root / "globals").glob("*.json")):
-            rec = GlobalRecord.model_validate_json(path.read_text(encoding="utf-8"))
+            rec = GlobalRecord.model_validate_json(_read_text(path))
             self.globals[rec.address] = rec
 
     # -- records --------------------------------------------------------------

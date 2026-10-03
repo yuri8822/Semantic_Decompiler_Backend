@@ -11,10 +11,11 @@ The second is the feedback loop: renames and types applied to the program
 make Ghidra's own decompiler produce better pseudocode for the next round.
 """
 
+import os
 import subprocess
 from pathlib import Path
 
-from config import GHIDRA_HEADLESS, GHIDRA_PROJECT_DIR, GHIDRA_PROJECT_NAME, GHIDRA_SCRIPT_DIR
+from settings import Settings
 
 
 class GhidraError(RuntimeError):
@@ -22,9 +23,17 @@ class GhidraError(RuntimeError):
 
 
 class GhidraRunner:
-    def __init__(self, binary: Path, verbose: bool = False):
+    """`on_line(text)` (optional) receives every line of Ghidra's output as it arrives."""
+
+    def __init__(self, binary: Path, settings: Settings, verbose: bool = False, on_line=None):
         self.binary = Path(binary).resolve()
         self.verbose = verbose
+        self.on_line = on_line
+        self.headless = Path(settings.ghidra.headless)
+        self.project_dir = settings.path(settings.ghidra.project_dir)
+        self.project_name = settings.ghidra.project_name
+        self.script_dir = settings.path(settings.ghidra.script_dir)
+        self._proc = None
 
     @property
     def program_name(self) -> str:
@@ -52,33 +61,47 @@ class GhidraRunner:
         )
         return out_json
 
+    def cancel(self):
+        """Stop a running headless analysis (the launcher and the JVM it started)."""
+        proc = self._proc
+        if proc is None or proc.poll() is not None:
+            return
+        if os.name == "nt":
+            subprocess.run(["taskkill", "/T", "/F", "/PID", str(proc.pid)], capture_output=True)
+        else:
+            proc.kill()
+
     def _run(self, mode_args: list, post_scripts: list, expect: list) -> str:
-        headless = Path(GHIDRA_HEADLESS)
-        if not headless.exists():
+        if not self.headless.exists():
             raise FileNotFoundError(
-                f"analyzeHeadless not found at {headless}. Set GHIDRA_HEADLESS or edit config.py."
+                f"analyzeHeadless not found at {self.headless}. Set ghidra.headless in the settings."
             )
-        GHIDRA_PROJECT_DIR.mkdir(parents=True, exist_ok=True)
+        self.project_dir.mkdir(parents=True, exist_ok=True)
         # Headless exits 0 even when a post-script throws, so a stale output
         # from an earlier run must never be mistaken for this run's.
         for path in expect:
             Path(path).unlink(missing_ok=True)
 
-        cmd = [str(headless), str(GHIDRA_PROJECT_DIR), GHIDRA_PROJECT_NAME, *mode_args,
-               "-scriptPath", str(GHIDRA_SCRIPT_DIR)]
+        cmd = [str(self.headless), str(self.project_dir), self.project_name, *mode_args,
+               "-scriptPath", str(self.script_dir)]
         for script in post_scripts:
             cmd += ["-postScript", *script]
 
         lines = []
-        proc = subprocess.Popen(
+        self._proc = proc = subprocess.Popen(
             cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
             text=True, encoding="utf-8", errors="replace", bufsize=1,
         )
-        for line in proc.stdout:
-            lines.append(line)
-            if self.verbose:
-                print(line, end="")
-        proc.wait()
+        try:
+            for line in proc.stdout:
+                lines.append(line)
+                if self.verbose:
+                    print(line, end="")
+                if self.on_line:
+                    self.on_line(line.rstrip("\n"))
+            proc.wait()
+        finally:
+            self._proc = None
         output = "".join(lines)
 
         script_failed = "SCRIPT ERROR" in output

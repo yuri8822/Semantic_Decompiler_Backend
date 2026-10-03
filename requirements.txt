@@ -3,4 +3,8 @@ openai
 pydantic>=2
 rich
 python-dotenv
+fastapi
+uvicorn
+python-multipart
+httpx
 pytest

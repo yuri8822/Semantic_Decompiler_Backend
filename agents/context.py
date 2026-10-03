@@ -6,7 +6,7 @@ they all describe functions, neighbours and classes the same way.
 from collections import defaultdict
 
 from agents.crosscheck import return_value_uses
-from config import PROMPT_MAX_ASSEMBLY_LINES, PROMPT_MAX_DECOMPILED_CHARS, PROMPT_MAX_NEIGHBOURS
+import settings
 from ghidra_io.ir import FunctionIR, ProgramIR
 from knowledge.confidence import tier
 from knowledge.filters import is_imported_data
@@ -20,6 +20,7 @@ class Context:
         self.ir = ir
         self.ir0 = ir0 or ir      # round-0 export: Ghidra's inference before any applied knowledge
         self.signatures = signatures or {}
+        self.limits = settings.current().prompts
 
     # -- names ------------------------------------------------------------------
 
@@ -106,7 +107,7 @@ class Context:
 
     def callees(self, fn: FunctionIR) -> str:
         out = []
-        for c in fn.calls[:PROMPT_MAX_NEIGHBOURS * 2]:
+        for c in fn.calls[:self.limits.max_neighbours * 2]:
             if c.external:
                 lib = f" from {c.library}" if c.library else ""
                 out.append(f"  {c.name}  (imported{lib})")
@@ -117,9 +118,9 @@ class Context:
         return "\n".join(out) or "  (none)"
 
     def callers(self, fn: FunctionIR) -> str:
-        out = [f"  {a} {self.name_of(a)} — {self.summary_of(a)}" for a in fn.callers[:PROMPT_MAX_NEIGHBOURS]]
-        if len(fn.callers) > PROMPT_MAX_NEIGHBOURS:
-            out.append(f"  ... and {len(fn.callers) - PROMPT_MAX_NEIGHBOURS} more")
+        out = [f"  {a} {self.name_of(a)} — {self.summary_of(a)}" for a in fn.callers[:self.limits.max_neighbours]]
+        if len(fn.callers) > self.limits.max_neighbours:
+            out.append(f"  ... and {len(fn.callers) - self.limits.max_neighbours} more")
         return "\n".join(out) or "  (none — entry point, callback, or called through a pointer)"
 
     def return_uses(self, fn: FunctionIR) -> str:
@@ -148,12 +149,12 @@ class Context:
 
     def decompiled(self, fn: FunctionIR) -> str:
         text = fn.decompiled.strip()
-        if len(text) > PROMPT_MAX_DECOMPILED_CHARS:
-            text = text[:PROMPT_MAX_DECOMPILED_CHARS] + "\n/* ... truncated ... */"
+        if len(text) > self.limits.max_decompiled_chars:
+            text = text[:self.limits.max_decompiled_chars] + "\n/* ... truncated ... */"
         return text
 
     def assembly(self, fn: FunctionIR) -> str:
-        lines = fn.assembly[:PROMPT_MAX_ASSEMBLY_LINES]
+        lines = fn.assembly[:self.limits.max_assembly_lines]
         more = len(fn.assembly) - len(lines)
         return "\n".join(lines) + (f"\n... ({more} more instructions)" if more > 0 else "")
 

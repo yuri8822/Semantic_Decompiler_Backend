@@ -16,13 +16,12 @@ import re
 from collections import Counter
 
 from agents.cpp_text import mask
-from config import CONFIDENCE_MEDIUM
 from ghidra_io.ir import ProgramIR
+from knowledge.confidence import demoted
 from knowledge.naming import ghidra_to_cpp_type
 
 _ASSIGNED_RE = re.compile(r"([A-Za-z_]\w*)\s*=\s*$")
 _STATEMENT_KEYWORD_RE = re.compile(r"(\belse|\bdo|\bLAB_\w+\s*:)$")
-_RETURN_CAP = CONFIDENCE_MEDIUM - 0.1
 
 
 def return_value_uses(ir0: ProgramIR, callee_address: str) -> list:
@@ -80,7 +79,7 @@ def check_return_values(kb, ir0: ProgramIR, addresses) -> list:
                 f"callers use the return value ({where}) but the analysis says it returns "
                 f"{a.return_type or 'nothing'}" + (f"; callers receive it as {observed}" if observed else ""))
         if contradictions:
-            a.return_confidence = min(a.return_confidence, _RETURN_CAP)
+            a.return_confidence = demoted(a.return_confidence, 0.1)
         if contradictions != a.contradictions or observed != a.observed_return_type:
             a.contradictions, a.observed_return_type = contradictions, observed
             kb.save_function(rec)

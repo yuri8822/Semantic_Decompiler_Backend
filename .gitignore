@@ -21,8 +21,12 @@ workspace/
 workspace_run*.log
 .pytest_cache/
 
-# Input binaries (don't commit third-party executables)
+# Input binaries (don't commit third-party executables); binaries/ holds API uploads
 TestBinaries/
+binaries/
+
+# Machine-local saved settings (paths, providers); defaults live in settings.py
+settings.json
 
 # ── Ghidra project files ────────────────────────────────────────────────────
 # The .gpr and .rep are local workspace state, not source

@@ -2,23 +2,23 @@
 
 import os
 
-from config import DEEPSEEK_BASE_URL, DEEPSEEK_MODEL, DEEPSEEK_MAX_TOKENS, AI_TIMEOUT_SECONDS
 from llm.providers.base import BaseProvider, HEAVY
 
 
 class DeepSeekProvider(BaseProvider):
-    def __init__(self):
+    def __init__(self, cfg, timeout: int):
         from openai import OpenAI
+        self._cfg = cfg
         self._client = OpenAI(
-            base_url=DEEPSEEK_BASE_URL,
+            base_url=cfg.base_url,
             api_key=os.environ.get("DEEPSEEK_API_KEY", ""),
-            timeout=AI_TIMEOUT_SECONDS,
+            timeout=timeout,
         )
 
     def complete(self, system: str, user: str, tier: str = HEAVY) -> str:
         resp = self._client.chat.completions.create(
-            model=DEEPSEEK_MODEL,
-            max_tokens=DEEPSEEK_MAX_TOKENS,
+            model=self._cfg.model,
+            max_tokens=self._cfg.max_tokens,
             messages=[
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
@@ -29,5 +29,5 @@ class DeepSeekProvider(BaseProvider):
         if not text.strip():
             reasoning = getattr(choice.message, "reasoning_content", None) or ""
             raise RuntimeError(f"DeepSeek returned no answer (finish_reason={choice.finish_reason!r}, "
-                               f"{len(reasoning)} chars of reasoning); raise DEEPSEEK_MAX_TOKENS if 'length'")
+                               f"{len(reasoning)} chars of reasoning); raise llm.deepseek.max_tokens if 'length'")
         return text

@@ -4,7 +4,6 @@ on http://localhost:8080. Model-agnostic: start llama-server with whatever
 GGUF you want and this talks to it as-is.
 """
 
-from config import LLAMACPP_BASE_URL, LLAMACPP_MODEL, LLAMACPP_MAX_TOKENS, AI_TIMEOUT_SECONDS
 from llm.providers.base import BaseProvider, HEAVY
 
 # Thinking is on server-side with a token budget (see start_llamacpp.bat).
@@ -33,18 +32,19 @@ def strip_reasoning(text: str) -> str:
 
 
 class LlamaCppProvider(BaseProvider):
-    def __init__(self):
+    def __init__(self, cfg, timeout: int):
         from openai import OpenAI
+        self._cfg = cfg
         self._client = OpenAI(
-            base_url=LLAMACPP_BASE_URL,
+            base_url=cfg.base_url,
             api_key="llamacpp",   # required by the openai SDK but ignored by llama-server
-            timeout=AI_TIMEOUT_SECONDS,
+            timeout=timeout,
         )
 
     def complete(self, system: str, user: str, tier: str = HEAVY) -> str:
         resp = self._client.chat.completions.create(
-            model=LLAMACPP_MODEL,
-            max_tokens=LLAMACPP_MAX_TOKENS,
+            model=self._cfg.model,   # llama-server ignores it and serves whatever is loaded
+            max_tokens=self._cfg.max_tokens,
             messages=[
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
@@ -58,6 +58,6 @@ class LlamaCppProvider(BaseProvider):
             raise RuntimeError(
                 "llama.cpp returned no answer outside its reasoning trace "
                 f"(finish_reason={resp.choices[0].finish_reason!r}). Lower "
-                "--reasoning-budget or raise LLAMACPP_MAX_TOKENS."
+                "--reasoning-budget or raise llm.llamacpp.max_tokens."
             )
         return text

@@ -3,7 +3,7 @@ REM Starts a local llama.cpp server for the decompiler pipeline, in its own
 REM Windows Terminal window so it keeps running independently of whatever
 REM launched this script (falls back to a plain console if wt isn't present).
 REM Listens on http://localhost:8080 (OpenAI-compatible API + built-in chat UI),
-REM which is what config.py's LLAMACPP_BASE_URL points at.
+REM which is what the llm.llamacpp.base_url setting points at.
 REM
 REM Expects the `llama` CLI to be a system install resolvable on PATH, and
 REM MODEL to be the full path to whichever GGUF you want served. Neither the
@@ -54,5 +54,5 @@ REM                           the pipeline writes into recovered.cpp, so the
 REM                           default 'auto' is pinned here so a reasoning
 REM                           trace can never end up inside the emitted C++.
 REM If you change the budget, note that thinking is drawn from the SAME
-REM generation budget as the answer (config.py's LLAMACPP_MAX_TOKENS).
+REM generation budget as the answer (the llm.llamacpp.max_tokens setting).
 start "" wt --title "llama.cpp Server" powershell -NoExit -Command "llama serve --model '%MODEL%' -ngl 999 -c 49152 -np 1 --reasoning %THINKING% --reasoning-budget 2048 --reasoning-format deepseek"

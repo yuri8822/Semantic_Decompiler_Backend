@@ -25,22 +25,69 @@ EXE ─► Ghidra headless import + auto-analysis ─► IR export (round 0)
 ```
 pip install -r requirements.txt
 copy .env.example .env          # add the API key for your provider
-python main.py TestBinaries\Chess.exe --provider deepseek
+python main.py TestBinaries\Chess.exe --provider deepseek      # command line
+python serve.py                                                  # or: HTTP API on 127.0.0.1:8765
 ```
 
-Requirements: Ghidra 11.x (set `GHIDRA_HEADLESS` or edit `config.py`), Java 21+, and
-`g++` + `cmake` on PATH for compile validation. Without a compiler, compile validation is
-skipped.
+Requirements: Ghidra 11.x (set `ghidra.headless` in the settings, or the `GHIDRA_HEADLESS`
+environment variable), Java 21+, and `g++` + `cmake` on PATH for compile validation. Without a
+compiler, compile validation is skipped. `start_decompiler.bat` (drag an .exe onto it) and
+`start_api.bat` are Windows launchers.
+
+### Settings
+
+Every option is defined once, in `settings.py`, as a validated pydantic model. Each option
+has a default, a valid range and a description. Options are grouped:
+
+| Group | Options |
+|---|---|
+| `ghidra` | headless launcher path, project location |
+| `llm` | provider, a separate provider per agent, model, endpoint and token budget for each provider, concurrency, retries, timeouts, traffic logging |
+| `confidence` | high and medium thresholds |
+| `analysis` | rounds, Ghidra feedback loop on/off, class reconstruction on/off, return-value cross-check on/off |
+| `code` | code stage on/off, validator and compiler fix-round limits |
+| `prompts` | per-prompt size limits |
+| `compiler` | compile validation on/off, compiler, C++ standard, CMake, timeouts |
+| `scope` | function limit, `only`, force-`include`, force-`exclude` (by address or name) |
+
+Saved defaults go in `settings.json`, which stores only what differs from the built-ins. Each
+run can override them. The CLI flags are shortcuts for common overrides:
 
 | Flag | Meaning |
 |---|---|
 | `--provider` | `anthropic`, `xiaomi`, `deepseek`, `ollama`, `llamacpp` |
 | `--restart` | discard this binary's workspace and start over (otherwise a rerun **resumes**) |
-| `--limit N` | process only the first N in-scope functions |
+| `--limit N` / `--only F…` | process only the first N in-scope functions / only these (addresses or names) |
 | `--rounds N` | analysis → apply → re-decompile rounds (default 2) |
 | `--no-ghidra-apply` | turn off the Ghidra feedback loop |
 | `--no-compile` | skip compiler validation and the CMake build |
 | `--concurrency N` | parallel LLM calls (use 1 for local servers) |
+
+### HTTP API
+
+`python serve.py` serves a local API on `127.0.0.1:8765`. Interactive docs are at `/docs`, and
+the full route list is at the top of `api/app.py`. Any localhost origin is allowed, so a
+frontend dev server on another port can call it directly.
+
+- **Settings:** `GET /api/settings/schema` returns the JSON Schema, which a UI can render as a
+  form. `GET`/`PUT`/`PATCH /api/settings` reads and writes the saved defaults.
+  `POST /api/settings/resolve` previews a run's effective settings.
+- **Jobs:** `POST /api/jobs {binary, restart, settings: {…overrides}}` queues a run. Jobs run
+  one at a time, because Ghidra locks its project.
+  - `GET /api/jobs/{id}/events` streams live progress as Server-Sent Events. Each event is
+    JSON with a `seq` and a `type`: `run_started`, `stage`, `progress`, `message`, `llm_call`,
+    `ghidra_output`, `stage_done`, `run_finished`. The stream resumes without gaps from
+    `Last-Event-ID` or `?after=N`.
+  - `POST /api/jobs/{id}/cancel` stops a run between work items and kills Ghidra. Progress is
+    kept, so resubmitting resumes.
+  - Job history and event streams survive server restarts.
+- **Workspaces:** read-only views of everything a run produced:
+  - function list and per-function detail (analysis, signature, Ghidra decompilation for the
+    current round and round 0, assembly, callers and callees, validator and compiler results)
+  - classes, globals, strings, relationship tables, Ghidra rounds with their plans and reports
+  - the generated project files, LLM prompts and responses, and the report
+
+  API reads never write to a workspace, so it's safe to browse one while a run is updating it.
 
 ## The pieces
 
@@ -68,7 +115,7 @@ Each LLM answer is **grounded** before it is stored:
 - Guesses about parameters, locals or globals that don't exist are discarded.
 - Names that come from program symbols are never overridden.
 
-**Confidence gating** (`knowledge/confidence.py`, thresholds in `config.py`):
+**Confidence gating** (`knowledge/confidence.py`, thresholds in the `confidence` settings):
 
 | Confidence | Effect |
 |---|---|
@@ -95,7 +142,7 @@ Then the program is re-exported. Once types are applied, `*(int *)(this + 0x14)`
 - *Compilation* (`output/compiler.py`): each function is syntax-checked with g++ against the
   generated headers, and compiler errors are fed back to the Code Reconstructor. Then the whole
   project is built with CMake.
-- Fix loops are bounded (`MAX_STATIC_FIX_ROUNDS`, `MAX_COMPILE_FIX_ROUNDS`). A function that
+- Fix loops are bounded (`code.max_static_fix_rounds`, `code.max_compile_fix_rounds`). A function that
   still fails to compile ships inside `#if 0` with the reason. It is listed in `report.md`, never
   silently dropped.
 

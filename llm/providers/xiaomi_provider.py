@@ -2,23 +2,23 @@
 
 import os
 
-from config import XIAOMI_BASE_URL, XIAOMI_MODEL, MAX_TOKENS, AI_TIMEOUT_SECONDS
 from llm.providers.base import BaseProvider, HEAVY
 
 
 class XiaomiProvider(BaseProvider):
-    def __init__(self):
+    def __init__(self, cfg, timeout: int):
         import anthropic
+        self._cfg = cfg
         self._client = anthropic.Anthropic(
             api_key=os.environ.get("XIAOMI_API_KEY", ""),
-            base_url=XIAOMI_BASE_URL,
-            timeout=AI_TIMEOUT_SECONDS,
+            base_url=cfg.base_url,
+            timeout=timeout,
         )
 
     def complete(self, system: str, user: str, tier: str = HEAVY) -> str:
         msg = self._client.messages.create(
-            model=XIAOMI_MODEL,
-            max_tokens=MAX_TOKENS,
+            model=self._cfg.model,
+            max_tokens=self._cfg.max_tokens,
             system=system,
             messages=[{"role": "user", "content": user}],
         )

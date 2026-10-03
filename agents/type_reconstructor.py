@@ -16,12 +16,10 @@ from collections import defaultdict
 from pydantic import ValidationError
 
 from agents.prompts import build_type_prompt, TYPE_SYSTEM
-from config import CONFIDENCE_MEDIUM
+from knowledge.confidence import demoted
 from knowledge.models import FieldDef, TypeRecord
 from knowledge.naming import ghidra_to_cpp_type, sanitize_class_name, sanitize_identifier, split_type, type_size
 
-_UNOBSERVED_CAP = CONFIDENCE_MEDIUM - 0.1
-_MISMATCH_CAP = CONFIDENCE_MEDIUM - 0.05
 _EMBEDDED_TYPES = ("std::string",)
 
 
@@ -176,13 +174,13 @@ def normalize(rec: TypeRecord, evidence: dict, pointer_size: int, class_sizes: d
             notes.append(f"dropped {f.name}: negative offset")
             continue
         if f.offset not in observed and f.offset not in passed and f.offset not in guessed:
-            f.confidence = min(f.confidence, _UNOBSERVED_CAP)
+            f.confidence = demoted(f.confidence, 0.1)
             notes.append(f"{f.name} at +{f.offset:#x} is not backed by any observed access")
         base, ptrs = split_type(f.type)
         embedded = ptrs == 0 and (base in _EMBEDDED_TYPES or base in class_sizes or base in valid_classes)
         if (f.offset in observed and not embedded and f.size not in observed[f.offset]
                 and f.size < max(observed[f.offset])):
-            f.confidence = min(f.confidence, _MISMATCH_CAP)
+            f.confidence = demoted(f.confidence, 0.05)
             notes.append(f"{f.name}: size {f.size} smaller than observed access {sorted(observed[f.offset])}")
         fields.append(f)
 

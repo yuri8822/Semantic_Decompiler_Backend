@@ -11,28 +11,27 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from config import CMAKE, COMPILE_TIMEOUT_SECONDS, CXX_COMPILER, CXX_STANDARD
-
 _DIAG_RE = re.compile(r"^(?P<file>.*?):(?P<line>\d+):(?:(?P<col>\d+):)?\s*(?P<sev>error|fatal error|warning|note):"
                       r"\s*(?P<msg>.*)$")
 
 
 class Compiler:
-    def __init__(self, project_dir: Path):
+    def __init__(self, project_dir: Path, compiler_settings):
         self.project_dir = Path(project_dir)
-        self.cxx = shutil.which(CXX_COMPILER)
-        self.cmake = shutil.which(CMAKE)
+        self.cfg = compiler_settings
+        self.cxx = shutil.which(compiler_settings.cxx)
+        self.cmake = shutil.which(compiler_settings.cmake)
 
     @property
     def available(self) -> bool:
         return self.cxx is not None
 
     def _syntax_check(self, source: Path) -> tuple:
-        cmd = [self.cxx, f"-std=c++{CXX_STANDARD}", "-fsyntax-only", "-fmax-errors=25", "-w",
+        cmd = [self.cxx, f"-std=c++{self.cfg.cxx_standard}", "-fsyntax-only", "-fmax-errors=25", "-w",
                "-I", str(self.project_dir / "include"), str(source)]
         try:
             proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace",
-                                  timeout=COMPILE_TIMEOUT_SECONDS)
+                                  timeout=self.cfg.timeout_seconds)
         except subprocess.TimeoutExpired:
             return False, "compiler timed out"
         return proc.returncode == 0, (proc.stdout + proc.stderr).strip()
@@ -56,7 +55,7 @@ class Compiler:
     def build(self) -> tuple:
         """Configure and build the project with CMake. (ok, log)."""
         if self.cmake is None:
-            return False, f"{CMAKE} not found on PATH"
+            return False, f"{self.cfg.cmake} not found on PATH"
         build_dir = self.project_dir / "build"
         configure = [self.cmake, "-S", str(self.project_dir), "-B", str(build_dir)]
         if shutil.which("ninja"):
@@ -67,7 +66,7 @@ class Compiler:
         for cmd in (configure, [self.cmake, "--build", str(build_dir)]):
             try:
                 proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace",
-                                      timeout=COMPILE_TIMEOUT_SECONDS * 10)
+                                      timeout=self.cfg.timeout_seconds * 10)
             except subprocess.TimeoutExpired:
                 return False, "\n".join(log + ["cmake timed out"])
             log.append(proc.stdout + proc.stderr)

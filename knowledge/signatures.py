@@ -175,12 +175,15 @@ def build_signature(rec: FunctionRecord, fn: FunctionIR) -> CppSignature:
     return CppSignature(fn.address, class_name, name, kind, ret, params, todos)
 
 
-def assign_signatures(kb, ir) -> dict:
+def assign_signatures(kb, ir, persist: bool = True) -> dict:
     """
     Signatures for every in-scope function, with collisions resolved: a
     duplicate constructor/destructor variant (compilers emit complete- and
     base-object copies with identical bodies) becomes an alias of the first
     and is not reconstructed separately; any other duplicate is suffixed.
+
+    persist=False keeps alias bookkeeping in memory only — for read-only
+    callers (the API) that must never write over a run in progress.
     """
     sigs, seen = {}, {}
     for addr, rec in sorted(kb.functions.items()):
@@ -203,7 +206,8 @@ def assign_signatures(kb, ir) -> dict:
                 key = (sig.class_name, sig.name, key[2])
         if rec.alias_of != alias_of:
             rec.alias_of = alias_of
-            kb.save_function(rec)
+            if persist:
+                kb.save_function(rec)
         if alias_of:
             continue
         seen[key] = addr
