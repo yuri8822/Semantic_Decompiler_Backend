@@ -63,7 +63,7 @@ def build_plan(kb, ir: ProgramIR) -> dict:
         # Only type data Ghidra hasn't typed itself; never overwrite strings/arrays it defined.
         current_type = current_types.get(g.address, "")
         untyped = not current_type or current_type.startswith("undefined")
-        if gtype and untyped:
+        if gtype and untyped and not _rendered_as_literal(ir, g, current or g.ghidra_name):
             entry["type"] = gtype
         plan["globals"].append(entry)
 
@@ -148,6 +148,17 @@ def _function_entry(rec, fn: FunctionIR, known_classes, ptr) -> dict:
     if comment.strip() != (fn.comment or "").strip():
         entry["comment"] = comment
     return entry
+
+
+def _rendered_as_literal(ir: ProgramIR, g, name: str) -> bool:
+    """
+    True when no referencing function's decompilation mentions the global by
+    name: the decompiler prints its contents instead (e.g. system("CLS") for
+    undefined bytes holding "CLS"). Such data is a character array, so a
+    guessed type like `char *` would make Ghidra misread the bytes as a pointer.
+    """
+    texts = [ir.get(a).decompiled for a in g.referenced_by if ir.get(a)]
+    return bool(texts) and not any(name in t for t in texts)
 
 
 def plate_comment(a) -> str:

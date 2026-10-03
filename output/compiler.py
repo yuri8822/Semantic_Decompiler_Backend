@@ -6,6 +6,7 @@ Each function is syntax-checked on its own against the generated headers
 built with CMake. Compiler output is fed back to the Code Reconstructor.
 """
 
+import os
 import re
 import shutil
 import subprocess
@@ -57,6 +58,7 @@ class Compiler:
         if self.cmake is None:
             return False, f"{self.cfg.cmake} not found on PATH"
         build_dir = self.project_dir / "build"
+        _discard_foreign_cache(build_dir, self.project_dir)
         configure = [self.cmake, "-S", str(self.project_dir), "-B", str(build_dir)]
         if shutil.which("ninja"):
             configure += ["-G", "Ninja"]
@@ -73,6 +75,22 @@ class Compiler:
             if proc.returncode != 0:
                 return False, "\n".join(log)
         return True, "\n".join(log)
+
+
+def _discard_foreign_cache(build_dir: Path, source_dir: Path):
+    """
+    CMake refuses to reuse a build directory configured for another source
+    path, which happens whenever a workspace is moved or copied. Such a
+    cache is worthless, so start the build directory over.
+    """
+    cache = build_dir / "CMakeCache.txt"
+    if not cache.exists():
+        return
+    m = re.search(r"^CMAKE_HOME_DIRECTORY:INTERNAL=(.*)$", cache.read_text(encoding="utf-8", errors="replace"),
+                  re.MULTILINE)
+    recorded = os.path.normcase(os.path.normpath(m.group(1).strip())) if m else ""
+    if recorded != os.path.normcase(os.path.normpath(str(source_dir.resolve()))):
+        shutil.rmtree(build_dir, ignore_errors=True)
 
 
 def _clean(output: str, src: Path, line_offset: int) -> str:

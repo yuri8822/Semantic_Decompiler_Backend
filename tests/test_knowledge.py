@@ -153,6 +153,29 @@ def test_validator_catches_dropped_calls_and_branches(kb, chess_ir):
     assert {"parameters", "return_type"} <= checks
 
 
+def test_validator_checks_literals_ghidra_prints(kb, chess_ir):
+    """GameLoop calls system("CLS"); "CLS" is not defined string data, only a printed literal."""
+    seed(kb, chess_ir)
+    sigs = assign_signatures(kb, chess_ir)
+    ctx = Context(kb, chess_ir, sigs)
+    fn = by_name(chess_ir, "Engine::GameLoop")[0]
+    assert '"CLS"' in fn.decompiled and "CLS" not in fn.strings
+    body = sigs[fn.address].definition_head() + '\n{\n    system("cls");\n}'
+    strings = [i for i in Validator().check(ctx, fn, sigs[fn.address], body) if i.check == "strings"]
+    assert strings and "'CLS'" in strings[0].message
+
+
+def test_plan_does_not_retype_globals_printed_as_literals(kb, chess_ir):
+    from knowledge.models import GlobalRecord
+    seed(kb, chess_ir)
+    gameloop = by_name(chess_ir, "Engine::GameLoop")[0]
+    cls = next(g for g in gameloop.globals if g.address and g.name.startswith("DAT_") and g.name not in gameloop.decompiled)
+    kb.save_global(GlobalRecord(address=cls.address, ghidra_name=cls.name, name="g_clsCommand", type="const char *",
+                                confidence=0.9, referenced_by=[gameloop.address]))
+    entry = next(e for e in build_plan(kb, chess_ir)["globals"] if e["address"] == cls.address)
+    assert entry["name"] == "g_clsCommand" and "type" not in entry
+
+
 def test_validator_accepts_dropped_vtable_store(kb, chess_ir):
     seed(kb, chess_ir)
     kb.save_type(TypeRecord(name="Piece", size=0x18, confidence=0.9, fields=[
@@ -296,6 +319,24 @@ def test_offline_pipeline_end_to_end(tmp_path):
     before = len(llm.calls)
     Pipeline(tmp_path / "Chess.exe", s, llm=llm, runner=runner).run()
     assert len([c for c in llm.calls[before:] if c[0] != "code"]) == 0
+
+
+def test_widening_scope_starts_newcomers_at_round_one(tmp_path):
+    """A small first run must not push functions added by a later, wider run past round 1."""
+    from pipeline import Pipeline
+    from settings import Settings
+    from tests.conftest import FIXTURE
+    from tests.fakes import FakeLLM, FakeRunner
+
+    base = {"workspace_dir": str(tmp_path / "ws"), "code": {"enabled": False},
+            "analysis": {"rounds": 2, "reconstruct_types": False}}
+    llm = FakeLLM()
+    Pipeline(tmp_path / "Chess.exe", Settings().with_overrides({**base, "scope": {"limit": 1}}),
+             llm=llm, runner=FakeRunner(FIXTURE)).run()
+    first = len(llm.calls)
+    Pipeline(tmp_path / "Chess.exe", Settings().with_overrides(base), llm=llm, runner=FakeRunner(FIXTURE)).run()
+    new_tags = [tag for _, tag in llm.calls[first:]]
+    assert new_tags and all(t.startswith("analyze_r1_") for t in new_tags if t != "analyze_r2_0x140005f80")
 
 
 def test_scope_settings_and_cancellation(tmp_path):

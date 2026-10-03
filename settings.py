@@ -90,7 +90,7 @@ class LLMSettings(_Group):
         title="Ollama", description="Local server, no key.")
     llamacpp: EndpointSettings = Field(
         EndpointSettings(base_url="http://localhost:8080/v1", model="local", max_tokens=49152),
-        title="llama.cpp", description="Local llama-server (start_llamacpp.bat); serves whatever model is loaded.")
+        title="llama.cpp", description="Local llama-server (start.bat llamacpp); serves whatever model is loaded.")
 
     def provider_for(self, agent: str) -> str:
         return getattr(self, f"{agent}_provider", None) or self.provider

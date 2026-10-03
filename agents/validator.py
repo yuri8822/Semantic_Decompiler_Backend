@@ -44,7 +44,7 @@ class Validator:
         issues += self._branches(fn, body)
         issues += self._fields(ctx, fn, sig, body)
         issues += self._globals(ctx, fn, body)
-        issues += self._strings(fn, body)
+        issues += self._strings(fn, body, ctx.ir0.get(fn.address))
         issues += self._residue(body)
         return issues
 
@@ -184,15 +184,26 @@ class Validator:
         return issues
 
     @staticmethod
-    def _strings(fn, body: str) -> list:
-        missing = []
+    def _strings(fn, body: str, fn0=None) -> list:
+        # Literals come from Ghidra's defined string data AND from its decompiled
+        # text: bytes Ghidra never defined as a string still print as "CLS".
+        # Round 0 is included because a wrongly applied type can hide a literal
+        # in later rounds. Short ones matter too: "CLS" -> "cls" changes a constant.
+        probes = {}
         for s in fn.strings:
-            if len(s) < 4:
+            if len(s) >= 2:
+                probes.setdefault(json.dumps(s[:24])[1:-1], s)
+        for source in (fn, fn0):
+            if source is None:
                 continue
-            probe = s[:24]
-            escaped = json.dumps(probe)[1:-1]
-            if probe not in body and escaped not in body:
-                missing.append(s)
+            for lit in _C_STRING_RE.findall(cpp_text.mask(source.decompiled, strings=False)):
+                if len(lit) >= 2:
+                    probes.setdefault(lit[:24], lit)
+        missing = []
+        for escaped, original in probes.items():
+            raw = original[:24]
+            if escaped not in body and raw not in body:
+                missing.append(original)
         if missing:
             shown = ", ".join(repr(s[:40]) for s in missing[:5])
             return [_warn("strings", f"string literal(s) used by the binary are missing: {shown}")]
@@ -204,6 +215,9 @@ class Validator:
         if found:
             return [_warn("residue", "decompiler artifacts remain: " + ", ".join(found[:8]))]
         return []
+
+
+_C_STRING_RE = re.compile(r'"((?:[^"\\\n]|\\.)*)"')
 
 
 def _is_vtable_name(name: str) -> bool:

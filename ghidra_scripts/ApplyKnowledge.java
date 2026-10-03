@@ -346,16 +346,26 @@ public class ApplyKnowledge extends GhidraScript {
             } else if (!sym.getName().equals(name)) {
                 sym.setName(name, SourceType.USER_DEFINED);
             }
-            if (g.has("type")) {
-                DataType dt = resolveType(str(g, "type"));
-                if (dt != null && dt.getLength() > 0) {
-                    DataUtilities.createData(currentProgram, a, dt, -1, false,
-                        DataUtilities.ClearDataMode.CLEAR_ALL_UNDEFINED_CONFLICT_DATA);
-                }
-            }
             ok("global", address, name);
         } catch (Exception ex) {
             fail("global", address, ex);
+            return;
+        }
+        // The type is best-effort: Ghidra refuses it when other defined data is in
+        // the way, which doesn't undo the rename above.
+        if (g.has("type")) {
+            try {
+                DataType dt = resolveType(str(g, "type"));
+                if (dt == null || dt.getLength() <= 0) {
+                    skipped("global_type", address, "cannot resolve type '" + str(g, "type") + "'");
+                } else {
+                    DataUtilities.createData(currentProgram, hexAddress(address), dt, -1, false,
+                        DataUtilities.ClearDataMode.CLEAR_ALL_UNDEFINED_CONFLICT_DATA);
+                    ok("global_type", address, dt.getDisplayName());
+                }
+            } catch (Exception ex) {
+                skipped("global_type", address, ex.getClass().getSimpleName() + ": " + ex.getMessage());
+            }
         }
     }
 

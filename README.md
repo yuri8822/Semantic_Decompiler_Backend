@@ -31,8 +31,11 @@ python serve.py                                                  # or: HTTP API 
 
 Requirements: Ghidra 11.x (set `ghidra.headless` in the settings, or the `GHIDRA_HEADLESS`
 environment variable), Java 21+, and `g++` + `cmake` on PATH for compile validation. Without a
-compiler, compile validation is skipped. `start_decompiler.bat` (drag an .exe onto it) and
-`start_api.bat` are Windows launchers.
+compiler, compile validation is skipped.
+
+On Windows, `start.bat` starts the API and the web UI (if the frontend repo is checked out next
+to this one, in `..\Frontend`), then opens the browser. `start.bat llamacpp` also starts a local
+llama.cpp server; set the model path at the top of the file.
 
 ### Settings
 

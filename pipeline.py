@@ -236,7 +236,11 @@ class Pipeline:
 
     def stage_analysis(self, ir: ProgramIR) -> ProgramIR:
         a_cfg = self.settings.analysis
-        done = self.kb.meta.get("analysis_round_done", 0)
+        # Rounds are tracked per function: when a run widens the scope (a larger
+        # limit, more functions), the newcomers start at round 1 instead of
+        # inheriting the workspace's round count from an earlier, smaller run.
+        done = min((self.kb.functions[a].analysis.round if self.kb.functions[a].analysis else 0
+                    for a in self.scope), default=0)
         for r in range(1, a_cfg.rounds + 1):
             if r <= done:
                 continue
@@ -270,7 +274,7 @@ class Pipeline:
                 if rec.needs_reanalysis != (a in low):
                     rec.needs_reanalysis = a in low
                     self.kb.save_function(rec)
-            self.kb.meta["analysis_round_done"] = r
+            self.kb.meta["analysis_round_done"] = max(r, self.kb.meta.get("analysis_round_done", 0))
             self.kb.save_meta()
             self._info(f"{len(low)} function(s) still low-confidence after round {r}")
         return ir

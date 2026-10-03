@@ -6,7 +6,7 @@ GGUF you want and this talks to it as-is.
 
 from llm.providers.base import BaseProvider, HEAVY
 
-# Thinking is on server-side with a token budget (see start_llamacpp.bat).
+# Thinking is on server-side with a token budget (see start.bat).
 # When the model runs past that budget the server force-closes the think
 # block, keeps only what fit in `reasoning_content`, and the model -- not
 # knowing it was cut off -- carries on thinking straight into `content`,
