@@ -74,8 +74,9 @@ def _function_entry(rec, fn: FunctionIR, known_classes, ptr) -> dict:
     a = rec.analysis
     entry = {"address": fn.address}
 
-    # Name and owning class.
-    if accepted(a.name_confidence) and name_is_renamable(fn):
+    # Name and owning class (a user rename beats even a symbol name).
+    user_named = "name" in rec.overrides or "class_name" in rec.overrides
+    if accepted(a.name_confidence) and (name_is_renamable(fn) or user_named):
         parts = split_qualified(a.name) or [fn.name]
         cls = "::".join(parts[:-1]) or (a.class_name if a.is_method else "")
         namespace = sanitize_class_name(cls) if cls else ""
@@ -110,7 +111,8 @@ def _function_entry(rec, fn: FunctionIR, known_classes, ptr) -> dict:
         new = sanitize_identifier(g.name)
         if new in ("this", p.name):
             continue
-        if not (is_default_variable_name(p.name) or p.name == g.old_name):
+        user_set = str(g.index) in (rec.overrides.get("params") or {})
+        if not (is_default_variable_name(p.name) or p.name == g.old_name or user_set):
             continue
         item = {"index": g.index, "old_name": p.name, "name": new}
         gtype = cpp_to_ghidra_type(g.type, known_classes, ptr) if g.type else None

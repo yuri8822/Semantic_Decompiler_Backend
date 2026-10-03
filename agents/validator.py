@@ -18,7 +18,7 @@ from ghidra_io.ir import FunctionIR
 from knowledge.confidence import accepted
 from knowledge.filters import is_imported_data
 from knowledge.models import Issue
-from knowledge.naming import DECOMPILER_RESIDUE_RE, sanitize_identifier
+from knowledge.naming import DECOMPILER_RESIDUE_RE, sanitize_class_name, sanitize_identifier
 
 
 def _err(check, msg):
@@ -145,23 +145,29 @@ class Validator:
 
     @staticmethod
     def _fields(ctx, fn, sig, body: str) -> list:
-        if not sig.is_member or sig.class_name not in ctx.kb.types:
-            return []
-        t = ctx.kb.types[sig.class_name]
+        """Proven accesses (through `this`, or a pointer typed as a known class) use the declared names."""
         words = cpp_text.identifiers(body)
         issues, seen = [], set()
         for a in fn.field_accesses:
-            if a.param != 0 or a.offset in seen:
+            if a.param == 0 and sig.is_member:
+                cls = sig.class_name
+            elif a.param < 0 and a.type:
+                cls = sanitize_class_name(a.type)
+            else:
                 continue
-            seen.add(a.offset)
+            t = ctx.kb.types.get(cls)
+            if t is None or (cls, a.offset) in seen:
+                continue
+            seen.add((cls, a.offset))
             f = t.field_covering(a.offset)
             if f is None or not accepted(f.confidence) or _is_vtable_name(f.name):
                 continue  # vtable stores are dropped on purpose (the compiler sets the vptr)
             if f.name not in words:
-                issues.append(_warn("fields", f"the binary {a.access}s {sig.class_name}::{f.name} (+{a.offset:#x}) "
+                issues.append(_warn("fields", f"the binary {a.access}s {cls}::{f.name} (+{a.offset:#x}) "
                                               f"but the reconstruction never references `{f.name}`"))
+        own = ctx.kb.types.get(sig.class_name) if sig.is_member else None
         masked = cpp_text.mask(body)
-        if re.search(r"\bthis\s*\+\s*(0x[0-9a-fA-F]+|\d+)", masked) and t.fields:
+        if own and own.fields and re.search(r"\bthis\s*\+\s*(0x[0-9a-fA-F]+|\d+)", masked):
             issues.append(_warn("fields", "raw `this + offset` arithmetic remains; use the declared field names"))
         return issues
 

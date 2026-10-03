@@ -75,21 +75,21 @@ class Context:
         return "\n".join(f"  {l.type} {l.name}" for l in fn.locals[:60])
 
     def field_accesses(self, fn: FunctionIR) -> str:
-        """Aggregated `param + offset` accesses proven by p-code."""
-        agg = defaultdict(lambda: {"read": 0, "write": 0, "sizes": set()})
-        names = {}
+        """Aggregated `base + offset` accesses proven by p-code (parameters and typed pointers)."""
+        agg = defaultdict(lambda: {"read": 0, "write": 0, "sizes": set(), "name": ""})
         for a in fn.field_accesses:
-            key = (a.param, a.offset)
+            key = (a.param, a.type if a.param < 0 else "", a.offset)
             agg[key][a.access] += 1
             agg[key]["sizes"].add(a.size)
-            names[a.param] = a.param_name
+            agg[key]["name"] = a.param_name
         if not agg:
             return "  (none observed)"
         out = []
-        for (param, offset), v in sorted(agg.items()):
+        for (param, type_, offset), v in sorted(agg.items()):
             sizes = "/".join(str(s) for s in sorted(v["sizes"]))
             rw = ", ".join(f"{k} x{v[k]}" for k in ("read", "write") if v[k])
-            out.append(f"  param[{param}] {names[param]} +{offset:#x}  size {sizes}  {rw}")
+            base = f"param[{param}] {v['name']}" if param >= 0 else f"{type_} * (via {v['name'] or 'a loaded pointer'})"
+            out.append(f"  {base} +{offset:#x}  size {sizes}  {rw}")
         return "\n".join(out)
 
     def arg_passes(self, fn: FunctionIR) -> str:

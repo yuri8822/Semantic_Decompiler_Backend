@@ -48,9 +48,14 @@ class GlobalRef(_Model):
 
 
 class FieldAccess(_Model):
-    """A load/store through `param + offset`, proven by p-code data flow."""
+    """
+    A load/store at `base + offset`, proven by p-code data flow. The base is
+    parameter `param`, or (param == -1) a pointer Ghidra types as pointing to
+    structure `type`, e.g. a `Piece *` loaded from a board array.
+    """
     param: int
     param_name: str = ""
+    type: str = ""             # structure the base points to ("" if untyped)
     offset: int
     size: int
     access: str                # "read" | "write"
@@ -154,7 +159,11 @@ class ClassIR(_Model):
     fields: list[ClassField] = []
 
 
+IR_VERSION = 2   # ExportProgram.java's "version"; older exports lack typed field accesses
+
+
 class ProgramIR(_Model):
+    version: int = 1
     program: ProgramInfo = ProgramInfo()
     functions: list[FunctionIR] = []
     strings: list[StringRef] = []

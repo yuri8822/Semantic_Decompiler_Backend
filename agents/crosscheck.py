@@ -68,6 +68,8 @@ def check_return_values(kb, ir0: ProgramIR, addresses) -> list:
         a = rec.analysis if rec else None
         if a is None or a.method_kind in ("constructor", "destructor"):
             continue
+        if "return_type" in rec.overrides:
+            continue   # the user decided the return type; nothing to second-guess
         says_void = ghidra_to_cpp_type(a.return_type) == "void" if a.return_type else True
         uses = return_value_uses(ir0, address) if says_void else []
         contradictions, observed = [], ""
@@ -78,10 +80,15 @@ def check_return_values(kb, ir0: ProgramIR, addresses) -> list:
             contradictions.append(
                 f"callers use the return value ({where}) but the analysis says it returns "
                 f"{a.return_type or 'nothing'}" + (f"; callers receive it as {observed}" if observed else ""))
-        if contradictions:
-            a.return_confidence = demoted(a.return_confidence, 0.1)
-        if contradictions != a.contradictions or observed != a.observed_return_type:
-            a.contradictions, a.observed_return_type = contradictions, observed
+        changed_here = (contradictions, observed) != (a.contradictions, a.observed_return_type)
+        # Recorded on the LLM's own analysis too, so re-merging the user's overrides keeps it.
+        for target in (a, rec.llm_analysis):
+            if target is None:
+                continue
+            if contradictions:
+                target.return_confidence = demoted(target.return_confidence, 0.1)
+            target.contradictions, target.observed_return_type = list(contradictions), observed
+        if changed_here:
             kb.save_function(rec)
             changed.append(address)
     return changed

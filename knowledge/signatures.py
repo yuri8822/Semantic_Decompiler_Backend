@@ -108,7 +108,8 @@ def build_signature(rec: FunctionRecord, fn: FunctionIR) -> CppSignature:
     a = rec.analysis
     todos = []
 
-    if a and accepted(a.name_confidence) and name_is_renamable(fn):
+    user_named = "name" in rec.overrides or "class_name" in rec.overrides   # the user beats symbol names
+    if a and accepted(a.name_confidence) and (name_is_renamable(fn) or user_named):
         parts = split_qualified(a.name) or [fn.name]
         member = parts[-1]
         cls = "::".join(parts[:-1]) or (a.class_name if a.is_method else "")

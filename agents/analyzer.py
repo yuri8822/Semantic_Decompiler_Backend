@@ -13,7 +13,7 @@ from agents.prompts import ANALYZER_SYSTEM, build_analyzer_prompt
 from ghidra_io.ir import FunctionIR
 from knowledge.confidence import demoted
 from knowledge.models import FunctionAnalysis, to_int
-from knowledge.naming import split_qualified, type_size
+from knowledge.naming import sanitize_class_name, split_qualified, type_size
 
 
 class Analyzer:
@@ -64,15 +64,19 @@ def ground(a: FunctionAnalysis, fn: FunctionIR, pointer_size: int = 8) -> Functi
     if unknown_locals:
         notes.append(f"grounding: dropped renames of unknown locals {unknown_locals[:8]}")
 
+    # Keys: (param, offset) for parameter-relative accesses, (class, offset) for
+    # accesses through a pointer Ghidra types as pointing to that class.
     observed = {}
     for acc in fn.field_accesses:
-        observed.setdefault((acc.param, acc.offset), set()).add(acc.size)
+        key = (acc.param, acc.offset) if acc.param >= 0 else (sanitize_class_name(acc.type), acc.offset)
+        observed.setdefault(key, set()).add(acc.size)
     passed = {(p.param, p.offset) for p in fn.arg_passes}
     kept = []
     for f in a.fields:
-        key = (f.param, f.offset)
+        key = (f.param, f.offset) if f.param >= 0 else (sanitize_class_name(f.class_name), f.offset)
         if key not in observed and key not in passed:
-            notes.append(f"grounding: dropped field {f.name} at param[{f.param}]+{f.offset:#x} (never accessed)")
+            where = f"param[{f.param}]" if f.param >= 0 else (f.class_name or "?")
+            notes.append(f"grounding: dropped field {f.name} at {where}+{f.offset:#x} (never accessed)")
             continue
         size = type_size(f.type, pointer_size)
         if size and key in observed and size not in observed[key]:

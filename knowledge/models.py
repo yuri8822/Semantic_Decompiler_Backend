@@ -180,7 +180,12 @@ class FunctionRecord(_Model):
     excluded: str = ""          # non-empty: reason the function is out of scope
     alias_of: str = ""          # duplicate ctor/dtor variant of another address
 
+    # `analysis` is the effective view every consumer reads: the LLM's analysis
+    # (`llm_analysis`) with the user's `overrides` applied on top (see
+    # knowledge/overrides.py). Without overrides the two are the same.
     analysis: Optional[FunctionAnalysis] = None
+    llm_analysis: Optional[FunctionAnalysis] = None
+    overrides: dict = {}
     analysis_history: list[dict] = []
     needs_reanalysis: bool = False
 
@@ -235,6 +240,10 @@ class TypeRecord(_Guess):
     from_symbols: bool = False     # the class name came from Ghidra symbols, not the LLM
     round: int = 0
     evidence_hash: str = ""        # skip re-reconstruction when the evidence hasn't changed
+    # `fields`/`base_class`/`size` are effective: the LLM's layout (`llm`) with the
+    # user's `overrides` applied (see knowledge/overrides.py).
+    llm: dict = {}
+    overrides: dict = {}
 
     @field_validator("size", mode="before")
     @classmethod
@@ -268,3 +277,7 @@ class GlobalRecord(_Guess):
     type: str = ""
     applied_name: str = ""         # the name this pipeline last applied in Ghidra
     referenced_by: list[str] = Field(default_factory=list)
+    # name/type/confidence are effective: the LLM's values (`llm`) with the
+    # user's `overrides` applied (see knowledge/overrides.py).
+    llm: dict = {}
+    overrides: dict = {}

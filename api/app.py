@@ -24,6 +24,14 @@ HTTP API over the pipeline (localhost). Interactive docs at /docs.
                  GET  .../{name}/files[/{path}]   generated C++ project
                  GET  .../{name}/logs[/{file}]    LLM prompts and responses (?address=&agent=)
                  GET  .../{name}/report           report.md
+    Edits        PATCH  .../{name}/functions/{address}           override name/class/kind/return/params/locals
+                 DELETE .../{name}/functions/{address}/overrides back to the LLM's analysis
+                 POST   .../{name}/functions/{address}/reset     redo analysis and/or code on the next run
+                 PATCH  .../{name}/types/{class}   DELETE .../types/{class}/overrides
+                 PATCH  .../{name}/globals/{address}
+                 POST   .../{name}/apply           queue a resume run that applies the edits
+                 (absent field = unchanged, value = override, null = clear the override;
+                  edits are refused with 409 while a job runs on the workspace)
 """
 
 import json
@@ -39,6 +47,8 @@ from fastapi.responses import JSONResponse, PlainTextResponse, StreamingResponse
 from pydantic import BaseModel, Field, ValidationError
 
 import settings as settings_mod
+from api import edits
+from api.edits import EditError, FunctionEdit, GlobalEdit, ResetRequest, TypeEdit
 from api.jobs import FINISHED, JobManager
 from api.workspaces import NotFound, Workspaces
 from llm.providers import API_KEY_VARS
@@ -300,4 +310,79 @@ def create_app(jobs: JobManager = None, settings_file: Path = settings_mod.SETTI
     def report(name: str):
         return ws.report(name)
 
+    # -- edits (human in the loop) -----------------------------------------------
+
+    def _writable_kb(name: str):
+        ws.path(name)
+        if jobs.workspace_busy(name):
+            raise HTTPException(409, f"workspace '{name}' has a queued or running job; edit it when the job ends")
+        return ws.kb(name)
+
+    def _edit(fn):
+        try:
+            return fn()
+        except EditError as exc:
+            raise HTTPException(400, str(exc))
+
+    @app.patch("/api/workspaces/{name}/functions/{address}")
+    def edit_function(name: str, address: str, body: FunctionEdit):
+        kb = _writable_kb(name)
+        addr = _norm_address(address)
+        _edit(lambda: edits.edit_function(kb, ws.current_ir(kb).get(addr), addr, body))
+        return ws.function(name, addr)
+
+    @app.delete("/api/workspaces/{name}/functions/{address}/overrides")
+    def clear_function_edits(name: str, address: str):
+        kb = _writable_kb(name)
+        addr = _norm_address(address)
+        _edit(lambda: edits.clear_function_overrides(kb, addr))
+        return ws.function(name, addr)
+
+    @app.post("/api/workspaces/{name}/functions/{address}/reset")
+    def reset_function(name: str, address: str, body: ResetRequest):
+        kb = _writable_kb(name)
+        addr = _norm_address(address)
+        _edit(lambda: edits.reset_function(kb, addr, body))
+        return ws.function(name, addr)
+
+    @app.patch("/api/workspaces/{name}/types/{type_name}")
+    def edit_type(name: str, type_name: str, body: TypeEdit):
+        kb = _writable_kb(name)
+        _edit(lambda: edits.edit_type(kb, type_name, body))
+        return ws.type(name, type_name)
+
+    @app.delete("/api/workspaces/{name}/types/{type_name}/overrides")
+    def clear_type_edits(name: str, type_name: str):
+        kb = _writable_kb(name)
+        _edit(lambda: edits.clear_type_overrides(kb, type_name))
+        return ws.type(name, type_name)
+
+    @app.patch("/api/workspaces/{name}/globals/{address}")
+    def edit_global(name: str, address: str, body: GlobalEdit):
+        kb = _writable_kb(name)
+        addr = _norm_address(address)
+        g = _edit(lambda: edits.edit_global(kb, addr, body))
+        return g.model_dump()
+
+    @app.post("/api/workspaces/{name}/apply", status_code=201)
+    def apply_edits(name: str, body: dict = None):
+        """Queue a resume run for this workspace: applies pending edits and regenerates affected code."""
+        binary, found = ws.resolve_binary(ws.kb(name).meta.get("binary", ""))
+        if not found:
+            raise HTTPException(400, f"the binary for '{name}' was not found ({binary}); upload it first")
+        try:
+            job = jobs.submit(binary, (body or {}).get("settings", {}), restart=False)
+        except ValidationError:
+            raise
+        except ValueError as exc:
+            raise HTTPException(400, str(exc))
+        return job.to_dict()
+
     return app
+
+
+def _norm_address(address: str) -> str:
+    try:
+        return f"{int(address, 16):#x}"
+    except ValueError:
+        raise NotFound(f"invalid address {address!r}")

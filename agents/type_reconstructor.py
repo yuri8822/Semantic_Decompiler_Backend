@@ -30,7 +30,11 @@ class TypeReconstructor:
     # -- candidate discovery (deterministic) -----------------------------------
 
     def candidates(self, ctx) -> dict:
-        """class name -> {"members": [addr], "users": [(addr, param_index)], "from_symbols": bool}"""
+        """
+        class name -> {"members": [addr], "users": [(addr, param_index)], "from_symbols": bool}.
+        A user with param_index -1 accesses the class through a pointer Ghidra
+        types as pointing to it (e.g. a Piece * loaded from a board array).
+        """
         cands = defaultdict(lambda: {"members": [], "users": [], "from_symbols": False})
         for addr, sig in ctx.signatures.items():
             if sig.is_member:
@@ -49,7 +53,17 @@ class TypeReconstructor:
                     name = sanitize_class_name(f.class_name)
                     if (addr, f.param) not in cands[name]["users"]:
                         cands[name]["users"].append((addr, f.param))
-        return {k: v for k, v in cands.items() if v["members"] or len(v["users"]) >= 1}
+        cands = {k: v for k, v in cands.items() if v["members"] or len(v["users"]) >= 1}
+        # Accesses through typed pointers (known only once a layout has been applied
+        # to Ghidra) add evidence to existing candidates; they never create one, so
+        # Ghidra's own structures (PE headers in CRT code, ...) can't become classes.
+        for addr in ctx.signatures:
+            fn = ctx.ir.get(addr)
+            for a in (fn.field_accesses if fn else []):
+                name = sanitize_class_name(a.type) if a.param < 0 and a.type else ""
+                if name in cands and (addr, -1) not in cands[name]["users"]:
+                    cands[name]["users"].append((addr, -1))
+        return cands
 
     def evidence(self, ctx, class_name: str, cand: dict) -> dict:
         items = []
@@ -69,9 +83,16 @@ class TypeReconstructor:
         fn = ctx.ir.get(addr)
         rec = ctx.kb.functions.get(addr)
         sig = ctx.signatures.get(addr)
+        typed = param < 0   # accesses through a pointer typed as this class
+
+        def relevant(param_index: int, cls: str) -> bool:
+            if typed:
+                return param_index < 0 and sanitize_class_name(cls) == class_name
+            return param_index == param
+
         agg = defaultdict(lambda: {"read": 0, "write": 0, "sizes": set()})
         for a in fn.field_accesses:
-            if a.param == param:
+            if relevant(a.param, a.type):
                 agg[a.offset][a.access] += 1
                 agg[a.offset]["sizes"].add(a.size)
         accesses = "\n".join(
@@ -79,17 +100,22 @@ class TypeReconstructor:
             + ", ".join(f"{k} x{v[k]}" for k in ("read", "write") if v[k])
             for off, v in sorted(agg.items())
         )
-        passes = "\n".join(sorted({
+        passes = "" if typed else "\n".join(sorted({
             f"    ptr+{p.offset:#x} -> arg {p.arg} of {ctx.name_of(p.callee)}"
             for p in fn.arg_passes if p.param == param
         }))
-        guesses = ""
-        if rec and rec.analysis:
-            guesses = "\n".join(
-                f"    +{f.offset:#x} {f.type} {f.name} (confidence {f.confidence:.2f}) — {f.evidence}"
-                for f in rec.analysis.fields if f.param == param
-            )
-        role = (sig.kind if member else f"uses it via parameter {param}") if sig else "?"
+        fields = [f for f in (rec.analysis.fields if rec and rec.analysis else [])
+                  if relevant(f.param, f.class_name)]
+        guesses = "\n".join(
+            f"    +{f.offset:#x} {f.type} {f.name} (confidence {f.confidence:.2f}) — {f.evidence}" for f in fields)
+        if not sig:
+            role = "?"
+        elif member:
+            role = sig.kind
+        elif typed:
+            role = f"accesses it through a {class_name} * it loads"
+        else:
+            role = f"uses it via parameter {param}"
         decompiled = ""
         if sig and sig.kind == "constructor":
             decompiled = "\n".join("    " + l for l in fn.decompiled.strip().splitlines()[:40])
@@ -99,9 +125,8 @@ class TypeReconstructor:
             "summary": rec.analysis.summary if rec and rec.analysis else "",
             "accesses": accesses, "passes": passes, "guesses": guesses, "decompiled": decompiled,
             "observed": {off: v["sizes"] for off, v in agg.items()},
-            "passed_offsets": {p.offset for p in fn.arg_passes if p.param == param},
-            "guessed_offsets": {f.offset for f in (rec.analysis.fields if rec and rec.analysis else [])
-                                if f.param == param},
+            "passed_offsets": set() if typed else {p.offset for p in fn.arg_passes if p.param == param},
+            "guessed_offsets": {f.offset for f in fields},
         }
 
     @staticmethod

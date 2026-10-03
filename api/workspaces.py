@@ -14,6 +14,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from agents.cpp_text import decision_points
+from api.edits import override_counts
 from ghidra_io.ir import ProgramIR, load_ir
 from knowledge.confidence import tier
 from knowledge.signatures import assign_signatures
@@ -112,6 +113,8 @@ class Workspaces:
             "name": name,
             "binary": binary,
             "binary_found": binary_found,
+            "edits_pending": bool(m.get("edits_pending")),
+            "overrides": override_counts(kb),
             "program": m.get("program", {}),
             "updated_at": m.get("updated_at", ""),
             "current_round": m.get("current_round", 0),
@@ -166,6 +169,7 @@ class Workspaces:
                 "validator_warnings": sum(i.severity == "warning" for i in r.static_issues),
                 "instructions": fn.stats.instructions if fn else 0,
                 "class": sig.class_name if sig and sig.is_member else "",
+                "edited": bool(r.overrides),
             })
         return out
 
@@ -218,7 +222,8 @@ class Workspaces:
         kb = self.kb(name)
         return [{"name": t.name, "kind": t.kind, "size": t.size, "confidence": t.confidence,
                  "tier": tier(t.confidence), "base_class": t.base_class, "fields": len(t.fields),
-                 "members": len(t.members), "round": t.round, "from_symbols": t.from_symbols}
+                 "members": len(t.members), "round": t.round, "from_symbols": t.from_symbols,
+                 "edited": bool(t.overrides)}
                 for t in sorted(kb.types.values(), key=lambda t: t.name)]
 
     def type(self, name: str, type_name: str) -> dict:

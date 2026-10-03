@@ -14,6 +14,8 @@ Ghidra stays the source of truth for behaviour throughout: every prompt
 labels which facts are machine-proven and which are earlier LLM guesses.
 """
 
+from knowledge.naming import sanitize_class_name
+
 CONFIDENCE_GUIDE = """CONFIDENCE is your calibrated probability that a claim is correct:
   0.90-1.00  direct, unambiguous evidence (a symbol name, a string naming the value,
              an access pattern that admits one reading)
@@ -49,7 +51,9 @@ Rules:
   they receive it as, even when its body seems not to produce one (e.g. it falls off the end of a non-void
   function, which compilers turn into a trap). Never answer "void" for such a function.
 - Only report fields at offsets listed under OBSERVED MEMORY ACCESSES. "param" is the parameter index
-  the offset is relative to; "class_name" is the type that parameter points to.
+  the offset is relative to; "class_name" is the type that parameter points to. Lines like
+  "Piece * (via pPVar1) +0x14" are accesses through a pointer Ghidra knows the class of: report those
+  with "param": -1 and that class as "class_name" — they reveal fields of other classes.
 - Use C++ types: int, unsigned int, int64_t, uint64_t, bool, char, char *, const char *, float, double,
   void *, std::string, ClassName *. Prefer a known class name over void * when the evidence supports it.
 - Locals: only rename variables listed under LOCAL VARIABLES, using their exact current name as old_name.
@@ -285,7 +289,7 @@ def build_code_prompt(ctx, fn, sig, rec) -> str:
         parts += ["\nUNCERTAIN (medium confidence — keep but mark // TODO):"] + [f"  {t}" for t in sig.todos]
     if sig.class_name:
         parts += ["\nCLASS LAYOUT:", ctx.class_layout(sig.class_name)]
-    other = _other_classes(ctx, fn, sig)
+    other = other_classes(ctx, fn, sig)
     if other:
         parts += ["\nOTHER CLASSES THIS FUNCTION TOUCHES:"] + [ctx.class_layout(c) for c in other]
     parts += [
@@ -327,8 +331,13 @@ def _analysis_summary(rec) -> str:
     return "\n".join(lines)
 
 
-def _other_classes(ctx, fn, sig) -> list:
+def other_classes(ctx, fn, sig) -> list:
+    """Classes besides the function's own whose layout the code needs (also part of the code cache key)."""
     names = set()
+    for a in fn.field_accesses:   # fields reached through typed pointers, e.g. a Piece * from the board
+        cls = sanitize_class_name(a.type) if a.param < 0 and a.type else ""
+        if cls in ctx.kb.types and cls != sig.class_name:
+            names.add(cls)
     for p in sig.params:
         base = p.type.replace("const ", "").rstrip(" *&")
         if base in ctx.kb.types and base != sig.class_name:

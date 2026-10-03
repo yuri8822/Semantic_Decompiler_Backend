@@ -85,6 +85,16 @@ frontend dev server on another port can call it directly.
   - `POST /api/jobs/{id}/cancel` stops a run between work items and kills Ghidra. Progress is
     kept, so resubmitting resumes.
   - Job history and event streams survive server restarts.
+- **Edits (human in the loop):** `PATCH` a function (name and class, kind, return type,
+  parameters, locals, summary), a class layout (fields, base class, size) or a global (name,
+  type). Every field follows the same rule: omit it to leave it alone, send a value to override
+  it, send `null` to clear the override.
+  - Your values are kept separately from the LLM's, carry confidence 1.0, and survive
+    re-analysis. Clearing one restores exactly what the LLM said.
+  - `POST /api/workspaces/{name}/apply` queues a resume run. It writes the edits into Ghidra and
+    regenerates only the affected code; nothing is re-analyzed.
+  - `POST …/functions/{address}/reset` makes the next run redo a function's analysis and/or code.
+  - Edits are refused with 409 while a job runs on that workspace.
 - **Workspaces:** read-only views of everything a run produced:
   - function list and per-function detail (analysis, signature, Ghidra decompilation for the
     current round and round 0, assembly, callers and callees, validator and compiler results)
@@ -98,7 +108,10 @@ frontend dev server on another port can call it directly.
 **Ghidra IR** (`ghidra_scripts/ExportProgram.java`, `ghidra_io/`). For every function the
 export holds the decompilation, assembly, callers and callees by address, imports, strings,
 globals, parameters, locals and types. It also records two facts derived from p-code data flow:
-- **field accesses**: every load/store through `parameter + constant`, with access size.
+- **field accesses**: every load/store through `parameter + constant`, with access size. Once
+  class layouts have been applied to Ghidra, loads/stores through any pointer Ghidra knows the
+  class of are recorded too. For example `board->grid[r][c]->+0x14` becomes a `Piece +0x14`
+  access, which reveals fields a class's own methods never touch.
 - **pointer passing**: `parameter + constant` passed as a call argument. This is how embedded
   member objects and shared object types show up.
 
@@ -151,9 +164,12 @@ Then the program is re-exported. Once types are applied, `*(int *)(this + 0x14)`
   silently dropped.
 
 **Headers** (`output/project.py`) are generated from the knowledge base by code, never by the
-LLM. Class layouts use explicit padding under `#pragma pack(1)`, so the recovered offsets are
-exact. Type names the knowledge base can't define become opaque placeholder structs, so the
-headers always compile.
+LLM:
+- Class layouts use explicit padding under `#pragma pack(1)`, so the recovered offsets are exact.
+- Fields that derived classes place inside their base class's byte range are declared in the
+  base, so they inherit them at the same offsets. Rook's and Knight's `x`/`y` become `Piece::x`/`y`.
+- Type names the knowledge base can't define become opaque placeholder structs, so the headers
+  always compile.
 
 ## Workspace layout
 

@@ -42,15 +42,17 @@ from agents.analyzer import Analyzer
 from agents.code_reconstructor import CodeReconstructor
 from agents.context import Context
 from agents.crosscheck import check_return_values
+from agents.prompts import other_classes
 from agents.type_reconstructor import TypeReconstructor
 from agents.validator import Validator, errors
-from ghidra_io.ir import ProgramIR, load_ir
+from ghidra_io.ir import IR_VERSION, ProgramIR, load_ir
 from ghidra_io.runner import GhidraRunner
 from knowledge.callgraph import bottom_up_levels
 from knowledge.confidence import analysis_needs_another_pass, tier
 from knowledge.filters import exclusion_reason, is_imported_data
 from knowledge.ghidra_plan import build_plan, summarize_report
 from knowledge.models import FunctionRecord, GlobalRecord
+from knowledge.overrides import llm_global_confidence, set_llm_analysis, set_llm_global, set_llm_type
 from knowledge.naming import sanitize_identifier
 from knowledge.signatures import assign_signatures
 from knowledge.store import KnowledgeBase
@@ -188,6 +190,14 @@ class Pipeline:
         self.kb.meta.update({"binary": str(self.binary), "program": ir0.program.model_dump()})
         current = self.kb.current_round
         ir = load_ir(self.kb.ir_path(current)) if current and self.kb.ir_path(current).exists() else ir0
+        if current and ir.version < IR_VERSION:
+            # Exported by an older ExportProgram.java: re-export the program's
+            # current state so newer evidence (typed field accesses) is available.
+            self._info(f"refreshing the round-{current} export (format v{ir.version} -> v{IR_VERSION})")
+            empty = self.kb.ghidra_dir / "refresh_plan.json"
+            empty.write_text(json.dumps({"structs": [], "functions": [], "globals": []}), encoding="utf-8")
+            self.runner.apply_and_export(empty, self.kb.ghidra_dir / "refresh_report.json", self.kb.ir_path(current))
+            ir = load_ir(self.kb.ir_path(current))
         summary = {"functions": len(ir0.functions), "strings": len(ir0.strings),
                    "language": ir0.program.language, "current_round": current}
         self._stage_done("ghidra", summary)
@@ -242,21 +252,32 @@ class Pipeline:
         done = min((self.kb.functions[a].analysis.round if self.kb.functions[a].analysis else 0
                     for a in self.scope), default=0)
         for r in range(1, a_cfg.rounds + 1):
-            if r <= done:
+            # Class evidence can grow without any analysis: accesses through typed
+            # pointers only show up in exports made after a layout was applied.
+            stale_types = a_cfg.reconstruct_types and self._type_evidence_changed(ir)
+            edits = bool(self.kb.meta.get("edits_pending"))   # user edits not yet applied to Ghidra
+            stale = stale_types or edits
+            if r <= done and not (r == a_cfg.rounds and stale):
                 continue
             self._checkpoint()
             self._cross_check()   # earlier rounds' results may contradict the binary
             targets = [a for a in self.scope if self._needs_analysis(a, r)]
-            if r > 1 and not targets:
+            if r > 1 and not targets and not stale:
                 self._info(f"round {r}: nothing left at low confidence")
                 break
-            self._stage("analysis", f"Analyzer — round {r}: {len(targets)} function(s)", r)
-            levels = bottom_up_levels({a: ir.get(a).callees for a in self.scope if ir.get(a)})
-            target_set = set(targets)
-            self._run_levels([[a for a in lv if a in target_set] for lv in levels],
-                             lambda a, ctx: self._analyze_one(a, ctx, r), ir, "analysis", r)
-            self._cross_check()   # before anything from this round reaches Ghidra
-            self._stage_done("analysis", {"analyzed": len(targets)}, r)
+            if edits and not targets:
+                self._info(f"round {r}: applying your edits")
+            if targets:
+                self._stage("analysis", f"Analyzer — round {r}: {len(targets)} function(s)", r)
+                levels = bottom_up_levels({a: ir.get(a).callees for a in self.scope if ir.get(a)})
+                target_set = set(targets)
+                self._run_levels([[a for a in lv if a in target_set] for lv in levels],
+                                 lambda a, ctx: self._analyze_one(a, ctx, r), ir, "analysis", r)
+                self._cross_check()   # before anything from this round reaches Ghidra
+                self._stage_done("analysis", {"analyzed": len(targets)}, r)
+            elif stale_types:
+                self._info(f"round {r}: no function needs re-analysis, but new class evidence appeared "
+                           f"(e.g. accesses through typed pointers) — refining class layouts")
 
             if a_cfg.reconstruct_types:
                 self._checkpoint()
@@ -275,6 +296,7 @@ class Pipeline:
                     rec.needs_reanalysis = a in low
                     self.kb.save_function(rec)
             self.kb.meta["analysis_round_done"] = max(r, self.kb.meta.get("analysis_round_done", 0))
+            self.kb.meta.pop("edits_pending", None)   # this round applied them (code follows below)
             self.kb.save_meta()
             self._info(f"{len(low)} function(s) still low-confidence after round {r}")
         return ir
@@ -288,6 +310,18 @@ class Pipeline:
             if rec.analysis.contradictions:
                 self._warn(f"{rec.analysis.name}: {rec.analysis.contradictions[0]}")
 
+    def _type_evidence_changed(self, ir: ProgramIR) -> bool:
+        """Does any class have evidence its stored layout wasn't reconstructed from?"""
+        ctx = Context(self.kb, ir, assign_signatures(self.kb, ir), ir0=self.ir0)
+        for name, cand in self.typer.candidates(ctx).items():
+            ev = self.typer.evidence(ctx, name, cand)
+            if not any(i["accesses"] or i["guesses"] or i["passes"] for i in ev["functions"]):
+                continue
+            existing = self.kb.types.get(name)
+            if existing is None or existing.evidence_hash != self.typer.evidence_hash(ev):
+                return True
+        return False
+
     def _needs_analysis(self, address: str, round_num: int) -> bool:
         a = self.kb.functions[address].analysis
         if a is None:
@@ -298,16 +332,16 @@ class Pipeline:
         rec = self.kb.functions[address]
         fn = ctx.ir.get(address)
         analysis = self.analyzer.analyze(ctx, fn, rec, round_num)
-        if rec.analysis:
-            prev = rec.analysis
+        prev = rec.llm_analysis or rec.analysis
+        if prev:
             rec.analysis_history.append({"round": prev.round, "name": prev.name,
                                          "name_confidence": prev.name_confidence, "summary": prev.summary})
-        rec.analysis = analysis
+        set_llm_analysis(rec, analysis)   # the user's overrides stay on top
         self.kb.save_function(rec)
         for g in analysis.globals:
             grec = self.kb.globals.get(g.address)
-            if grec and (g.confidence > grec.confidence or not grec.name):
-                grec.name, grec.type, grec.confidence = g.name, g.type, g.confidence
+            if grec and (g.confidence > llm_global_confidence(grec) or not (grec.llm or {}).get("name")):
+                set_llm_global(grec, g.name, g.type, g.confidence)
                 self.kb.save_global(grec)
 
     def _reconstruct_types(self, ir: ProgramIR, round_num: int):
@@ -334,6 +368,7 @@ class Pipeline:
             for f in rec.fields:
                 if f.name in member_names or f.name == name:
                     f.name = "m_" + f.name
+            set_llm_type(rec, self.kb.types.get(name))   # the user's overrides stay on top
             self.kb.save_type(rec)
 
         self._run_items(work, one, ctx, "types", round_num, key=lambda w: w[0])
@@ -415,6 +450,8 @@ class Pipeline:
         h.update(sig.definition_head().encode())
         if sig.class_name:
             h.update(ctx.class_layout(sig.class_name).encode())
+        for cls in other_classes(ctx, fn, sig):   # their layouts are part of the prompt too
+            h.update(ctx.class_layout(cls).encode())
         for callee in fn.callees:   # callee signatures are part of the prompt
             csig = ctx.signatures.get(callee)
             if csig:

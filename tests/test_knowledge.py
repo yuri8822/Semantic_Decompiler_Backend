@@ -153,6 +153,60 @@ def test_validator_catches_dropped_calls_and_branches(kb, chess_ir):
     assert {"parameters", "return_type"} <= checks
 
 
+def _with_typed_piece_access(chess_ir):
+    """The fixture predates typed accesses; add the one the real export finds in Rook::Move."""
+    from ghidra_io.ir import FieldAccess
+    ir = chess_ir.model_copy(deep=True)
+    ir.__dict__.pop("by_address", None)   # reset the cached index for the copy
+    move = next(f for f in ir.functions if f.full_name == "Rook::Move")
+    move.field_accesses.append(FieldAccess(param=-1, param_name="pPVar1", type="Piece", offset=0x14,
+                                           size=4, access="read", at="0x140002b00"))
+    return ir, move
+
+
+def test_typed_access_grounds_field_claims(chess_ir):
+    ir, move = _with_typed_piece_access(chess_ir)
+    a = FunctionAnalysis.model_validate({
+        "name": "Rook::Move", "name_confidence": 0.95, "class_name": "Rook", "method_kind": "method",
+        "fields": [
+            {"param": -1, "class_name": "Piece", "offset": "0x14", "name": "color", "type": "int", "confidence": 0.8},
+            {"param": -1, "class_name": "Piece", "offset": "0x18", "name": "ghost", "type": "int", "confidence": 0.9},
+            {"param": -1, "class_name": "Piece", "offset": "0x14", "name": "flag", "type": "bool", "confidence": 0.9},
+        ]})
+    g = ground(a, move)
+    kept = {f.name: f.confidence for f in g.fields}
+    assert kept["color"] == 0.8               # proven by the typed access
+    assert "ghost" not in kept                 # Piece+0x18 is never accessed
+    assert kept["flag"] < 0.6                  # a 1-byte bool contradicts the 4-byte access
+
+
+def test_typed_access_reaches_type_reconstruction_and_validation(kb, chess_ir):
+    from agents.type_reconstructor import TypeReconstructor, normalize
+    ir, move = _with_typed_piece_access(chess_ir)
+    seed(kb, ir)
+    sigs = assign_signatures(kb, ir)
+    ctx = Context(kb, ir, sigs)
+    typer = TypeReconstructor(None)
+    cands = typer.candidates(ctx)
+    assert (move.address, -1) in cands["Piece"]["users"]
+    ev = typer.evidence(ctx, "Piece", cands["Piece"])
+    item = next(i for i in ev["functions"] if i["address"] == move.address)
+    assert 0x14 in item["observed"] and "+0x14 size 4 read" in item["accesses"]
+
+    # A layout field at +0x14 is now backed by an observed access, so it isn't demoted.
+    rec = TypeRecord(name="Piece", confidence=0.9, fields=[
+        FieldDef(offset=0x14, size=4, name="color", type="int", confidence=0.9)])
+    out = normalize(rec, ev, 8, {}, {"Piece"})
+    assert out.fields[0].confidence == 0.9
+
+    kb.save_type(out)
+    sigs = assign_signatures(kb, ir)
+    ctx = Context(kb, ir, sigs)
+    raw = sigs[move.address].definition_head() + "\n{\n    int c = *(int *)((char *)piece + 0x14);\n    return 0;\n}"
+    fields = [i for i in Validator().check(ctx, move, sigs[move.address], raw) if i.check == "fields"]
+    assert any("Piece::color" in i.message for i in fields)
+
+
 def test_validator_checks_literals_ghidra_prints(kb, chess_ir):
     """GameLoop calls system("CLS"); "CLS" is not defined string data, only a printed literal."""
     seed(kb, chess_ir)
@@ -271,6 +325,41 @@ def test_header_layout_offsets_are_exact(kb, chess_ir, tmp_path):
 
 
 @pytest.mark.skipif(shutil.which("g++") is None, reason="g++ not available")
+def test_fields_derived_classes_share_are_hoisted_into_the_base(kb, chess_ir, tmp_path):
+    """Rook/Knight declare x,y at +0x8/+0xc while Piece declares +0x14: x,y must move into Piece."""
+    import subprocess
+
+    from output.project import ProjectWriter
+
+    seed(kb, chess_ir)
+    kb.save_type(TypeRecord(name="Piece", size=0x18, confidence=0.9, fields=[
+        FieldDef(offset=0, size=8, name="vftable", type="void **", confidence=0.95),
+        FieldDef(offset=0x14, size=4, name="team", type="int", confidence=0.9)]))
+    for cls, extra in (("Rook", "piece_type"), ("Knight", None)):
+        fields = [FieldDef(offset=8, size=4, name="x", type="int", confidence=0.9),
+                  FieldDef(offset=0xC, size=4, name="y", type="int", confidence=0.9)]
+        if extra:
+            fields.append(FieldDef(offset=0x10, size=1, name=extra, type="uchar", confidence=0.9))
+        kb.save_type(TypeRecord(name=cls, size=0x18, confidence=0.9, base_class="Piece", base_confidence=0.95,
+                                fields=fields))
+    w = ProjectWriter(tmp_path / "proj", kb, chess_ir, assign_signatures(kb, chess_ir), "Chess")
+    w.write_headers()
+    types_h = (tmp_path / "proj" / "include" / "types.h").read_text()
+    assert "shared by Knight, Rook" in types_h
+    check = tmp_path / "proj" / "check.cpp"
+    check.write_text('#include "reconstructed.h"\n#include <cstddef>\n'
+                     "static_assert(offsetof(Piece, x) == 0x8, \"\");\n"
+                     "static_assert(offsetof(Piece, y) == 0xc, \"\");\n"
+                     "static_assert(offsetof(Piece, piece_type) == 0x10, \"\");\n"
+                     "static_assert(offsetof(Piece, team) == 0x14, \"\");\n"
+                     "static_assert(sizeof(Piece) == 0x18 && sizeof(Rook) == 0x18 && sizeof(Knight) == 0x18, \"\");\n"
+                     "int f(Rook *r, Knight *k) { return r->x + r->y + k->x + k->team; }\n")
+    proc = subprocess.run(["g++", "-std=c++17", "-fsyntax-only", "-w", "-Wno-invalid-offsetof",
+                           "-I", str(tmp_path / "proj" / "include"), str(check)], capture_output=True, text=True)
+    assert proc.returncode == 0, proc.stderr + types_h
+
+
+@pytest.mark.skipif(shutil.which("g++") is None, reason="g++ not available")
 def test_offline_pipeline_end_to_end(tmp_path):
     from pipeline import Pipeline
     from settings import Settings
@@ -337,6 +426,43 @@ def test_widening_scope_starts_newcomers_at_round_one(tmp_path):
     Pipeline(tmp_path / "Chess.exe", Settings().with_overrides(base), llm=llm, runner=FakeRunner(FIXTURE)).run()
     new_tags = [tag for _, tag in llm.calls[first:]]
     assert new_tags and all(t.startswith("analyze_r1_") for t in new_tags if t != "analyze_r2_0x140005f80")
+
+
+def test_old_export_is_refreshed_and_new_class_evidence_refines_layouts(tmp_path):
+    """Resuming a workspace exported by the old script: re-export, then refine layouts without re-analysis."""
+    import json as _json
+
+    from pipeline import Pipeline
+    from settings import Settings
+    from tests.conftest import FIXTURE
+    from tests.fakes import FakeLLM, FakeRunner
+
+    class TypedRunner(FakeRunner):
+        """Ghidra after layouts are applied: exports v2 with Rook::Move reading Piece+0x14."""
+        def apply_and_export(self, plan_json, report_json, out_json):
+            super().apply_and_export(plan_json, report_json, out_json)
+            data = _json.loads(out_json.read_text(encoding="utf-8"))
+            data["version"] = 2
+            move = next(f for f in data["functions"] if f["full_name"] == "Rook::Move")
+            move["field_accesses"].append({"param": -1, "param_name": "pPVar1", "type": "Piece", "offset": 0x14,
+                                           "size": 4, "access": "read", "at": "0x140002b00"})
+            out_json.write_text(_json.dumps(data), encoding="utf-8")
+            return out_json
+
+    s = Settings().with_overrides({"workspace_dir": str(tmp_path / "ws"), "analysis": {"rounds": 1},
+                                   "code": {"enabled": False}})
+    llm = FakeLLM()
+    Pipeline(tmp_path / "Chess.exe", s, llm=llm, runner=FakeRunner(FIXTURE)).run()   # old-format exports
+    first = len(llm.calls)
+
+    events = []
+    runner = TypedRunner(FIXTURE)
+    Pipeline(tmp_path / "Chess.exe", s, llm=llm, runner=runner, on_event=events.append).run()
+    new = [tag for _, tag in llm.calls[first:]]
+    assert not [t for t in new if t.startswith("analyze_")]        # nothing re-analyzed
+    assert "types_r1_Piece" in new                                  # Piece refined from the new evidence
+    assert runner.plans[0] == {"structs": [], "functions": [], "globals": []}   # the refresh export
+    assert any("refreshing the round-1 export" in e.get("text", "") for e in events)
 
 
 def test_scope_settings_and_cancellation(tmp_path):

@@ -21,7 +21,9 @@ import ghidra.program.model.block.BasicBlockModel;
 import ghidra.program.model.block.CodeBlockIterator;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.DataTypeComponent;
+import ghidra.program.model.data.Pointer;
 import ghidra.program.model.data.Structure;
+import ghidra.program.model.data.TypeDef;
 import ghidra.program.model.listing.*;
 import ghidra.program.model.pcode.*;
 import ghidra.program.model.symbol.*;
@@ -62,6 +64,8 @@ public class ExportProgram extends GhidraScript {
         decompiler.openProgram(currentProgram);
 
         JsonObject root = new JsonObject();
+        // 2: field accesses through typed (non-parameter) pointers carry "type".
+        root.addProperty("version", 2);
         root.add("program", exportProgramInfo());
 
         JsonArray functions = new JsonArray();
@@ -226,20 +230,24 @@ public class ExportProgram extends GhidraScript {
     }
 
     // ---------------------------------------------------------------------
-    // P-code facts: memory accesses relative to parameters, and which
-    // callees receive a (possibly offset) parameter pointer. These are the
-    // ground-truth evidence the type reconstructor and validator rely on.
+    // P-code facts: memory accesses relative to parameters or to pointers of
+    // a known structure type, and which callees receive a (possibly offset)
+    // parameter pointer. These are the ground-truth evidence the type
+    // reconstructor and validator rely on.
     // ---------------------------------------------------------------------
 
-    private static final class ParamBase {
+    /** Where an address comes from: `slot` >= 0 is a parameter, -1 a typed pointer. */
+    private static final class Base {
         final int slot;
         final String name;
         final long offset;
+        final String type;   // structure the base pointer points to, or ""
 
-        ParamBase(int slot, String name, long offset) {
+        Base(int slot, String name, long offset, String type) {
             this.slot = slot;
-            this.name = name;
+            this.name = name == null ? "" : name;
             this.offset = offset;
+            this.type = type == null ? "" : type;
         }
     }
 
@@ -261,8 +269,8 @@ public class ExportProgram extends GhidraScript {
                     calls++;
                     Address target = op.getInput(0).getAddress();
                     for (int i = 1; i < op.getNumInputs(); i++) {
-                        ParamBase b = traceToParam(op.getInput(i));
-                        if (b == null) continue;
+                        Base b = trace(op.getInput(i), false);
+                        if (b == null || b.slot < 0) continue;
                         JsonObject p = new JsonObject();
                         p.addProperty("callee", addr(resolveThunk(target)));
                         p.addProperty("arg", i - 1);
@@ -278,12 +286,13 @@ public class ExportProgram extends GhidraScript {
                 case PcodeOp.STORE: {
                     boolean isLoad = opc == PcodeOp.LOAD;
                     if (isLoad) loads++; else stores++;
-                    ParamBase b = traceToParam(op.getInput(1));
+                    Base b = trace(op.getInput(1), true);
                     if (b == null) break;
                     int size = isLoad ? op.getOutput().getSize() : op.getInput(2).getSize();
                     JsonObject a = new JsonObject();
                     a.addProperty("param", b.slot);
                     a.addProperty("param_name", b.name);
+                    a.addProperty("type", b.type);
                     a.addProperty("offset", b.offset);
                     a.addProperty("size", size);
                     a.addProperty("access", isLoad ? "read" : "write");
@@ -308,33 +317,43 @@ public class ExportProgram extends GhidraScript {
 
     /**
      * Walks a pointer varnode back through pure address arithmetic (copies,
-     * casts, constant adds, PTRSUB/PTRADD with constant operands) to a
-     * function parameter. Returns null when the pointer has any other origin
-     * (a load, a phi node, a non-constant index...), so only offsets that are
-     * provably "parameter + constant" are ever reported.
+     * casts, constant adds, PTRSUB/PTRADD with constant operands).
+     *
+     * Returns a parameter base when the walk reaches a function parameter.
+     * Otherwise, if `allowTyped`, returns the nearest pointer on the walk whose
+     * type is a pointer to a structure (e.g. a `Piece *` loaded from a board
+     * array): the access is then "structure + constant". Nearest, not deepest:
+     * for `bishops[2].field` that is the element, giving the field's offset
+     * rather than an offset from the start of the array. Returns null when
+     * neither applies, so only provable offsets are ever reported.
      */
-    private ParamBase traceToParam(Varnode v) {
+    private Base trace(Varnode v, boolean allowTyped) {
         long off = 0;
+        Base typed = null;
         for (int depth = 0; depth < MAX_TRACE_DEPTH && v != null; depth++) {
             HighVariable hv = v.getHigh();
             if (hv instanceof HighParam) {
-                return new ParamBase(((HighParam) hv).getSlot(), hv.getName(), off);
+                return new Base(((HighParam) hv).getSlot(), hv.getName(), off, structName(hv.getDataType()));
+            }
+            if (allowTyped && typed == null && hv != null) {
+                String type = structName(hv.getDataType());
+                if (type != null) typed = new Base(-1, hv.getName(), off, type);
             }
             PcodeOp def = v.getDef();
-            if (def == null) return null;
+            if (def == null) return typed;
             switch (def.getOpcode()) {
                 case PcodeOp.COPY:
                 case PcodeOp.CAST:
                     v = def.getInput(0);
                     break;
                 case PcodeOp.PTRSUB:
-                    if (!def.getInput(1).isConstant()) return null;
+                    if (!def.getInput(1).isConstant()) return typed;
                     off += def.getInput(1).getOffset();
                     v = def.getInput(0);
                     break;
                 case PcodeOp.PTRADD: {
                     Varnode idx = def.getInput(1), sz = def.getInput(2);
-                    if (!idx.isConstant() || !sz.isConstant()) return null;
+                    if (!idx.isConstant() || !sz.isConstant()) return typed;
                     off += signed(idx) * sz.getOffset();
                     v = def.getInput(0);
                     break;
@@ -343,19 +362,27 @@ public class ExportProgram extends GhidraScript {
                     Varnode a = def.getInput(0), b = def.getInput(1);
                     if (b.isConstant()) { off += signed(b); v = a; }
                     else if (a.isConstant()) { off += signed(a); v = b; }
-                    else return null;
+                    else return typed;
                     break;
                 }
                 case PcodeOp.INT_SUB:
-                    if (!def.getInput(1).isConstant()) return null;
+                    if (!def.getInput(1).isConstant()) return typed;
                     off -= signed(def.getInput(1));
                     v = def.getInput(0);
                     break;
                 default:
-                    return null;
+                    return typed;
             }
         }
-        return null;
+        return typed;
+    }
+
+    /** Name of the structure `dt` points to (through typedefs), or null. */
+    private static String structName(DataType dt) {
+        if (!(dt instanceof Pointer)) return null;
+        DataType t = ((Pointer) dt).getDataType();
+        while (t instanceof TypeDef) t = ((TypeDef) t).getBaseDataType();
+        return t instanceof Structure ? t.getName() : null;
     }
 
     private static long signed(Varnode c) {

@@ -117,6 +117,7 @@ class ProjectWriter:
         self.name = re.sub(r"[^A-Za-z0-9_]", "_", project_name)
         self.ptr = ir.program.pointer_size
         self._emit_rank = {}   # class -> position in types.h, set by _dependency_order
+        self._hoist_cache = {}
 
     @property
     def include_dir(self) -> Path:
@@ -230,15 +231,64 @@ class ProjectWriter:
             return t.base_class
         return ""
 
+    def _hoisted(self, name: str) -> list:
+        """
+        [(field, [classes])] that derived classes place inside this class's own
+        byte range where it declares nothing (e.g. Rook::x and Knight::x at
+        +0x8 inside Piece). C++ can't put a derived member into a base's gap,
+        so they are declared in the base, where the binary actually has them;
+        the derived classes inherit them at the same offsets. When siblings
+        disagree, the definition most of them share wins.
+        """
+        if name in self._hoist_cache:
+            return self._hoist_cache[name]
+        self._hoist_cache[name] = []   # guards against cycles while computing
+        t = self.kb.types.get(name)
+        if t is None:
+            return []
+        base = self._accepted_base(t)
+        start = self._emitted_size(base) if base else 0
+        own = [f for f in t.fields if accepted(f.confidence)]
+        groups = defaultdict(list)
+        for d in self.kb.types.values():
+            if self._accepted_base(d) != name:
+                continue
+            for f in d.fields:
+                if (not accepted(f.confidence) or f.offset < start or f.offset + f.size > t.size
+                        or any(f.offset < o.offset + o.size and o.offset < f.offset + f.size for o in own)):
+                    continue
+                groups[f.offset].append((f, d.name))
+        chosen = []
+        for off, items in sorted(groups.items(), key=lambda kv: -len(kv[1])):
+            votes = defaultdict(list)
+            for f, cls in items:
+                votes[(sanitize_identifier(f.name), ghidra_to_cpp_type(f.type) if f.type else "", f.size)].append((f, cls))
+            best = max(votes.values(), key=lambda v: (len(v), max(f.confidence for f, _ in v)))
+            f = best[0][0]
+            if any(f.offset < c.offset + c.size and c.offset < f.offset + f.size for c, _ in chosen):
+                continue
+            chosen.append((f, sorted({cls for _, cls in items})))
+        chosen.sort(key=lambda fc: fc[0].offset)
+        self._hoist_cache[name] = chosen
+        return chosen
+
+    def _own_fields(self, name: str) -> list:
+        """(field, note) pairs this class declares: its accepted fields plus hoisted ones."""
+        t = self.kb.types.get(name)
+        if t is None:
+            return []
+        out = [(f, "") for f in t.fields if accepted(f.confidence)]
+        out += [(f, f"shared by {', '.join(classes)}") for f, classes in self._hoisted(name)]
+        return sorted(out, key=lambda fn: fn[0].offset)
+
     def _declared_end(self, name: str) -> int:
-        """End of the last accepted field, including inherited ones."""
+        """End of the last declared field, including inherited and hoisted ones."""
         t = self.kb.types.get(name)
         if t is None:
             return 0
         end = self._emitted_size(self._accepted_base(t)) if self._accepted_base(t) else 0
-        for f in t.fields:
-            if accepted(f.confidence):
-                end = max(end, f.offset + f.size)
+        for f, _ in self._own_fields(name):
+            end = max(end, f.offset + f.size)
         return end
 
     def _emitted_size(self, name: str) -> int:
@@ -264,12 +314,12 @@ class ProjectWriter:
             return ["    // layout not reconstructed"]
         lines = ["", "    // data members - offsets recovered from the binary"]
         cur = self._emitted_size(base) if base else 0
-        for f in sorted(t.fields, key=lambda f: f.offset):
-            if f.offset < cur or not accepted(f.confidence):
+        for f, note in self._own_fields(name):
+            if f.offset < cur:
                 continue
             if f.offset > cur:
                 lines.append(f"    uint8_t _pad_{cur:x}[{f.offset - cur:#x}];")
-            lines.append(self._field_line(name, f))
+            lines.append(self._field_line(name, f) + (f"  ({note})" if note else ""))
             cur = f.offset + f.size
         size = self._emitted_size(name)
         if size > cur:
