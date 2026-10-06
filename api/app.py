@@ -8,6 +8,11 @@ HTTP API over the pipeline (localhost). Interactive docs at /docs.
                  PATCH /api/settings             merge a partial object into saved defaults
                  POST /api/settings/resolve      preview: saved defaults + per-run overrides
     System       GET  /api/health                Ghidra/compiler/CMake availability, API keys present
+                 GET  /api/providers             LLM providers: model, usable now (key set / local server up)
+    llama.cpp    GET  /api/llamacpp              the local server the backend launches: state, command, log tail
+                 POST /api/llamacpp/start        launch it with the saved llamacpp_server settings
+                 POST /api/llamacpp/stop         stop it
+                 GET  /api/llamacpp/models       .gguf files found in the usual download folders
     Binaries     GET  /api/binaries              executables in binaries/ and TestBinaries/
                  POST /api/binaries              upload an executable into binaries/
     Jobs         POST /api/jobs                  queue a run {binary, restart, settings: {...overrides}}
@@ -38,6 +43,9 @@ import json
 import os
 import re
 import shutil
+import urllib.error
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Optional
 
@@ -51,8 +59,9 @@ from api import edits
 from api.edits import EditError, FunctionEdit, GlobalEdit, ResetRequest, TypeEdit
 from api.jobs import FINISHED, JobManager
 from api.workspaces import NotFound, Workspaces
+from llm import llamacpp_server
 from llm.providers import API_KEY_VARS
-from settings import PROJECT_ROOT, PROVIDERS, Settings
+from settings import PROJECT_ROOT, PROVIDERS, LLMSettings, Settings
 
 UPLOAD_DIR = PROJECT_ROOT / "binaries"
 BINARY_DIRS = (UPLOAD_DIR, PROJECT_ROOT / "TestBinaries")
@@ -140,6 +149,75 @@ def create_app(jobs: JobManager = None, settings_file: Path = settings_mod.SETTI
             "workspace_root": str(workspace_root()),
             "running_job": next((j.id for j in jobs.jobs.values() if j.status == "running"), None),
         }
+
+    @app.get("/api/providers")
+    def providers():
+        """Every LLM provider, its model, and whether it can be used right now."""
+        s = load_saved()
+
+        def status(p: str) -> dict:
+            cfg = getattr(s.llm, p)
+            key_var = API_KEY_VARS.get(p, "")
+            local = not key_var
+            key_present = bool(os.environ.get(key_var)) if key_var else None
+            reachable = _reachable(cfg.base_url) if local else None
+            model = cfg.model_heavy if p == "anthropic" else cfg.model
+            auto_start = False
+            if p == "llamacpp":   # the backend can launch it on demand
+                problem = "" if reachable else jobs.llama.run_problem(s)
+                auto_start = not reachable and not problem
+                if s.llamacpp_server.model_path.strip():
+                    model = Path(llamacpp_server.model_file(s.llamacpp_server)).name
+            elif local:
+                problem = "" if reachable else f"no server answering at {cfg.base_url}"
+            else:
+                problem = "" if key_present else f"{key_var} is not set in the backend's .env"
+            return {
+                "name": p,
+                "label": LLMSettings.model_fields[p].title or p,
+                "model": model,
+                "local": local,
+                "api_key_var": key_var,
+                "api_key_present": key_present,
+                "reachable": reachable,
+                "auto_start": auto_start,   # not running, but starts when a run needs it
+                "usable": not problem,
+                "problem": problem,
+            }
+
+        with ThreadPoolExecutor(len(PROVIDERS)) as pool:   # local probes run concurrently
+            items = list(pool.map(status, PROVIDERS))
+        return {
+            "default": s.llm.provider,
+            "agents": {a: getattr(s.llm, f"{a}_provider") for a in ("analyzer", "type_reconstructor",
+                                                                   "code_reconstructor")},
+            "providers": items,
+        }
+
+    # -- local llama.cpp server -------------------------------------------------------
+
+    @app.get("/api/llamacpp")
+    def llamacpp_status():
+        return jobs.llama.status(load_saved())
+
+    @app.post("/api/llamacpp/start")
+    def llamacpp_start():
+        s = load_saved()
+        try:
+            return jobs.llama.start(s, llamacpp_server.log_path_for(s))
+        except llamacpp_server.LlamaServerError as exc:
+            raise HTTPException(400, str(exc))
+
+    @app.post("/api/llamacpp/stop")
+    def llamacpp_stop():
+        jobs.llama.stop()
+        return jobs.llama.status(load_saved())
+
+    @app.get("/api/llamacpp/models")
+    def llamacpp_models():
+        cfg = load_saved().llamacpp_server
+        return {"models": llamacpp_server.find_models(cfg),
+                "searched": [str(d) for d in llamacpp_server.model_dirs(cfg)]}
 
     # -- binaries -----------------------------------------------------------------------
 
@@ -379,6 +457,17 @@ def create_app(jobs: JobManager = None, settings_file: Path = settings_mod.SETTI
         return job.to_dict()
 
     return app
+
+
+def _reachable(base_url: str, timeout: float = 0.8) -> bool:
+    """Does an OpenAI-compatible local server answer at `base_url`? Any HTTP reply counts."""
+    try:
+        urllib.request.urlopen(base_url.rstrip("/") + "/models", timeout=timeout).close()
+        return True
+    except urllib.error.HTTPError:
+        return True
+    except (urllib.error.URLError, OSError, ValueError):
+        return False
 
 
 def _norm_address(address: str) -> str:

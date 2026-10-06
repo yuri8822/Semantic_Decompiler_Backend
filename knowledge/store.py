@@ -15,6 +15,7 @@ The project knowledge base: plain JSON files every agent reads and writes.
 """
 
 import json
+import os
 import re
 import shutil
 import threading
@@ -29,7 +30,12 @@ from knowledge.models import FunctionRecord, GlobalRecord, TypeRecord
 def _write_json(path: Path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + f".{threading.get_ident()}.tmp")
-    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    with open(tmp, "w", encoding="utf-8") as fh:
+        fh.write(json.dumps(data, indent=2, ensure_ascii=False))
+        # Force the bytes to disk before the rename: otherwise a power cut can
+        # leave the renamed file full of zeros (seen on 2026-10-03).
+        fh.flush()
+        os.fsync(fh.fileno())
     # On Windows, replacing a file another thread is reading at that instant
     # (e.g. the API serving a live workspace) fails transiently; retry briefly.
     for attempt in range(20):
@@ -63,6 +69,7 @@ class KnowledgeBase:
         self.types: dict[str, TypeRecord] = {}
         self.globals: dict[str, GlobalRecord] = {}
         self.meta: dict = {}
+        self.corrupt: list[str] = []   # unreadable files skipped while loading (relative paths)
         self._lock = threading.RLock()
 
     # -- layout ---------------------------------------------------------------
@@ -100,19 +107,45 @@ class KnowledgeBase:
         return kb
 
     def _load(self):
+        """
+        Unreadable files (e.g. zero-filled by a power cut mid-write) are skipped
+        and listed in `self.corrupt` instead of making the whole workspace
+        unloadable. A skipped function/global is simply re-created by the next
+        run's scope stage and redone; a skipped type is reconstructed again.
+        """
         meta_path = self.root / "knowledge.json"
         if meta_path.exists():
-            self.meta = json.loads(_read_text(meta_path))
+            try:
+                self.meta = json.loads(_read_text(meta_path))
+            except (ValueError, UnicodeDecodeError):
+                self.corrupt.append("knowledge.json")
+                self.meta = {}
         self.meta.setdefault("rounds", [])
-        for path in sorted((self.root / "functions").glob("*.json")):
-            rec = FunctionRecord.model_validate_json(_read_text(path))
-            self.functions[rec.address] = rec
-        for path in sorted((self.root / "types").glob("*.json")):
-            rec = TypeRecord.model_validate_json(_read_text(path))
-            self.types[rec.name] = rec
-        for path in sorted((self.root / "globals").glob("*.json")):
-            rec = GlobalRecord.model_validate_json(_read_text(path))
-            self.globals[rec.address] = rec
+        for folder, model, store, key in (("functions", FunctionRecord, self.functions, "address"),
+                                          ("types", TypeRecord, self.types, "name"),
+                                          ("globals", GlobalRecord, self.globals, "address")):
+            for path in sorted((self.root / folder).glob("*.json")):
+                try:
+                    rec = model.model_validate_json(_read_text(path))
+                except (ValueError, UnicodeDecodeError):   # pydantic's ValidationError is a ValueError
+                    self.corrupt.append(f"{folder}/{path.name}")
+                    continue
+                store[getattr(rec, key)] = rec
+
+    def quarantine_corrupt(self) -> list:
+        """Move unreadable files into _corrupt/ (kept for inspection). Returns what was moved."""
+        moved = []
+        stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        for rel in self.corrupt:
+            src = self.root / rel
+            if not src.exists():
+                continue
+            dest = self.root / "_corrupt" / stamp / rel
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            src.replace(dest)
+            moved.append(rel)
+        self.corrupt = []
+        return moved
 
     # -- records --------------------------------------------------------------
 

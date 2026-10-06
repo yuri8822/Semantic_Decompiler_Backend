@@ -71,6 +71,21 @@ def test_health(api):
     assert next(p for p in h["providers"] if p["name"] == "deepseek")["api_key_present"] is True
 
 
+def test_providers(api, monkeypatch):
+    client, _, _ = api
+    monkeypatch.delenv("XIAOMI_API_KEY", raising=False)
+    monkeypatch.setattr("api.app._reachable", lambda url, timeout=0.8: "11434" in url)   # ollama up, llama.cpp down
+    client.patch("/api/settings", json={"llm": {"llamacpp": {"base_url": "http://localhost:1/v1"}}})
+    r = client.get("/api/providers").json()
+    by = {p["name"]: p for p in r["providers"]}
+    assert r["default"] == "deepseek" and set(r["agents"]) == {"analyzer", "type_reconstructor", "code_reconstructor"}
+    assert by["deepseek"]["usable"] and by["deepseek"]["model"] and by["deepseek"]["label"] == "DeepSeek"
+    assert not by["xiaomi"]["usable"] and "XIAOMI_API_KEY" in by["xiaomi"]["problem"]
+    assert by["ollama"]["local"] and by["ollama"]["usable"]
+    assert not by["llamacpp"]["usable"] and "no model file chosen" in by["llamacpp"]["problem"]
+    assert by["anthropic"]["model"].startswith("claude-")
+
+
 def test_job_lifecycle_and_workspace_views(api):
     client, binary, _ = api
     r = client.post("/api/jobs", json={"binary": str(binary),

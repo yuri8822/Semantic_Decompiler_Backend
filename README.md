@@ -34,8 +34,13 @@ environment variable), Java 21+, and `g++` + `cmake` on PATH for compile validat
 compiler, compile validation is skipped.
 
 On Windows, `start.bat` starts the API and the web UI (if the frontend repo is checked out next
-to this one, in `..\Frontend`), then opens the browser. `start.bat llamacpp` also starts a local
-llama.cpp server; set the model path at the top of the file.
+to this one, in `..\Frontend`), then opens the browser.
+
+Local models: with llama.cpp installed (`llama` or `llama-server` on PATH), the backend launches
+the server itself. Choose the `.gguf` and the server options in the `llamacpp_server` settings
+(the web UI's Local model page lists the models in the HuggingFace, LM Studio and llama.cpp
+download caches). A run that uses the `llamacpp` provider starts the server if needed and waits
+for the model to load. The server stops when the backend stops.
 
 ### Settings
 
@@ -46,6 +51,7 @@ has a default, a valid range and a description. Options are grouped:
 |---|---|
 | `ghidra` | headless launcher path, project location |
 | `llm` | provider, a separate provider per agent, model, endpoint and token budget for each provider, concurrency, retries, timeouts, traffic logging |
+| `llamacpp_server` | llama.cpp executable, model file, extra model folders, context size, GPU layers, slots, thinking and its budget, extra arguments, auto-start, load timeout |
 | `confidence` | high and medium thresholds |
 | `analysis` | rounds, Ghidra feedback loop on/off, class reconstruction on/off, return-value cross-check on/off |
 | `code` | code stage on/off, validator and compiler fix-round limits |
@@ -95,6 +101,10 @@ frontend dev server on another port can call it directly.
     regenerates only the affected code; nothing is re-analyzed.
   - `POST …/functions/{address}/reset` makes the next run redo a function's analysis and/or code.
   - Edits are refused with 409 while a job runs on that workspace.
+- **Local llama.cpp server:** `GET /api/llamacpp` reports its state (stopped, loading, ready,
+  exited, or external when a server started elsewhere answers on the port), the command line
+  and the log tail. `POST /api/llamacpp/start` and `/stop` control it, and
+  `GET /api/llamacpp/models` lists the `.gguf` files found.
 - **Workspaces:** read-only views of everything a run produced:
   - function list and per-function detail (analysis, signature, Ghidra decompilation for the
     current round and round 0, assembly, callers and callees, validator and compiler results)

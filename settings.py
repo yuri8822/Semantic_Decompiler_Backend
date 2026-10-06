@@ -90,10 +90,37 @@ class LLMSettings(_Group):
         title="Ollama", description="Local server, no key.")
     llamacpp: EndpointSettings = Field(
         EndpointSettings(base_url="http://localhost:8080/v1", model="local", max_tokens=49152),
-        title="llama.cpp", description="Local llama-server (start.bat llamacpp); serves whatever model is loaded.")
+        title="llama.cpp", description="Local server; the backend can launch it (see the llama.cpp server settings). "
+                                       "Serves whatever model is loaded.")
 
     def provider_for(self, agent: str) -> str:
         return getattr(self, f"{agent}_provider", None) or self.provider
+
+
+class LlamaServerSettings(_Group):
+    """How the backend launches llama.cpp. It listens where llm.llamacpp.base_url points."""
+    executable: str = Field("llama", title="llama.cpp executable",
+                            description="`llama` (runs `llama serve`) or `llama-server`: a name on PATH or a full path.")
+    model_path: str = Field("", title="Model file", description="Full path to the .gguf to serve.")
+    model_dirs: list[str] = Field([], title="Extra model folders",
+                                  description="Searched for .gguf files besides the HuggingFace, LM Studio and "
+                                              "llama.cpp download caches.")
+    context_size: int = Field(49152, ge=0, le=1_048_576, title="Context size (tokens)",
+                              description="Prompt plus answer must fit. 0 = the model's own maximum.")
+    gpu_layers: int = Field(999, ge=0, le=999, title="GPU layers",
+                            description="Layers offloaded to the GPU: 999 = all, 0 = CPU only.")
+    parallel: int = Field(1, ge=1, le=64, title="Server slots",
+                          description="Requests served at once; the context is split between them.")
+    thinking: Literal["off", "on", "auto"] = Field("off", title="Thinking",
+                                                    description="Let reasoning models think before answering.")
+    reasoning_budget: int = Field(2048, ge=-1, le=1_000_000, title="Thinking budget (tokens)",
+                                  description="Only with thinking on; comes out of the max output tokens. -1 = no limit.")
+    extra_args: str = Field("", title="Extra arguments", description="Passed to the server as-is, e.g. --threads 8.")
+    auto_start: bool = Field(True, title="Start automatically",
+                             description="When a run uses llama.cpp and no server is up, launch it and wait for "
+                                         "the model to load.")
+    load_timeout_seconds: int = Field(600, ge=10, le=7200, title="Load timeout (s)",
+                                      description="How long a run waits for the model to load.")
 
 
 # --- Pipeline stages ----------------------------------------------------------------
@@ -164,6 +191,8 @@ class Settings(_Group):
                                    description="Headless analysis, and where its project lives.")
     llm: LLMSettings = Field(LLMSettings(), title="LLM providers",
                              description="Which models the agents use, and how they are called.")
+    llamacpp_server: LlamaServerSettings = Field(LlamaServerSettings(), title="llama.cpp server",
+                                                 description="Launching a local llama.cpp server from the backend.")
     confidence: ConfidenceSettings = Field(ConfidenceSettings(), title="Confidence gating",
                                            description="What a discovery's confidence allows.")
     analysis: AnalysisSettings = Field(AnalysisSettings(), title="Analysis",

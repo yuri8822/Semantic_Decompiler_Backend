@@ -9,6 +9,7 @@ server restart; a job that was running when the server stopped is marked
 """
 
 import json
+import os
 import queue
 import threading
 import uuid
@@ -16,12 +17,35 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import settings as settings_mod
+from llm import llamacpp_server
 from llm.providers import missing_api_key
 from pipeline import AGENTS, Cancelled, Pipeline
 
 QUEUED, RUNNING, DONE, FAILED, CANCELLED, INTERRUPTED = (
     "queued", "running", "done", "failed", "cancelled", "interrupted")
 FINISHED = (DONE, FAILED, CANCELLED, INTERRUPTED)
+
+
+def _read_events(path: Path) -> list:
+    """
+    A job's event log, skipping lines a crash or power cut left unreadable
+    (e.g. zero-filled). Events are renumbered so `seq` keeps matching their
+    position, which the live stream relies on when resuming.
+    """
+    events = []
+    with open(path, "rb") as fh:
+        for raw in fh:
+            line = raw.replace(b"\x00", b"").strip()
+            if not line:
+                continue
+            try:
+                event = json.loads(line.decode("utf-8"))
+            except (ValueError, UnicodeDecodeError):
+                continue
+            if isinstance(event, dict) and "type" in event:
+                event["seq"] = len(events)
+                events.append(event)
+    return events
 
 
 def _now() -> str:
@@ -71,7 +95,10 @@ class Job:
         data = self.to_dict()
         data["settings"] = self.settings
         tmp = self.meta_path.with_suffix(".tmp")
-        tmp.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        with open(tmp, "w", encoding="utf-8") as fh:
+            fh.write(json.dumps(data, indent=2))
+            fh.flush()
+            os.fsync(fh.fileno())   # survive a power cut (see knowledge/store.py)
         tmp.replace(self.meta_path)
 
     @classmethod
@@ -82,8 +109,7 @@ class Job:
         for k in ("status", "created_at", "started_at", "finished_at", "summary", "error"):
             setattr(job, k, d.get(k, getattr(job, k)))
         if job.events_path.exists():
-            with open(job.events_path, encoding="utf-8") as fh:
-                job.events = [json.loads(line) for line in fh if line.strip()]
+            job.events = _read_events(job.events_path)
         return job
 
     # -- events ---------------------------------------------------------------------
@@ -122,9 +148,10 @@ class Job:
 
 
 class JobManager:
-    def __init__(self, jobs_dir: Path, pipeline_factory=None, defaults_loader=settings_mod.load):
+    def __init__(self, jobs_dir: Path, pipeline_factory=None, defaults_loader=settings_mod.load, llama=None):
         self.jobs_dir = Path(jobs_dir)
         self.defaults_loader = defaults_loader   # saved defaults that per-run overrides apply to
+        self.llama = llama or llamacpp_server.SERVER   # the local llama.cpp server runs may need
         self.jobs: dict[str, Job] = {}
         self._queue: "queue.Queue[str]" = queue.Queue()
         self._lock = threading.Lock()
@@ -161,6 +188,10 @@ class JobManager:
         missing = sorted(f"{missing_api_key(p)} (for {p})" for p in providers if missing_api_key(p))
         if missing:
             raise ValueError("missing API key(s): " + ", ".join(missing) + " — add them to .env")
+        if "llamacpp" in providers:
+            problem = self.llama.run_problem(run_settings)
+            if problem:
+                raise ValueError(problem)
         job = Job(uuid.uuid4().hex[:12], str(path.resolve()), restart, overrides or {},
                   run_settings.model_dump(), self.jobs_dir)
         with self._lock:

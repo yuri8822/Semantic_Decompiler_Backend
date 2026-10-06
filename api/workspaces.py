@@ -114,6 +114,7 @@ class Workspaces:
             "binary": binary,
             "binary_found": binary_found,
             "edits_pending": bool(m.get("edits_pending")),
+            "corrupt_files": kb.corrupt,   # unreadable files; the next run sets them aside and redoes them
             "overrides": override_counts(kb),
             "program": m.get("program", {}),
             "updated_at": m.get("updated_at", ""),

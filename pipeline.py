@@ -14,6 +14,9 @@ The reconstruction pipeline:
 Every stage persists to the knowledge base and is resumable: rerunning picks
 up where the last run stopped; restart=True starts from scratch.
 
+When an agent uses the llamacpp provider, the local server is launched (if
+auto-start allows) before Ghidra runs and waited for before the Analyzer.
+
 The pipeline never prints. It reports through `on_event(event)` with plain
 dicts (see EVENT TYPES below); reporting.ConsoleReporter renders them for the
 CLI, the API streams them to the browser.
@@ -56,6 +59,7 @@ from knowledge.overrides import llm_global_confidence, set_llm_analysis, set_llm
 from knowledge.naming import sanitize_identifier
 from knowledge.signatures import assign_signatures
 from knowledge.store import KnowledgeBase
+from llm import llamacpp_server
 from llm.client import LLMClient, TrafficLog
 from llm.providers import missing_api_key
 from output.compiler import Compiler, first_error
@@ -101,6 +105,7 @@ class Pipeline:
             self.clients = {agent: llm for agent in AGENTS}
         else:
             self.clients = self._make_clients()
+        self._local_server = llm is None and llamacpp_server.run_needs_server(self.settings, AGENTS)
         self.runner = runner or GhidraRunner(self.binary, self.settings, verbose=verbose,
                                              on_line=lambda line: self._emit("ghidra_output", line=line))
         self.analyzer = Analyzer(self.clients["analyzer"])
@@ -159,11 +164,19 @@ class Pipeline:
             return summary
 
     def _run(self) -> dict:
+        moved = self.kb.quarantine_corrupt()
+        if moved:
+            self._warn(f"{len(moved)} unreadable file(s) (e.g. from a power cut) moved to _corrupt/ and will be "
+                       f"redone: {', '.join(moved[:5])}{' …' if len(moved) > 5 else ''}")
         self.kb.meta["settings"] = self.settings.model_dump()
+        if self._local_server:   # loads while Ghidra runs
+            self._launch_local_server()
         ir0, ir = self.stage_ghidra()
         self.ir0 = ir0
         self._checkpoint()
         self.seed(ir0)
+        if self._local_server:
+            self._wait_local_server()
         ir = self.stage_analysis(ir)
         sigs = assign_signatures(self.kb, ir)
         compiler = None
@@ -172,6 +185,22 @@ class Pipeline:
         build = self.stage_project(ir, sigs, compiler)
         report = write_report(self.kb, ir, sigs, build, self.failures)
         return self._summary(sigs, build, report)
+
+    # -- local llama.cpp server -----------------------------------------------------
+
+    def _launch_local_server(self):
+        server = llamacpp_server.SERVER
+        if server.launch_if_needed(self.settings, llamacpp_server.log_path_for(self.settings)):
+            model = Path(llamacpp_server.model_file(self.settings.llamacpp_server)).name
+            self._info(f"started llama.cpp ({model}); it loads while Ghidra runs")
+
+    def _wait_local_server(self):
+        server = llamacpp_server.SERVER
+        if not server.status(self.settings)["ready"]:
+            self._info("waiting for llama.cpp to finish loading the model")
+            server.wait_ready(self.settings, cancelled=lambda: self.cancelled)
+            self._checkpoint()
+            self._info("llama.cpp is ready")
 
     # -- 1. Ghidra ---------------------------------------------------------------
 
