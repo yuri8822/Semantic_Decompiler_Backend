@@ -132,7 +132,9 @@ def test_lifecycle(fake):
     finally:
         assert server.stop() is True
     st = server.status(s)
-    assert st["state"] == "exited" and not st["ready"] and st["can_start"]
+    # Stopped on purpose: not reported as a crash, although taskkill leaves exit code 1 on Windows.
+    assert st["state"] == "stopped" and st["exit_code"] is None and not st["ready"] and st["can_start"]
+    assert "server listening" in st["log_tail"]                         # the last run's log stays visible
     assert server.stop() is False
 
 
@@ -144,6 +146,8 @@ def test_server_that_dies_while_loading(fake):
     with pytest.raises(LlamaServerError, match="stopped with code 3") as exc:
         server.wait_ready(s, poll=0.1)
     assert "failed to load model" in str(exc.value)
+    st = server.status(s)
+    assert st["state"] == "exited" and st["exit_code"] == 3 and st["can_start"]
 
 
 def test_auto_start_off(fake):
@@ -179,7 +183,7 @@ def test_api(fake, tmp_path, monkeypatch):
             assert time.time() < deadline
             time.sleep(0.1)
     finally:
-        assert client.post("/api/llamacpp/stop").json()["state"] == "exited"
+        assert client.post("/api/llamacpp/stop").json()["state"] == "stopped"
 
     # Without auto-start, a run on llama.cpp is refused up front while no server is up.
     client.patch("/api/settings", json={"llamacpp_server": {"auto_start": False}})

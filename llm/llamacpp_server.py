@@ -216,6 +216,7 @@ class LlamaServer:
         self._command = []
         self._started_at = ""
         self._log_path = None
+        self._stopped = False   # stopped on purpose: its exit code (taskkill's 1) isn't a crash
         self._atexit = False
 
     def _problems(self, s) -> list:
@@ -242,13 +243,14 @@ class LlamaServer:
         health = _health(*ep) if ep else None
         with self._lock:
             proc, command, started, log_path = self._proc, list(self._command), self._started_at, self._log_path
+            stopped = self._stopped
         running = proc is not None and proc.poll() is None
         if running:
             state = "ready" if health == "ready" else "loading"
         elif health in ("ready", "loading"):
             state = "external"
-        elif proc is not None:
-            state = "exited"
+        elif proc is not None and not stopped:
+            state = "exited"   # it ended by itself: a crash, or a bad option
         else:
             state = "stopped"
 
@@ -263,7 +265,7 @@ class LlamaServer:
             "state": state,
             "ready": health == "ready",
             "pid": proc.pid if running else None,
-            "exit_code": proc.returncode if proc is not None and not running else None,
+            "exit_code": proc.returncode if state == "exited" else None,
             "started_at": started if proc is not None else "",
             "command": command,
             "stale": stale,   # running, but the settings have changed since it started
@@ -309,6 +311,7 @@ class LlamaServer:
                 raise LlamaServerError(f"could not launch {command[0]}: {exc}")
         _tie_to_this_process(proc)
         self._proc, self._command, self._started_at, self._log_path = proc, command, _now(), log_path
+        self._stopped = False
         if not self._atexit:
             atexit.register(self.stop)
             self._atexit = True
@@ -319,6 +322,7 @@ class LlamaServer:
             proc = self._proc
             if proc is None or proc.poll() is not None:
                 return False
+            self._stopped = True
             if sys.platform == "win32":
                 # /T: `llama serve` may run the actual server as a child process.
                 subprocess.run(["taskkill", "/PID", str(proc.pid), "/T", "/F"],
